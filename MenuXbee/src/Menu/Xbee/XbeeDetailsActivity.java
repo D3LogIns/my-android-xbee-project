@@ -12,7 +12,11 @@ public class XbeeDetailsActivity extends Activity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Bundle bundle=this.getIntent().getExtras();
-		String teste=bundle.getString("address");
+		String adress=bundle.getString("address");
+		
+		
+		
+		
 		
 		ScrollView sv=new ScrollView(this);
         LinearLayout ll=new LinearLayout(this);
@@ -27,7 +31,7 @@ public class XbeeDetailsActivity extends Activity{
         
         EditText et=new EditText(this);
         
-        et.setText(teste);
+        et.setText(adress);
         
         ll.addView(et);
         
