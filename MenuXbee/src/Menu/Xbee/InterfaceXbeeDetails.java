@@ -43,6 +43,9 @@ public class InterfaceXbeeDetails extends ScrollView{
 		tvMyAdress.setText(cc.getAddress(position));
 		tvMyType.setText(cc.getType(position));
 		
+		
+		ghgh
+		
 		this.addView(tlMain);
 		tlMain.addView(ll);
 		
