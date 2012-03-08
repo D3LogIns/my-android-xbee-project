@@ -10,7 +10,7 @@ public class ConnectionClass  implements Serializable{
 
 	public void SeekNDestroy() {
 		Random r = new Random();
-		int numXbee = (r.nextInt(10) + 1);
+		int numXbee = (r.nextInt(11));
 
 		String address = "142AFC2D00C";
 		int type = 3;
