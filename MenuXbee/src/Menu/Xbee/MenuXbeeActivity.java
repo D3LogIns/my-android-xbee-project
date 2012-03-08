@@ -11,7 +11,7 @@ public class MenuXbeeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		boolean a = true;
 		if (a) {
-			InterfaceXbee ix = new InterfaceXbee(this);
+			InterfaceMenuXbee ix = new InterfaceMenuXbee(this);
 			setContentView(ix);
 			availableNetworks();
 		} else {
