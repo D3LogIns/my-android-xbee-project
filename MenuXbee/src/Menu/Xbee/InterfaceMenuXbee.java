@@ -2,6 +2,7 @@ package Menu.Xbee;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -264,9 +265,15 @@ public class InterfaceMenuXbee extends ScrollView {
 
 					@Override
 					public void onClick(View arg0) {
-						String addr = cc.getAddress(vAddr.getId());
 						Intent i = new Intent(c, XbeeDetailsActivity.class);
-						i.putExtra("address", addr);
+						
+						i.putExtra("position", vAddr.getId());
+						
+						Bundle b= new Bundle();
+						
+						b.putSerializable("connection", cc);
+						
+						i.putExtras(b);
 						c.startActivity(i);
 					}
 

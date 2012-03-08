@@ -11,12 +11,13 @@ public class XbeeDetailsActivity extends Activity{
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Bundle bundle=this.getIntent().getExtras();
-		String adress=bundle.getString("address");
 		
+		int position=this.getIntent().getExtras().getInt("position");
 		
-		
-		
+		ConnectionClass cc=(ConnectionClass) this.getIntent().getExtras().getSerializable("connection");
+
+		String adress=cc.getAddress(position);
+				
 		
 		ScrollView sv=new ScrollView(this);
         LinearLayout ll=new LinearLayout(this);

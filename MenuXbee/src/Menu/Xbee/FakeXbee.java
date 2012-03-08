@@ -1,6 +1,8 @@
 package Menu.Xbee;
 
-public class FakeXbee {
+import java.io.Serializable;
+
+public class FakeXbee implements Serializable{
 
 	private String address;
 	private int type;

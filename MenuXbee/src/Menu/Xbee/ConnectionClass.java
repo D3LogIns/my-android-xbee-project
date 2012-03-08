@@ -1,9 +1,10 @@
 package Menu.Xbee;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class ConnectionClass {
+public class ConnectionClass  implements Serializable{
 
 	private LinkedList<FakeXbee> xbee = new LinkedList<FakeXbee>();
 
