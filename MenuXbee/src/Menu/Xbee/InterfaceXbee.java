@@ -266,8 +266,10 @@ public class InterfaceXbee extends ScrollView {
 					public void onClick(View arg0) {
 						String addr = cc.getAddress(vAddr.getId());
 						Intent i = new Intent(c, XbeeDetailsActivity.class);
+						i.putExtra("address", addr);
 						c.startActivity(i);
 					}
+
 
 				});
 
