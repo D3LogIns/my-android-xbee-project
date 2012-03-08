@@ -14,7 +14,10 @@ public class InterfaceXbeeDetails extends ScrollView{
 	
 	
 	private TableLayout tlMain;
+	
 	private LinearLayout ll;
+	
+
 	
 	
 	public InterfaceXbeeDetails(Context context, ConnectionClass cc, int position) {
@@ -33,19 +36,24 @@ public class InterfaceXbeeDetails extends ScrollView{
 		ll.setOrientation(LinearLayout.VERTICAL);
 		
 		tlMain=new TableLayout(c);
-		tlMain.addView(ll);
+		
+		TextView tvMyAdress = new TextView(c);
+		TextView tvMyType = new TextView(c);
+		
+		tvMyAdress.setText(cc.getAddress(position));
+		tvMyType.setText(cc.getType(position));
 		
 		this.addView(tlMain);
+		tlMain.addView(ll);
+		
+		tlMain.addView(tvMyAdress);
+		tlMain.addView(tvMyType);
+		
 		
 	}
 
 	private void creation(){
 		
-		TextView tvMyAdress=new TextView(c);
-		
-		tvMyAdress.setText(cc.getAddress(position));
-		
-		tlMain.addView(tvMyAdress);
-		
+
 	}
 }
