@@ -1,6 +1,7 @@
 package Menu.Xbee;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -125,6 +126,19 @@ public class InterfaceXbeeDetails extends ScrollView {
 					TextView a1 = new TextView(c);
 					TextView s1 = new TextView(c);
 
+					a1.setClickable(true);
+					a1.setOnClickListener(new OnClickListener(){
+
+						@Override
+						public void onClick(View arg0) {
+							// TODO Auto-generated method stub
+							
+							
+						}
+						
+						
+					});
+					
 					a1.setText("Address");
 					s1.setText("Signal Strength");
 					
