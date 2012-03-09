@@ -15,7 +15,7 @@ public class MenuXbeeActivity extends Activity {
 			setContentView(ix);
 			availableNetworks();
 		} else {
-			new AlertMessage(this, ErrorTypes.COORDINATOR_NOT_DETECTED);
+			new AlertMessage(this).newMessage(MessageType.COORDINATOR_NOT_DETECTED);
 			//this.finish();
 		}
 

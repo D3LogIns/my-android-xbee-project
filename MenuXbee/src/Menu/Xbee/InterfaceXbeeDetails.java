@@ -117,7 +117,7 @@ public class InterfaceXbeeDetails extends ScrollView {
 		this.populateList("Actuator");
 	}
 
-	private void populateList(String type) {
+	private void populateList(final String type) {
 		for (int i = 0; i < cc.getListSize(); i++)
 			if (cc.getType(i).equals(type)) {
 
@@ -125,19 +125,6 @@ public class InterfaceXbeeDetails extends ScrollView {
 					TableRow r0 = new TableRow(c);
 					TextView a1 = new TextView(c);
 					TextView s1 = new TextView(c);
-
-					a1.setClickable(true);
-					a1.setOnClickListener(new OnClickListener(){
-
-						@Override
-						public void onClick(View arg0) {
-							// TODO Auto-generated method stub
-							
-							
-						}
-						
-						
-					});
 					
 					a1.setText("Address");
 					s1.setText("Signal Strength");
@@ -154,8 +141,29 @@ public class InterfaceXbeeDetails extends ScrollView {
 				TableRow r = new TableRow(c);
 				TextView addr = new TextView(c);
 				TextView ss = new TextView(c);
+				
+				addr.setClickable(true);
+				addr.setOnClickListener(new OnClickListener(){
 
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						if(type.equals("Actuator"))
+							new AlertMessage(c).newMessage(MessageType.SET_ACTUATOR);
+						
+						else if(type.equals("Sensor"))
+							new AlertMessage(c).newMessage(MessageType.SET_SENSOR);
+						
+					}
+					
+					
+				});
+				
+
+				
+				
 				r.addView(addr);
+				
 				r.addView(ss);
 
 				tlDevice.addView(r);

@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class FakeXbee implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6912906708507450701L;
 	private String address;
 	private int type;
 	private String ss;

@@ -6,6 +6,10 @@ import java.util.Random;
 
 public class ConnectionClass  implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3214863106099970500L;
 	private LinkedList<FakeXbee> xbee = new LinkedList<FakeXbee>();
 
 	public void SeekNDestroy() {

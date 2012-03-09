@@ -104,7 +104,7 @@ public class InterfaceMenuXbee extends ScrollView {
 			public void afterTextChanged(Editable s) {
 				// SE O TEXTO INSERIDO FOR MAIOR QUE 5 CARACTERES LAN‚A UM ERRO
 				if (s.length() > 5) {
-					new AlertMessage(c, ErrorTypes.TEXT_OUT_OF_BOUNDS);
+					new AlertMessage(c).newMessage(MessageType.TEXT_OUT_OF_BOUNDS);
 					etPan.setText("");
 					// SE O TAMANHO FOR MAIOR QUE 0 O BOTAO OK FICA ACTIVO
 				} else if (s.length() > 0)
@@ -142,7 +142,7 @@ public class InterfaceMenuXbee extends ScrollView {
 							.parseInt(etPan.getText().toString()));
 
 				} else
-					new AlertMessage(c, ErrorTypes.PAN_ID_OUT_OF_BOUNDS);
+					new AlertMessage(c).newMessage(MessageType.PAN_ID_OUT_OF_BOUNDS);
 
 				etPan.setText("");
 			}

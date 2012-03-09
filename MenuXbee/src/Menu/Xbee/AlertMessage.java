@@ -8,25 +8,35 @@ public class AlertMessage extends AlertDialog {
 
 	Context c;
 
-	protected AlertMessage(Context context, ErrorTypes e) {
+	protected AlertMessage(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 		this.c = context;
 
-		if (e.equals(ErrorTypes.COORDINATOR_NOT_DETECTED)) {
-			coordNotDetectedMessage();
-			
-		} else if (e.equals(ErrorTypes.PAN_ID_OUT_OF_BOUNDS)) {
-			panIDOutOfBounds();
-			
-		}else if(e.equals(ErrorTypes.TEXT_OUT_OF_BOUNDS)){
-			textOutOfBounds();
-		}
-		
-		this.show();
 	}
 
-	public void coordNotDetectedMessage() {
+	public int newMessage(MessageType msg) {
+
+		if (msg.equals(MessageType.COORDINATOR_NOT_DETECTED)) {
+			coordNotDetectedMessage();
+
+		} else if (msg.equals(MessageType.PAN_ID_OUT_OF_BOUNDS)) {
+			panIDOutOfBounds();
+
+		} else if (msg.equals(MessageType.TEXT_OUT_OF_BOUNDS)) {
+			textOutOfBounds();
+		} else if (msg.equals(MessageType.SET_ACTUATOR)) {
+			return (setActuator());
+		} else if (msg.equals(MessageType.SET_SENSOR)) {
+			setSensor();
+		} else if (msg.equals(MessageType.DELETE_ACTUATOR)) {
+			deleteActuator();
+		} else if (msg.equals(MessageType.DELETE_SENSOR)) {
+			deleteSensor();
+		}
+		return (5);
+	}
+
+	private void coordNotDetectedMessage() {
 		this.setMessage("Coordinator not found!\nApplication will be terminated.");
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 
@@ -36,28 +46,51 @@ public class AlertMessage extends AlertDialog {
 				System.exit(0);
 			}
 		});
+		this.show();
 	}
 
-	public void panIDOutOfBounds() {
+	private void panIDOutOfBounds() {
 		this.setMessage("PAN ID is not acceptable. Values must be between 1 and 50000.");
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
+		this.show();
 	}
-	
-	public void textOutOfBounds() {
+
+	private void textOutOfBounds() {
 		this.setMessage("Value is too high, please insert lower values.");
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
+		this.show();
+	}
+
+	private int setActuator() {
+
+		return 0;
+	}
+
+	private int setSensor() {
+
+		return 0;
+	}
+
+	private int deleteActuator() {
+
+		return 0;
+	}
+
+	private int deleteSensor() {
+
+		return 0;
 	}
 
 }
