@@ -27,11 +27,11 @@ public class AlertMessage extends AlertDialog {
 		} else if (msg.equals(MessageType.SET_ACTUATOR)) {
 			return (setActuator());
 		} else if (msg.equals(MessageType.SET_SENSOR)) {
-			setSensor();
+			return(setSensor());
 		} else if (msg.equals(MessageType.DELETE_ACTUATOR)) {
-			deleteActuator();
+			return(deleteActuator());
 		} else if (msg.equals(MessageType.DELETE_SENSOR)) {
-			deleteSensor();
+			return(deleteSensor());
 		}
 		return (5);
 	}
