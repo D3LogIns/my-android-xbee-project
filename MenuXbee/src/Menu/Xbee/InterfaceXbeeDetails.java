@@ -14,8 +14,11 @@ public class InterfaceXbeeDetails extends ScrollView {
 	private int position;
 
 	private TableLayout tlMain;
+	private TableLayout tlDevice;
 
 	private LinearLayout ll;
+
+	TextView tvText;
 
 	public InterfaceXbeeDetails(Context context, ConnectionClass cc,
 			int position) {
@@ -40,50 +43,112 @@ public class InterfaceXbeeDetails extends ScrollView {
 		ll = new LinearLayout(c);
 		ll.setOrientation(LinearLayout.VERTICAL);
 
+		// TABELAS
 		tlMain = new TableLayout(c);
 		tlMain.setColumnStretchable(0, true);
 		tlMain.setColumnStretchable(1, true);
 
+		tlDevice = new TableLayout(c);
+		for (int i = 0; i < 3; i++)
+			tlDevice.setColumnStretchable(i, true);
+
+		// TEXTVIEWS
 		TextView tvMyAdress = new TextView(c);
 		TextView tvMyType = new TextView(c);
 
 		TextView tvmyadd = new TextView(c);
 		TextView tvmyty = new TextView(c);
 
+		tvText = new TextView(c);
+
 		tvmyadd.setText("My Address");
-		tvmyty.setText("My type");
+		tvmyty.setText("My Type");
 
 		tvMyAdress.setText(cc.getAddress(position));
 		tvMyType.setText(cc.getType(position));
-		
-		TableRow rMyadd=new TableRow(c);
-		TableRow rMytype=new TableRow(c);
+
+		tvmyadd.setHeight(50);
+		tvmyty.setHeight(50);
+		tvMyAdress.setHeight(50);
+		tvMyType.setHeight(50);
+
+		//tvText.setHeight(60);
+
+		// TABLE ROWS
+		TableRow rMyadd = new TableRow(c);
+		TableRow rMytype = new TableRow(c);
+
+		// ADDs
 
 		this.addView(tlMain);
 		tlMain.addView(ll);
 
 		rMyadd.addView(tvmyadd);
 		rMyadd.addView(tvMyAdress);
-		
+
 		rMytype.addView(tvmyty);
 		rMytype.addView(tvMyType);
-		
+
 		tlMain.addView(rMyadd);
 		tlMain.addView(rMytype);
+
+		tlMain.addView(tvText);
+		tlMain.addView(tlDevice);
 
 	}
 
 	private void creationActuator() {
 		// TODO Auto-generated method stub
+		tvText.setText("List of Sensors");
 
+		this.populateList("Sensor");
 	}
 
 	private void creationRouter() {
 		// TODO Auto-generated method stub
+		tvText.setText("List of Childs");
 
 	}
 
 	private void creationSensor() {
+		tvText.setText("List of Actuators");
 
+		this.populateList("Actuator");
+	}
+
+	private void populateList(String type) {
+		for (int i = 0; i < cc.getListSize(); i++)
+			if (cc.getType(i).equals(type)) {
+
+				if (i == 0) {
+					TableRow r0 = new TableRow(c);
+					TextView a1 = new TextView(c);
+					TextView s1 = new TextView(c);
+
+					a1.setText("Address");
+					s1.setText("Signal Strength");
+					
+//					a1.setHeight(30);
+//					s1.setHeight(30);
+
+					r0.addView(a1);
+					r0.addView(s1);
+
+					tlDevice.addView(r0);
+				}
+				
+				TableRow r = new TableRow(c);
+				TextView addr = new TextView(c);
+				TextView ss = new TextView(c);
+
+				r.addView(addr);
+				r.addView(ss);
+
+				tlDevice.addView(r);
+
+				addr.setText(cc.getAddress(i));
+				ss.setText(cc.getSignalStrength(i));
+
+			}
 	}
 }
