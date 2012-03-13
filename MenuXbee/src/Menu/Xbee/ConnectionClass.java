@@ -88,7 +88,6 @@ public class ConnectionClass  implements Serializable{
 		for(int i=0; i<xbee.size(); i++){
 			if(xbee.get(i).getAdress().equals(addrSensor) && xbee.get(i).getActuators().size()>0){
 				xbee.get(i).removeActuator(addrActuator);
-				System.out.println(addrActuator);
 				break;		
 			}
 		}

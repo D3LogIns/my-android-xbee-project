@@ -152,7 +152,7 @@ public class InterfaceXbeeDetails extends ScrollView {
 							new AlertMessage(c, cc,cc.getAddress(position), addr.getText().toString()).newMessage(MessageType.SET_ACTUATOR);
 						
 						else if(type.equals("Sensor"))
-							new AlertMessage(c).newMessage(MessageType.SET_SENSOR);
+							new AlertMessage(c, cc,cc.getAddress(position), addr.getText().toString()).newMessage(MessageType.SET_SENSOR);
 						
 					}
 					
