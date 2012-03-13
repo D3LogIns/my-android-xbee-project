@@ -22,7 +22,6 @@ public class ConnectionClass  implements Serializable{
 
 		for (int i = 0; i < numXbee; i++) {
 
-
 			type = r.nextInt(3);
 
 			switch (r.nextInt(5)) {
@@ -71,13 +70,16 @@ public class ConnectionClass  implements Serializable{
 		return xbee.get(pos).getSignalStrength();
 	}
 	
+	public LinkedList<String> getActuators(int position){
+			return xbee.get(position).getActuators();
+	}
+	
 
 	public void associateActuatorToSensor(String addrActuator, String addrSensor) {
 		
 		for(int i=0; i<xbee.size(); i++){
 			if(xbee.get(i).getAdress().equals(addrSensor)){
 				xbee.get(i).setActuator(addrActuator);
-				System.out.println(addrActuator);
 				break;
 			}
 		}		

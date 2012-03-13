@@ -73,7 +73,7 @@ public class InterfaceXbeeDetails extends ScrollView {
 		tvMyAdress.setHeight(50);
 		tvMyType.setHeight(50);
 
-		//tvText.setHeight(60);
+		// tvText.setHeight(60);
 
 		// TABLE ROWS
 		TableRow rMyadd = new TableRow(c);
@@ -115,6 +115,7 @@ public class InterfaceXbeeDetails extends ScrollView {
 		tvText.setText("List of Actuators");
 
 		this.populateList("Actuator");
+		this.populateAssociators("Actuator");
 	}
 
 	private void populateList(final String type) {
@@ -125,12 +126,12 @@ public class InterfaceXbeeDetails extends ScrollView {
 					TableRow r0 = new TableRow(c);
 					TextView a1 = new TextView(c);
 					TextView s1 = new TextView(c);
-					
+
 					a1.setText("Address");
 					s1.setText("Signal Strength");
-					
-//					a1.setHeight(30);
-//					s1.setHeight(30);
+
+					// a1.setHeight(30);
+					// s1.setHeight(30);
 
 					r0.addView(a1);
 					r0.addView(s1);
@@ -140,30 +141,32 @@ public class InterfaceXbeeDetails extends ScrollView {
 				TableRow r = new TableRow(c);
 				final TextView addr = new TextView(c);
 				TextView ss = new TextView(c);
-				
+
 				addr.setId(i);
 				addr.setClickable(true);
-				addr.setOnClickListener(new OnClickListener(){
+				addr.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
 						// TODO Auto-generated method stub
-						if(type.equals("Actuator"))
-							new AlertMessage(c, cc,cc.getAddress(position), addr.getText().toString()).newMessage(MessageType.SET_ACTUATOR);
-						
-						else if(type.equals("Sensor"))
-							new AlertMessage(c, cc,cc.getAddress(position), addr.getText().toString()).newMessage(MessageType.SET_SENSOR);
-						
-					}
-					
-					
-				});
-				
+						if (type.equals("Actuator")){
+							new AlertMessage(c, cc, cc.getAddress(position),
+									addr.getText().toString())
+									.newMessage(MessageType.SET_ACTUATOR);
+							refreshDrawableState();
+						}
 
-				
-				
+						else if (type.equals("Sensor"))
+							new AlertMessage(c, cc, cc.getAddress(position),
+									addr.getText().toString())
+									.newMessage(MessageType.SET_SENSOR);
+
+					}
+
+				});
+
 				r.addView(addr);
-				
+
 				r.addView(ss);
 
 				tlDevice.addView(r);
@@ -172,5 +175,29 @@ public class InterfaceXbeeDetails extends ScrollView {
 				ss.setText(cc.getSignalStrength(i));
 
 			}
+	}
+
+	private void populateAssociators(String type) {
+		if (type.equals("Actuator") && cc.getActuators(position).size() > 0) {
+			TextView tvTemp=new TextView(c);
+			TextView tvAdressText=new TextView(c);
+			
+			tvTemp.setText("Associated Actuators");
+			tvAdressText.setText("Adress");
+			
+			tlMain.addView(tvTemp);
+			tlMain.addView(tvAdressText);
+			
+			for (int i = 0; i < cc.getActuators(position).size(); i++) {
+				TableRow r=new TableRow(c);
+				TextView tv=new TextView(c);
+				
+				tv.setClickable(true);
+				tv.setText(cc.getActuators(position).get(i));
+				
+				r.addView(tv);
+				tlMain.addView(r);
+			}
+		}
 	}
 }
