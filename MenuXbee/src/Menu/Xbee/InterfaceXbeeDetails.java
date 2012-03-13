@@ -137,11 +137,11 @@ public class InterfaceXbeeDetails extends ScrollView {
 
 					tlDevice.addView(r0);
 				}
-				
 				TableRow r = new TableRow(c);
-				TextView addr = new TextView(c);
+				final TextView addr = new TextView(c);
 				TextView ss = new TextView(c);
 				
+				addr.setId(i);
 				addr.setClickable(true);
 				addr.setOnClickListener(new OnClickListener(){
 
@@ -149,7 +149,7 @@ public class InterfaceXbeeDetails extends ScrollView {
 					public void onClick(View arg0) {
 						// TODO Auto-generated method stub
 						if(type.equals("Actuator"))
-							new AlertMessage(c).newMessage(MessageType.SET_ACTUATOR);
+							new AlertMessage(c, cc,cc.getAddress(position), addr.getText().toString()).newMessage(MessageType.SET_ACTUATOR);
 						
 						else if(type.equals("Sensor"))
 							new AlertMessage(c).newMessage(MessageType.SET_SENSOR);

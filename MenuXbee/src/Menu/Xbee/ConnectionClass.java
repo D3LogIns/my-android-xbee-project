@@ -70,4 +70,27 @@ public class ConnectionClass  implements Serializable{
 	public String getSignalStrength(int pos){
 		return xbee.get(pos).getSignalStrength();
 	}
+	
+
+	public void associateActuatorToSensor(String addrActuator, String addrSensor) {
+		
+		for(int i=0; i<xbee.size(); i++){
+			if(xbee.get(i).getAdress().equals(addrSensor)){
+				xbee.get(i).setActuator(addrActuator);
+				System.out.println(addrActuator);
+				break;
+			}
+		}		
+	}
+	
+	public void removeActuatorFromSensor(String addrActuator, String addrSensor){
+		
+		for(int i=0; i<xbee.size(); i++){
+			if(xbee.get(i).getAdress().equals(addrSensor) && xbee.get(i).getActuators().size()>0){
+				xbee.get(i).removeActuator(addrActuator);
+				System.out.println(addrActuator);
+				break;		
+			}
+		}
+	}
 }

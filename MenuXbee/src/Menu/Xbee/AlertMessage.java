@@ -7,14 +7,27 @@ import android.content.DialogInterface;
 public class AlertMessage extends AlertDialog {
 
 	Context c;
+	ConnectionClass cc;
+	String addrSensor;
+	String addrActuator;
 
 	protected AlertMessage(Context context) {
 		super(context);
 		this.c = context;
 
 	}
+	
+	protected AlertMessage(Context context, ConnectionClass cc, String addrSensor, String addrActuator) {
+		super(context);
+		this.c = context;
+		this.cc=cc;
+		this.addrSensor=addrSensor;
+		this.addrActuator=addrActuator;
 
-	public int newMessage(MessageType msg) {
+	}
+
+
+	public Object newMessage(MessageType msg) {
 
 		if (msg.equals(MessageType.COORDINATOR_NOT_DETECTED)) {
 			coordNotDetectedMessage();
@@ -25,15 +38,15 @@ public class AlertMessage extends AlertDialog {
 		} else if (msg.equals(MessageType.TEXT_OUT_OF_BOUNDS)) {
 			textOutOfBounds();
 		} else if (msg.equals(MessageType.SET_ACTUATOR)) {
-			return (setActuator());
+			setActuator();
 		} else if (msg.equals(MessageType.SET_SENSOR)) {
-			return(setSensor());
+			return (setSensor());
 		} else if (msg.equals(MessageType.DELETE_ACTUATOR)) {
-			return(deleteActuator());
+			return (deleteActuator());
 		} else if (msg.equals(MessageType.DELETE_SENSOR)) {
-			return(deleteSensor());
+			return (deleteSensor());
 		}
-		return (5);
+		return -1;
 	}
 
 	private void coordNotDetectedMessage() {
@@ -73,9 +86,25 @@ public class AlertMessage extends AlertDialog {
 		this.show();
 	}
 
-	private int setActuator() {
+	private void setActuator() {
 
-		return 0;
+		AlertDialog.Builder b = new AlertDialog.Builder(c);
+
+		b.setMessage("Are you sure you want to associate this actuator?")
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+									cc.associateActuatorToSensor(addrActuator, addrSensor);
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				}).show();
 	}
 
 	private int setSensor() {
