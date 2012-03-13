@@ -40,11 +40,9 @@ public class AlertMessage extends AlertDialog {
 		} else if (msg.equals(MessageType.SET_ACTUATOR)) {
 			setActuator();
 		} else if (msg.equals(MessageType.SET_SENSOR)) {
-			return (setSensor());
-		} else if (msg.equals(MessageType.DELETE_ACTUATOR)) {
-			return (deleteActuator());
-		} else if (msg.equals(MessageType.DELETE_SENSOR)) {
-			return (deleteSensor());
+			setSensor();
+		} else if (msg.equals(MessageType.DELETE_ACTUATOR) || msg.equals(MessageType.DELETE_SENSOR)) {
+			deleteActuator();
 		}
 		return -1;
 	}
@@ -107,19 +105,42 @@ public class AlertMessage extends AlertDialog {
 				}).show();
 	}
 
-	private int setSensor() {
+	private void setSensor() {
+		AlertDialog.Builder b = new AlertDialog.Builder(c);
+		b.setMessage("Are you sure you want to associate to this sensor?")
+		.setPositiveButton("Yes",
+				new DialogInterface.OnClickListener() {
 
-		return 0;
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+							cc.associateActuatorToSensor(addrActuator, addrSensor);
+					}
+				})
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		}).show();
 	}
 
-	private int deleteActuator() {
+	private void deleteActuator() {
+		AlertDialog.Builder b = new AlertDialog.Builder(c);
+		b.setMessage("Are you sure you want to remove this actuator from the sensor?")
+		.setPositiveButton("Yes",
+				new DialogInterface.OnClickListener() {
 
-		return 0;
-	}
-
-	private int deleteSensor() {
-
-		return 0;
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+							cc.removeActuatorFromSensor(addrActuator, addrSensor);
+					}
+				})
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		}).show();
 	}
 
 }
