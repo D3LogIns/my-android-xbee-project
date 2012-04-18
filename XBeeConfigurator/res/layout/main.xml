@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="*">
+     
+
+    <TableRow>
+        <TextView
+            android:layout_column="0"
+            android:text="XBee Coordinator"
+            android:padding="3dip"
+        />
+    </TableRow>
+    
+    <TableRow>
+    	<TextView
+    		android:layout_column="0"
+    		android:text="PAN ID"
+    		android:padding="3dip"
+    	/>
+    		
+    	<EditText
+    		android:layout_column="1"
+    		android:id="@+id/editPan"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:gravity="right"
+    		android:inputType="number"
+    	/>
+    	
+    	<Button
+    		android:layout_column="2"
+    		android:id="@+id/bOKPan"
+    		android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:text="OK"
+        	android:onClick="onButtonClicked"/>
+    	/>	
+    
+    </TableRow>
+    
+    <TableRow>
+    	<TextView
+    		android:layout_column="0"
+    		android:text="Address"
+    		android:padding="3dip"    	
+    	/>
+    	
+    	<TextView
+    		android:layout_column="1"
+    		android:id="@+id/tvCoordAdress"
+    		android:padding="3dip"
+    		android:text="123acd32"
+    	/>
+    </TableRow>
+    
+    <TableRow>
+    	<TextView
+    		android:layout_column="0"
+    		android:text="Operating PAN ID"
+    		android:padding="3dip"
+    	/>
+    	
+    	<TextView
+    		android:layout_column="1"
+    		android:id="@+id/tvPanID"
+    		android:padding="3dip"
+    		android:text="23"
+    	/>
+    </TableRow>
+    		
+    <TableRow>
+    	<Button
+    		android:layout_column="0"
+    		android:id="@+id/bDetectDevices"
+    		android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:text="Detect"
+        	android:onClick="onButtonClicked"/>
+    	/>	
+    </TableRow>
+    	
+    
+ </TableLayout>
