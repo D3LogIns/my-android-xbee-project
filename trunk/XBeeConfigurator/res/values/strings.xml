@@ -4,26 +4,70 @@
     <string name="hello">Hello World, XBeeConfiguratorActivity!</string>
     <string name="app_name">XBeeConfigurator</string>
     
+    <!-- Global Strings -->
+    
     <string name="address">Address</string>
     
     <string name="type">Type</string>
+    
+    <string name="sensor">Sensor</string>
+    
+    <string name="actuator">Actuator</string>
+    
+    <string name="router">Router</string>
+    
+    <string name="coordinator">Coordinator</string>
+    
+    
+    
+    <!-- Strings for XbeeConfigurationActivity -->
     
     <string name="signalStrength">Signal Strength</string>
     
     <string name="opPanId">Operating PAN ID</string>
     
     <string name="bDetect">Detect</string>
+    
+    
+    
+    <!-- Strings para a XBeeDetailsActivity -->
+    
+    <string name="listOfChilds">Child Devices</string>
+    
+    <string name="listOfSensors">List Of Sensors</string>
+    
+    <string name="listOfActuators">List of Actuators</string>
+    
+    
+    
+    <!-- Strings for Preferences Activity -->
+    
+    <string name="languageSelect">Select Language</string>
+    
+    <string name="languageSummary">This options allows you to change application language</string>
 
-	    <string-array name="listArray">
-	        <item name="EN">English</item>
-	        <item name="PT">Português</item>
-	    </string-array>
+	<string-array name="listArray">
+		<item name="EN">English</item>
+		<item name="PT">Português</item>
+	</string-array>
 	     
-	    <string-array name="listValues">
-	        <item name="EN">EN</item>
-	        <item name="PT">PT</item>
-	    </string-array>
+	<string-array name="listValues">
+		<item name="EN">EN</item>
+		<item name="PT">PT</item>
+	</string-array>
 	    
-	    <string name="Preferences">Preferences</string>
+	<string name="Preferences">Preferences</string>
+	
+	  
+	    
+	<!-- Strings for AlertDialog -->
+    
+    <string name="coordNotFound">Coordinator not found!\nApplication will be terminated.</string>
+    
+    <string name="panIdOutOfBounds">PAN ID is not acceptable. Values must be between 1 and 50000.</string>
+    
+    <string name="textOutOfBounds">Value is too high, please insert lower values.</string>
+    
+    <string name="devicesNotDetected">Devices were not detected</string>
 
 </resources>

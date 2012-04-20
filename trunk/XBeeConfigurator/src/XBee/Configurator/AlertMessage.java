@@ -29,7 +29,7 @@ public class AlertMessage extends AlertDialog{
 	}
 
 	private void devicesNotDetected() {
-		this.setMessage("Devices not detected");
+		this.setMessage(c.getString(R.string.devicesNotDetected));
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -41,7 +41,7 @@ public class AlertMessage extends AlertDialog{
 	}
 
 	private void coordenatorNotDetected() {
-		this.setMessage("Coordinator not found!\nApplication will be terminated.");
+		this.setMessage(c.getString(R.string.coordNotFound));
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -53,7 +53,7 @@ public class AlertMessage extends AlertDialog{
 	}
 	
 	private void panIdOutOfBounds(){
-		this.setMessage("PAN ID is not acceptable. Values must be between 1 and 50000.");
+		this.setMessage(c.getString(R.string.panIdOutOfBounds));
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -65,8 +65,8 @@ public class AlertMessage extends AlertDialog{
 	}
 
 	private void textOutOfBounds(){
-		//this.setMessage("Value is too high, please insert lower values.");
-		this.setMessage(new Languages().getMessageAlert_ValueTooHigh(language));
+		this.setMessage(c.getString(R.string.textOutOfBounds));
+		//this.setMessage(new Languages().getMessageAlert_ValueTooHigh(language));
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

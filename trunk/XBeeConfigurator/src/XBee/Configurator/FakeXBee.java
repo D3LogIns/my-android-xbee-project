@@ -13,10 +13,16 @@ public class FakeXBee implements Serializable{
 	private String ss;
 	private LinkedList<String> myActuators=new LinkedList<String>();
 
+	
+	
+	
 	public FakeXBee(String a, int t, String s){
 		this.address=a;
 		this.type=t;
 		this.ss=s;
+		
+
+		
 	}
 	
 	public void setActuator(String addr){
@@ -34,7 +40,7 @@ public class FakeXBee implements Serializable{
 		else if (this.type == 1)
 			return "Sensor";
 		else
-			return "Actuator";
+			return "Actuador";
 
 	}
 

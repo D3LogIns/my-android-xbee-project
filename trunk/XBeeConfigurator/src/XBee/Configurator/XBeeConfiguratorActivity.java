@@ -1,10 +1,14 @@
 package XBee.Configurator;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceScreen;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -21,47 +25,40 @@ import android.widget.TextView;
 public class XBeeConfiguratorActivity extends Activity {
 
 	final Context c = this;
-	ConnectionClass cc = new ConnectionClass();
+	ConnectionClass cc;
+	Auxiliar aux;
 	String language;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
 		
-
+		cc=new ConnectionClass(c);
+		
+		aux=new Auxiliar();
+		
 		this.getLanguage();
 		
+		setContentView(R.layout.main);
 		this.inicialization();
 	}
-	
-	public boolean onCreateOptionsMenu(Menu menu) {  
-	    //menu.add(1, new Languages().getPreferences(""));  
-	    //return super.onCreateOptionsMenu(menu);
-		 MenuInflater inflater = getMenuInflater();
-		    inflater.inflate(R.menu.menu, menu);
-		    return true;
-	  }
-	
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.Preferences:
-	            preferencesMenu();
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
-	}
 
-	private void preferencesMenu(){
-		Intent i = new Intent(c, PreferencesActivity.class);
-		c.startActivity(i);
-	}
 	
 	private void getLanguage(){
-		this.language="";
+		
+		System.out.println(Locale.getDefault().getDisplayLanguage());
+		Locale l=new Locale("en_US");
+		Locale.setDefault(l);
+		
+		Configuration config2 = new Configuration();
+	    config2.locale = l;
+	    
+	    System.out.println(Locale.getDefault().getDisplayLanguage());
+	    
+	    c.getResources().updateConfiguration(config2, null);
+	    
+		
 	}
 	
 	private void inicialization() {
@@ -157,21 +154,23 @@ public class XBeeConfiguratorActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				
-				cc.clearList();
+				aux.clearList();
 				tlXBeeDevices.removeAllViews();
 				
 				cc.searchXBeeDevices();
-				if (cc.getListSize() < 0)
+				aux.setList(cc.getList());
+				
+				if (aux.getListSize() < 0)
 					new AlertMessage(c)
 							.newMessage(MessageType.DEVICES_NOT_DETECTED);
 				else {
-					for (int i = 0; i != cc.getListSize(); i++) {
+					for (int i = 0; i != aux.getListSize(); i++) {
 						TableRow r = new TableRow(c);
 						final TextView addr=new TextView(c);
 						TextView type=new TextView(c);
 						TextView ss=new TextView(c);
 						
-						addr.setText(cc.getAddress(i));
+						addr.setText(aux.getAddress(i));
 						addr.setId(i);
 						addr.setClickable(true);
 						addr.setOnClickListener(new OnClickListener() {
@@ -182,9 +181,11 @@ public class XBeeConfiguratorActivity extends Activity {
 								
 								i.putExtra("position", addr.getId());
 								
+								//i.putExtra("list", cc.getList());
+								
 								Bundle b= new Bundle();
 								
-								b.putSerializable("connection", cc);
+								b.putSerializable("auxiliar", aux);
 								
 								i.putExtras(b);
 								c.startActivity(i);
@@ -193,9 +194,9 @@ public class XBeeConfiguratorActivity extends Activity {
 
 						});
 						
-						type.setText(cc.getType(i));
+						type.setText(aux.getType(i));
 						
-						ss.setText(cc.getSignalStrength(i));
+						ss.setText(aux.getSignalStrength(i));
 						
 						r.addView(addr);
 						r.addView(type);
@@ -207,5 +208,31 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 
 		});
+	}
+	
+	
+	
+	public boolean onCreateOptionsMenu(Menu menu) {  
+	    //menu.add(1, new Languages().getPreferences(""));  
+	    //return super.onCreateOptionsMenu(menu);
+		 MenuInflater inflater = getMenuInflater();
+		    inflater.inflate(R.menu.menu, menu);
+		    return true;
+	  }
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.Preferences:
+	            preferencesMenu();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+
+	private void preferencesMenu(){
+		Intent i = new Intent(c, PreferencesActivity.class);
+		c.startActivity(i);
 	}
 }
