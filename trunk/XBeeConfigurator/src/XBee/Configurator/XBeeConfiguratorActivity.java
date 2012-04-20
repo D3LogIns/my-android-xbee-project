@@ -2,52 +2,105 @@ package XBee.Configurator;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceScreen;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 public class XBeeConfiguratorActivity extends Activity {
+
+	final Context c = this;
+	ConnectionClass cc = new ConnectionClass();
+	String language;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		final Context c=this;
-
 		
+
+		this.getLanguage();
+		
+		this.inicialization();
+	}
+	
+	public boolean onCreateOptionsMenu(Menu menu) {  
+	    //menu.add(1, new Languages().getPreferences(""));  
+	    //return super.onCreateOptionsMenu(menu);
+		 MenuInflater inflater = getMenuInflater();
+		    inflater.inflate(R.menu.menu, menu);
+		    return true;
+	  }
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.Preferences:
+	            preferencesMenu();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+
+	private void preferencesMenu(){
+		Intent i = new Intent(c, PreferencesActivity.class);
+		c.startActivity(i);
+	}
+	
+	private void getLanguage(){
+		this.language="";
+	}
+	
+	private void inicialization() {
+
+		/*
+		 * XBEE DETECTED DEVICES TABLE
+		 */
+		final TableLayout tlXBeeDevices = (TableLayout) findViewById(R.id.tlXBeeDevices);
+
 		/*
 		 * BUTTONS INICIALIZATION
 		 */
 		final Button bOK = (Button) findViewById(R.id.bOKPan);
 		Button bDetect = (Button) findViewById(R.id.bDetectDevices);
-		
+
 		/*
 		 * TEXT BOX'S INICIALIZATION
 		 */
-		
-		final EditText etPan=(EditText)findViewById(R.id.editPan);
-		
-		
+
+		final EditText etPan = (EditText) findViewById(R.id.editPan);
+
 		/*
 		 * TEXT BOX'S LISTENERS
 		 */
-		
+
 		etPan.addTextChangedListener(new TextWatcher() {
 
 			// METHOD THAT CHECKS IF THE TEXT IS CHANGED
 			public void afterTextChanged(Editable s) {
 				// IF TEXT SIZE IS HIGHER THAN 5, APPLICATIOAN LAUNCHES AN ERROR
 				if (s.length() > 5) {
-					new AlertMessage(c).newMessage(MessageType.TEXT_OUT_OF_BOUNDS);
+					new AlertMessage(c)
+							.newMessage(MessageType.TEXT_OUT_OF_BOUNDS);
 					etPan.setText("");
 					// IF TEXT SIZE IS HIGHER THAN 0, OK BUTTON TURNS ACTIVE
 				} else if (s.length() > 0)
 					bOK.setEnabled(true);
-				// IF TEXT SIZE IS LOWER OR EQUAL TO 0, OK BUTTON TURNS DEACTIVATED
+				// IF TEXT SIZE IS LOWER OR EQUAL TO 0, OK BUTTON TURNS
+				// DEACTIVATED
 				else if (s.length() <= 0)
 					bOK.setEnabled(false);
 			}
@@ -63,34 +116,94 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 
 		});
-		
-		
+
 		/*
 		 * BUTTONS LISTENERS
 		 */
+		
+		//OK BUTTON
 		bOK.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 
-				/*
-				 * if (inBoundsPanID(etPan.getText().toString())) {
-				 * changeXbeePanID(Integer
-				 * .parseInt(etPan.getText().toString()));
-				 * 
-				 * } else new
-				 * AlertMessage(c).newMessage(MessageType.PAN_ID_OUT_OF_BOUNDS);
-				 * 
-				 * etPan.setText("");
-				 */
+				if (inBoundsPanID(etPan.getText().toString())) {
+					changeXbeePanID(Integer
+							.parseInt(etPan.getText().toString()));
+
+				} else
+					new AlertMessage(c)
+							.newMessage(MessageType.PAN_ID_OUT_OF_BOUNDS);
+
+				etPan.setText("");
+
+			}
+
+			private boolean inBoundsPanID(String string) {
+				if (Integer.parseInt(string) > 5000
+						|| Integer.parseInt(string) <= 0)
+					return false;
+				return true;
+			}
+
+			private void changeXbeePanID(int parseInt) {
+
 			}
 		});
 
+		//DETECT BUTTON
 		bDetect.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
+				
+				cc.clearList();
+				tlXBeeDevices.removeAllViews();
+				
+				cc.searchXBeeDevices();
+				if (cc.getListSize() < 0)
+					new AlertMessage(c)
+							.newMessage(MessageType.DEVICES_NOT_DETECTED);
+				else {
+					for (int i = 0; i != cc.getListSize(); i++) {
+						TableRow r = new TableRow(c);
+						final TextView addr=new TextView(c);
+						TextView type=new TextView(c);
+						TextView ss=new TextView(c);
+						
+						addr.setText(cc.getAddress(i));
+						addr.setId(i);
+						addr.setClickable(true);
+						addr.setOnClickListener(new OnClickListener() {
 
+							@Override
+							public void onClick(View arg0) {
+								Intent i = new Intent(c, XbeeDetailsActivity.class);
+								
+								i.putExtra("position", addr.getId());
+								
+								Bundle b= new Bundle();
+								
+								b.putSerializable("connection", cc);
+								
+								i.putExtras(b);
+								c.startActivity(i);
+							}
+
+
+						});
+						
+						type.setText(cc.getType(i));
+						
+						ss.setText(cc.getSignalStrength(i));
+						
+						r.addView(addr);
+						r.addView(type);
+						r.addView(ss);
+						tlXBeeDevices.addView(r);
+
+					}
+				}
 			}
 
 		});

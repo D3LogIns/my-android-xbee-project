@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ 	android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="*">
+    
+    <TableRow>
+    	<TextView
+			android:layout_column="0"
+    		android:text="My Address"
+    		android:padding="3dip"
+		/>
+		
+		<TextView
+			android:layout_column="1"
+    		android:id="@+id/tvAddress"
+    		android:padding="3dip"
+		/>
+	</TableRow>
+	
+	<TableRow>
+		<TextView
+			android:layout_column="0"
+    		android:text="My Type"
+    		android:padding="3dip"
+		/>
+		
+		<TextView
+			android:layout_column="1"
+    		android:id="@+id/tvType"
+    		android:padding="3dip"
+		/>
+		
+	</TableRow>
+    
+ </TableLayout>
