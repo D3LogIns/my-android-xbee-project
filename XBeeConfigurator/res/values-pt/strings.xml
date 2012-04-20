@@ -4,26 +4,61 @@
     <string name="hello">Hello World, XBeeConfiguratorActivity!</string>
     <string name="app_name">XBeeConfigurator</string>
     
+    
+    <!-- Strings Globais -->
+    
     <string name="address">Endereço</string>
     
     <string name="type">Tipo</string>
+    
+	<string name="sensor">Sensor</string>
+
+	<string name="actuator">Actuador</string>
+    
+	<string name="router">Router</string>
+
+	<string name="coordinator">Coordenador</string>
+    
+    
+    
+    <!-- Strings para a XBeeConfigurationActivity -->
     
     <string name="signalStrength">Força do Sinal</string>
     
     <string name="opPanId">PAN ID actual</string>
     
     <string name="bDetect">Detectar</string>
-
-	    <string-array name="listArray">
-	        <item name="EN">English</item>
-	        <item name="PT">Português</item>
-	    </string-array>
-	     
-	    <string-array name="listValues">
-	        <item name="EN">EN</item>
-	        <item name="PT">PT</item>
-	    </string-array>
-	    
-	    <string name="Preferences">Preferences</string>
+    
+    
+    
+    <!-- Strings para o XBeeDetailsActivity -->
+    
+    <string name="listOfChilds">Dispositivos filhos</string>
+    
+    <string name="listOfSensors">Lista de Sensores</string>
+    
+    <string name="listOfActuators">Lista de Actuadores</string>
+    
+    
+    
+    <!-- Strings para a PreferencesActivity -->
+    
+	<string name="Preferences">Definições</string>
+	
+	<string name="languageSelect">Seleccionar Idioma</string>
+	
+	<string name="languageSummary">Esta opção permite-lhe mudar o idioma da applicação</string>
+	
+	
+	
+	<!-- Strings para o AlertDialog -->
+	
+	<string name="coordNotFound">O Coordenador não foi encontrado!\nA aplicação será terminada.</string>
+	
+	<string name="panIdOutOfBounds">ID da PAN não é aceitável, insira valores entre 1 e 50000.</string>
+	
+	<string name="textOutOfBounds">O valor é demasiado elevado, insira valores menores.</string>
+	
+	<string name="devicesNotDetected">Não foram detectados dispositivos</string>
 
 </resources>

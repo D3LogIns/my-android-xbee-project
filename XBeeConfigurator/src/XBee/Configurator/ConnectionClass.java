@@ -1,17 +1,19 @@
 package XBee.Configurator;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Random;
 
+import android.content.Context;
 
-public class ConnectionClass implements Serializable{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5937846105093530843L;
+public class ConnectionClass {
+
 	private LinkedList<FakeXBee> xbee = new LinkedList<FakeXBee>();
+
+	Context c;
+
+	public ConnectionClass(Context c) {
+		this.c = c;
+	}
 
 	public void searchXBeeDevices() {
 		Random r = new Random();
@@ -19,11 +21,24 @@ public class ConnectionClass implements Serializable{
 
 		String address = "142AFC2D00C";
 		int type = 3;
+		String sType = "UNDEFINED";
 		String ss = "DEFAULT";
 
 		for (int i = 0; i < numXbee; i++) {
 
 			type = r.nextInt(3);
+
+			switch (type) {
+			case 0:
+				sType = c.getString(R.string.router);
+				break;
+			case 1:
+				sType = c.getString(R.string.sensor);
+				break;
+			case 2:
+				sType = c.getString(R.string.actuator);
+				break;
+			}
 
 			switch (r.nextInt(5)) {
 			case 0:
@@ -39,60 +54,19 @@ public class ConnectionClass implements Serializable{
 				ss = "MŽdio";
 				break;
 			case 4:
-				ss="Fraco";
+				ss = "Fraco";
 				break;
 			case 5:
-				ss="Muito Fraco";
+				ss = "Muito Fraco";
 			}
 
-			xbee.add(new FakeXBee(address+i, type, ss));
+			xbee.add(new FakeXBee(address + i, type, sType));
 
 		}
 	}
-	
-	public void clearList(){
-		
-		xbee.clear();
-	}
-	
-	public int getListSize(){
-		return xbee.size();
-	}
-	
-	public String getAddress(int pos){
-		return xbee.get(pos).getAdress();
-	}
-	
-	public String getType(int pos){
-		return xbee.get(pos).getType();
-	}
-	
-	public String getSignalStrength(int pos){
-		return xbee.get(pos).getSignalStrength();
-	}
-	
-	public LinkedList<String> getActuators(int position){
-			return xbee.get(position).getActuators();
-	}
-	
 
-	public void associateActuatorToSensor(String addrActuator, String addrSensor) {
-		
-		for(int i=0; i<xbee.size(); i++){
-			if(xbee.get(i).getAdress().equals(addrSensor)){
-				xbee.get(i).setActuator(addrActuator);
-				break;
-			}
-		}		
+	public LinkedList<FakeXBee> getList() {
+		return xbee;
 	}
-	
-	public void removeActuatorFromSensor(String addrActuator, String addrSensor){
-		
-		for(int i=0; i<xbee.size(); i++){
-			if(xbee.get(i).getAdress().equals(addrSensor) && xbee.get(i).getActuators().size()>0){
-				xbee.get(i).removeActuator(addrActuator);
-				break;		
-			}
-		}
-	}
+
 }
