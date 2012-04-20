@@ -44,7 +44,7 @@
     <TableRow>
     	<TextView
     		android:layout_column="0"
-    		android:text="Address"
+    		android:text="@string/address"
     		android:padding="3dip"    	
     	/>
     	
@@ -59,7 +59,7 @@
     <TableRow>
     	<TextView
     		android:layout_column="0"
-    		android:text="Operating PAN ID"
+    		android:text="@string/opPanId"
     		android:padding="3dip"
     	/>
     	
@@ -77,10 +77,40 @@
     		android:id="@+id/bDetectDevices"
     		android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
-        	android:text="Detect"
+        	android:text="@string/bDetect"
         	android:onClick="onButtonClicked"/>
     	/>	
     </TableRow>
+    
+    <TableRow>
+    	<TextView
+    		android:layout_column="0"
+    		android:text="@string/address"
+    		android:padding="3dip"
+    	/>
+    	
+    	<TextView
+    		android:layout_column="1"
+    		android:text="@string/type"
+    		android:padding="3dip"
+    	/>
+    	
+    	<TextView
+    		android:layout_column="2"
+    		android:text="@string/signalStrength"
+    		android:padding="3dip"
+    	/>
+    </TableRow>
+    
+    <TableLayout
+    	android:id="@+id/tlXBeeDevices"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:stretchColumns="*">
+    	
+    	
+    
+    </TableLayout>
     	
     
  </TableLayout>

@@ -18,6 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity 
+            class="XbeeDetailsActivity"
+            android:name="XbeeDetailsActivity"
+            android:label="XbeeDetailsActivity">  
+        </activity>
+        
+        <activity
+        	android:name="PreferencesActivity">
+        </activity>
+        
     </application>
 
 </manifest>

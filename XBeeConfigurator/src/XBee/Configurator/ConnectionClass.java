@@ -13,7 +13,7 @@ public class ConnectionClass implements Serializable{
 	private static final long serialVersionUID = -5937846105093530843L;
 	private LinkedList<FakeXBee> xbee = new LinkedList<FakeXBee>();
 
-	public void SeekNDestroy() {
+	public void searchXBeeDevices() {
 		Random r = new Random();
 		int numXbee = (r.nextInt(11));
 

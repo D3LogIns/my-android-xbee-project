@@ -4,15 +4,15 @@
     <string name="hello">Hello World, XBeeConfiguratorActivity!</string>
     <string name="app_name">XBeeConfigurator</string>
     
-    <string name="address">Address</string>
+    <string name="address">Endereço</string>
     
-    <string name="type">Type</string>
+    <string name="type">Tipo</string>
     
-    <string name="signalStrength">Signal Strength</string>
+    <string name="signalStrength">Força do Sinal</string>
     
-    <string name="opPanId">Operating PAN ID</string>
+    <string name="opPanId">PAN ID actual</string>
     
-    <string name="bDetect">Detect</string>
+    <string name="bDetect">Detectar</string>
 
 	    <string-array name="listArray">
 	        <item name="EN">English</item>

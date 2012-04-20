@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 public class AlertMessage extends AlertDialog{
 
 	Context c;
+	String language;
 	public AlertMessage(Context c) {
 		super(c);
 		this.c=c;
@@ -20,8 +21,22 @@ public class AlertMessage extends AlertDialog{
 			panIdOutOfBounds();
 		}else if(msg.equals(MessageType.TEXT_OUT_OF_BOUNDS)){
 			textOutOfBounds();
+		}else if(msg.equals(MessageType.DEVICES_NOT_DETECTED)){
+			devicesNotDetected();
 		}
 		
+		
+	}
+
+	private void devicesNotDetected() {
+		this.setMessage("Devices not detected");
+		this.setButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+		});
+		this.show();
 		
 	}
 
@@ -50,7 +65,8 @@ public class AlertMessage extends AlertDialog{
 	}
 
 	private void textOutOfBounds(){
-		this.setMessage("Value is too high, please insert lower values.");
+		//this.setMessage("Value is too high, please insert lower values.");
+		this.setMessage(new Languages().getMessageAlert_ValueTooHigh(language));
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
