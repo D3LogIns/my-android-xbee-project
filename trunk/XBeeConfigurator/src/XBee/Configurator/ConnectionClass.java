@@ -60,7 +60,7 @@ public class ConnectionClass {
 				ss = "Muito Fraco";
 			}
 
-			xbee.add(new FakeXBee(address + i, type, sType));
+			xbee.add(new FakeXBee(address + i, sType, ss));
 
 		}
 	}
