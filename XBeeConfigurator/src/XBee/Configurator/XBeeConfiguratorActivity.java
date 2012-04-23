@@ -47,17 +47,33 @@ public class XBeeConfiguratorActivity extends Activity {
 	
 	private void getLanguage(){
 		
-		System.out.println(Locale.getDefault().getDisplayLanguage());
-		Locale l=new Locale("en_US");
-		Locale.setDefault(l);
+		//if(Locale.getDefault().getDisplayLanguage().equals(object))
 		
-		Configuration config2 = new Configuration();
-	    config2.locale = l;
-	    
-	    System.out.println(Locale.getDefault().getDisplayLanguage());
-	    
-	    c.getResources().updateConfiguration(config2, null);
-	    
+		SharedPreferences shared= PreferenceManager.getDefaultSharedPreferences(c);
+		//this.getSharedPreferences("listLanguage", 0);
+		
+		
+		
+		if(shared.getString("listLanguage", null).equals("EN")){
+			Locale l=new Locale("en_US");
+			Locale.setDefault(l);
+			
+			Configuration config2 = new Configuration();
+		    config2.locale = l;
+		    c.getResources().updateConfiguration(config2, null);
+		    
+		}else if(shared.getString("listLanguage", null).equals("PT")){
+			Locale l=new Locale("pt_PT");
+			Locale.setDefault(l);
+			
+			Configuration config2 = new Configuration();
+		    config2.locale = l;
+		    c.getResources().updateConfiguration(config2, null);
+		}else{}
+		
+		System.out.println(shared.getString("listLanguage", null));
+//		
+//		System.out.println(Locale.getDefault().getDisplayLanguage());	    	    
 		
 	}
 	
@@ -222,13 +238,15 @@ public class XBeeConfiguratorActivity extends Activity {
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
-	    switch (item.getItemId()) {
+	    /*switch (item.getItemId()) {
 	        case R.id.Preferences:
 	            preferencesMenu();
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
-	    }
+	    }*/
+		preferencesMenu();
+		return true;
 	}
 
 	private void preferencesMenu(){
