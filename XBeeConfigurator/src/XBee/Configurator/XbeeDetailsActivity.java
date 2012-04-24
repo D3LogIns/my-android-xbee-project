@@ -14,7 +14,7 @@ public class XbeeDetailsActivity extends Activity{
 		
 		int position=this.getIntent().getExtras().getInt("position");
 		
-		Auxiliar aux=(Auxiliar) this.getIntent().getExtras().getSerializable("auxiliar");
+		AuxiliarXBee aux=(AuxiliarXBee) this.getIntent().getExtras().getSerializable("auxiliar");
 		
 		TextView addr=(TextView) findViewById(R.id.tvAddress);
 		TextView type=(TextView) findViewById(R.id.tvType);

@@ -1,75 +1,56 @@
 package XBee.Configurator;
 
-import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.Locale;
 
-public class Auxiliar implements Serializable{
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.preference.PreferenceManager;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6963040436481928378L;
-	
-	LinkedList<FakeXBee> xbee= new LinkedList<FakeXBee>();
-	
-	public Auxiliar(LinkedList<FakeXBee> xbee){
-		this.xbee=xbee;
+public class Auxiliar {
+
+	Context c;
+	Locale l;
+	SharedPreferences shared;
+	Configuration config = new Configuration();
+
+	public Auxiliar(Context c) {
+		this.c = c;
+		this.shared = PreferenceManager.getDefaultSharedPreferences(c);
 	}
-	
-	public Auxiliar(){
-		
+
+	public String getLanguage() {
+		return shared.getString("listLanguage", null);
 	}
-	
-	public void setList(LinkedList<FakeXBee> xbee){
-		this.xbee=xbee;
-	}
-	
-	public void clearList(){
-		
-	xbee.clear();
-	}
-	
-	public int getListSize(){
-		return xbee.size();
-	}
-	
-	public String getAddress(int pos){
-		return xbee.get(pos).getAdress();
-	}
-	
-	public String getType(int pos){
-		return xbee.get(pos).getType();
-	}
-	
-	public String getSignalStrength(int pos){
-		return xbee.get(pos).getSignalStrength();
-	}
-	
-	public LinkedList<String> getActuators(int position){
-			return xbee.get(position).getActuators();
-	}
-	
-	public LinkedList getList(){
-		return xbee;
-	}
-	
-	public void associateActuatorToSensor(String addrActuator, String addrSensor) {
-		
-		for(int i=0; i<xbee.size(); i++){
-			if(xbee.get(i).getAdress().equals(addrSensor)){
-				xbee.get(i).setActuator(addrActuator);
-				break;
+
+	public boolean changeLanguage(String s) {
+		if (!s.equals(shared.getString("listLanguage", null)))
+			if (s.equals("EN")) {
+				updateConfiguration("en_US");
+				return true;
+			} else if (s.equals("PT")) {
+				updateConfiguration("pt_PT");
+				return true;
 			}
-		}		
+		return false;
 	}
-	
-	public void removeActuatorFromSensor(String addrActuator, String addrSensor){
-		
-		for(int i=0; i<xbee.size(); i++){
-			if(xbee.get(i).getAdress().equals(addrSensor) && xbee.get(i).getActuators().size()>0){
-				xbee.get(i).removeActuator(addrActuator);
-				break;		
-			}
+
+	public void setLanguage() {
+
+		if (getLanguage().equals("EN")) {
+			updateConfiguration("en_US");
+
+		} else if (getLanguage().equals("PT")) {
+			updateConfiguration("pt_PT");
+		} else {
 		}
+	}
+
+	private void updateConfiguration(String lang) {
+		l=new Locale(lang);
+		Locale.setDefault(l);
+
+		config.locale = l;
+		c.getResources().updateConfiguration(config, null);
 	}
 }
