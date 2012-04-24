@@ -1,14 +1,10 @@
 package XBee.Configurator;
 
-import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -26,8 +22,10 @@ public class XBeeConfiguratorActivity extends Activity {
 
 	final Context c = this;
 	ConnectionClass cc;
-	Auxiliar aux;
+	AuxiliarXBee auxXBee;
 	String language;
+	Auxiliar aux;
+	
 
 	/** Called when the activity is first created. */
 	@Override
@@ -36,46 +34,21 @@ public class XBeeConfiguratorActivity extends Activity {
 		
 		cc=new ConnectionClass(c);
 		
-		aux=new Auxiliar();
+		auxXBee=new AuxiliarXBee();
 		
-		this.getLanguage();
+		aux=new Auxiliar(c);
+		
+		aux.setLanguage();
 		
 		setContentView(R.layout.main);
 		this.inicialization();
 	}
 
-	
-	private void getLanguage(){
-		
-		//if(Locale.getDefault().getDisplayLanguage().equals(object))
-		
-		SharedPreferences shared= PreferenceManager.getDefaultSharedPreferences(c);
-		//this.getSharedPreferences("listLanguage", 0);
-		
-		
-		
-		if(shared.getString("listLanguage", null).equals("EN")){
-			Locale l=new Locale("en_US");
-			Locale.setDefault(l);
-			
-			Configuration config2 = new Configuration();
-		    config2.locale = l;
-		    c.getResources().updateConfiguration(config2, null);
-		    
-		}else if(shared.getString("listLanguage", null).equals("PT")){
-			Locale l=new Locale("pt_PT");
-			Locale.setDefault(l);
-			
-			Configuration config2 = new Configuration();
-		    config2.locale = l;
-		    c.getResources().updateConfiguration(config2, null);
-		}else{}
-		
-		System.out.println(shared.getString("listLanguage", null));
-//		
-//		System.out.println(Locale.getDefault().getDisplayLanguage());	    	    
+	public void teste(){
 		
 	}
+	
+
 	
 	private void inicialization() {
 
@@ -170,23 +143,23 @@ public class XBeeConfiguratorActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				
-				aux.clearList();
+				auxXBee.clearList();
 				tlXBeeDevices.removeAllViews();
 				
 				cc.searchXBeeDevices();
-				aux.setList(cc.getList());
+				auxXBee.setList(cc.getList());
 				
-				if (aux.getListSize() < 0)
+				if (auxXBee.getListSize() < 0)
 					new AlertMessage(c)
 							.newMessage(MessageType.DEVICES_NOT_DETECTED);
 				else {
-					for (int i = 0; i != aux.getListSize(); i++) {
+					for (int i = 0; i != auxXBee.getListSize(); i++) {
 						TableRow r = new TableRow(c);
 						final TextView addr=new TextView(c);
 						TextView type=new TextView(c);
 						TextView ss=new TextView(c);
 						
-						addr.setText(aux.getAddress(i));
+						addr.setText(auxXBee.getAddress(i));
 						addr.setId(i);
 						addr.setClickable(true);
 						addr.setOnClickListener(new OnClickListener() {
@@ -201,7 +174,7 @@ public class XBeeConfiguratorActivity extends Activity {
 								
 								Bundle b= new Bundle();
 								
-								b.putSerializable("auxiliar", aux);
+								b.putSerializable("auxiliar", auxXBee);
 								
 								i.putExtras(b);
 								c.startActivity(i);
@@ -210,9 +183,9 @@ public class XBeeConfiguratorActivity extends Activity {
 
 						});
 						
-						type.setText(aux.getType(i));
+						type.setText(auxXBee.getType(i));
 						
-						ss.setText(aux.getSignalStrength(i));
+						ss.setText(auxXBee.getSignalStrength(i));
 						
 						r.addView(addr);
 						r.addView(type);
@@ -238,19 +211,22 @@ public class XBeeConfiguratorActivity extends Activity {
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
-	    /*switch (item.getItemId()) {
+	    switch (item.getItemId()) {
 	        case R.id.Preferences:
 	            preferencesMenu();
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
-	    }*/
-		preferencesMenu();
-		return true;
+	    }
+		//preferencesMenu();
+		//return true;
 	}
 
 	private void preferencesMenu(){
 		Intent i = new Intent(c, PreferencesActivity.class);
-		c.startActivity(i);
+		//setResult(Activity.RESULT_OK, i);
+		this.startActivityForResult(i, MODE_PRIVATE);
+		//startActivityForResult(i, 0);
 	}
+
 }
