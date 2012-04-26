@@ -66,15 +66,25 @@ public class AuxiliarXBee implements Serializable{
 		return count;
 	}
 	
+	public String getMySensor(int position){
+		return xbee.get(position).getMySensor();
+	}
+	
+	public LinkedList<String> getMyActuators(int position){
+		return xbee.get(position).getMyActuators();
+	}
+	
 	
 	public void associateActuatorToSensor(String addrActuator, String addrSensor) {
 		
 		for(int i=0; i<xbee.size(); i++){
 			if(xbee.get(i).getAdress().equals(addrSensor)){
 				xbee.get(i).setActuator(addrActuator);
-				break;
+				
+			}else if(xbee.get(i).getAdress().equals(addrActuator)){
+				xbee.get(i).setSensor(addrSensor);
 			}
-		}		
+		}
 	}
 	
 	public void removeActuatorFromSensor(String addrActuator, String addrSensor){

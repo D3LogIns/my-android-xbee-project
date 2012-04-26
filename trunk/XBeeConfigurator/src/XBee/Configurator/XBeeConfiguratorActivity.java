@@ -171,18 +171,13 @@ public class XBeeConfiguratorActivity extends Activity {
 
 							@Override
 							public void onClick(View arg0) {
-								Intent i = new Intent(c, XbeeDetailsActivity.class);
 								
-								i.putExtra("position", addr.getId());
+								callXBeeDetails(addr.getId());
+								
 								
 								//i.putExtra("list", cc.getList());
 								
-								Bundle b= new Bundle();
-								
-								b.putSerializable("auxiliar", auxXBee);
-								
-								i.putExtras(b);
-								c.startActivity(i);
+
 							}
 
 
@@ -204,6 +199,33 @@ public class XBeeConfiguratorActivity extends Activity {
 		});
 	
 	}
+	
+private void callXBeeDetails(int position){
+	Intent i = new Intent(c, XbeeDetailsActivity.class);
+	Bundle b= new Bundle();
+	
+	i.putExtra("position", position);
+	
+	b.putSerializable("auxiliar", auxXBee);
+	
+	i.putExtras(b);
+	
+	this.startActivityForResult(i, MODE_PRIVATE);
+
+}
+
+protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+	Bundle extras=intent.getExtras();
+	auxXBee=(AuxiliarXBee) extras.getSerializable("auxiliar");
+	
+	for(int i=0;i<auxXBee.getListSize(); i++){
+		System.out.println("ENDERECO "+auxXBee.getAddress(i));
+		if(auxXBee.getType(i).equals(this.getString(R.string.actuator))){
+			System.out.println("SENSOR: "+auxXBee.getMySensor(i));
+		}
+	}
+	
+}
 	
 	
 public void onResume(){
