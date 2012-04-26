@@ -7,14 +7,14 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 
-public class Auxiliar {
+public class AuxiliarLanguage {
 
 	Context c;
 	Locale l;
 	SharedPreferences shared;
 	Configuration config = new Configuration();
 
-	public Auxiliar(Context c) {
+	public AuxiliarLanguage(Context c) {
 		this.c = c;
 		this.shared = PreferenceManager.getDefaultSharedPreferences(c);
 	}
@@ -53,4 +53,5 @@ public class Auxiliar {
 		config.locale = l;
 		c.getResources().updateConfiguration(config, null);
 	}
+	
 }

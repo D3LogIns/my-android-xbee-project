@@ -23,8 +23,9 @@ public class XBeeConfiguratorActivity extends Activity {
 	final Context c = this;
 	ConnectionClass cc;
 	AuxiliarXBee auxXBee;
-	String language;
-	Auxiliar aux;
+	String language="";
+	AuxiliarLanguage aux;
+	AlertMessage alert;
 	
 
 	/** Called when the activity is first created. */
@@ -36,9 +37,13 @@ public class XBeeConfiguratorActivity extends Activity {
 		
 		auxXBee=new AuxiliarXBee();
 		
-		aux=new Auxiliar(c);
+		aux=new AuxiliarLanguage(c);
 		
 		aux.setLanguage();
+		
+		language=aux.getLanguage();
+		
+		alert=new AlertMessage(c);
 		
 		setContentView(R.layout.main);
 		this.inicialization();
@@ -79,7 +84,7 @@ public class XBeeConfiguratorActivity extends Activity {
 			public void afterTextChanged(Editable s) {
 				// IF TEXT SIZE IS HIGHER THAN 5, APPLICATIOAN LAUNCHES AN ERROR
 				if (s.length() > 5) {
-					new AlertMessage(c)
+					alert
 							.newMessage(MessageType.TEXT_OUT_OF_BOUNDS);
 					etPan.setText("");
 					// IF TEXT SIZE IS HIGHER THAN 0, OK BUTTON TURNS ACTIVE
@@ -118,7 +123,7 @@ public class XBeeConfiguratorActivity extends Activity {
 							.parseInt(etPan.getText().toString()));
 
 				} else
-					new AlertMessage(c)
+					alert
 							.newMessage(MessageType.PAN_ID_OUT_OF_BOUNDS);
 
 				etPan.setText("");
@@ -150,7 +155,7 @@ public class XBeeConfiguratorActivity extends Activity {
 				auxXBee.setList(cc.getList());
 				
 				if (auxXBee.getListSize() < 0)
-					new AlertMessage(c)
+					alert
 							.newMessage(MessageType.DEVICES_NOT_DETECTED);
 				else {
 					for (int i = 0; i != auxXBee.getListSize(); i++) {
@@ -197,9 +202,27 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 
 		});
+	
 	}
 	
 	
+public void onResume(){
+	super.onResume();
+	
+	if(!language.equals(aux.getLanguage()))
+		refresh();
+	
+}
+	
+private void refresh() {
+//	ViewGroup vg =(ViewGroup) findViewById (R.id.main);
+	 
+//	vg.invalidate();
+//	setContentView(R.layout.main);
+//	this.startActivity(getIntent());
+//	this.finish();
+	
+}
 	
 	public boolean onCreateOptionsMenu(Menu menu) {  
 	    //menu.add(1, new Languages().getPreferences(""));  

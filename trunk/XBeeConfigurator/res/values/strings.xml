@@ -69,5 +69,13 @@
     <string name="textOutOfBounds">Value is too high, please insert lower values.</string>
     
     <string name="devicesNotDetected">Devices were not detected</string>
+    
+    <string name="setActuator">Are you sure you want to associate this actuator?</string>
+    
+    <string name="setSensor">Are you sure you want to associate to this sensor?</string>
+    
+    <string name="no">No</string>
+    
+    <string name="yes">Yes</string>
 
 </resources>
