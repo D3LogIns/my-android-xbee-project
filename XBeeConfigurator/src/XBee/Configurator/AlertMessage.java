@@ -31,13 +31,18 @@ public class AlertMessage extends AlertDialog{
 			textOutOfBounds();
 		}else if(msg.equals(MessageType.DEVICES_NOT_DETECTED)){
 			devicesNotDetected();
-		}else if(msg.equals(MessageType.SET_ACTUATOR)){
-			setActuator();
+		}
+	}
+	
+	public AuxiliarXBee newMessage(MessageType msg, String addrSensor, String addrActuator){
+		
+		if(msg.equals(MessageType.SET_ACTUATOR)){
+			setActuator(addrSensor, addrActuator);
 		}else if(msg.equals(MessageType.SET_SENSOR)){
-			setSensor();
+			setSensor(addrSensor, addrActuator);
 		}
 		
-		
+		return aux;
 	}
 
 	private void devicesNotDetected() {
@@ -89,7 +94,7 @@ public class AlertMessage extends AlertDialog{
 		this.show();
 	}
 	
-	private void setActuator(){
+	private void setActuator(final String addrSensor, final String addrActuator){
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
 
 		b.setMessage(c.getString(R.string.setActuator))
@@ -99,7 +104,7 @@ public class AlertMessage extends AlertDialog{
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-									//cc.associateActuatorToSensor(addrActuator, addrSensor);
+									aux.associateActuatorToSensor(addrActuator, addrSensor);
 							}
 						})
 				.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -109,7 +114,7 @@ public class AlertMessage extends AlertDialog{
 				}).show();
 	}
 	
-	private void setSensor(){
+	private void setSensor(final String addrSensor, final String addrActuator){
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
 
 		b.setMessage(c.getString(R.string.setSensor))
@@ -119,7 +124,7 @@ public class AlertMessage extends AlertDialog{
 					@Override
 					public void onClick(DialogInterface dialog,
 							int which) {
-							//cc.associateActuatorToSensor(addrActuator, addrSensor);
+							aux.associateActuatorToSensor(addrActuator, addrSensor);
 					}
 				})
 		.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {

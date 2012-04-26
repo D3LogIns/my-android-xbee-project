@@ -46,7 +46,7 @@ public class FakeXBee implements Serializable{
 		return this.ss;
 	}
 	
-	public String getMySensors(){
+	public String getMySensor(){
 		return mySensor;
 	}
 	
