@@ -12,6 +12,7 @@ public class FakeXBee implements Serializable{
 	private String type;
 	private String ss;
 	private LinkedList<String> myActuators=new LinkedList<String>();
+	private String mySensor="";
 
 	
 	
@@ -29,23 +30,33 @@ public class FakeXBee implements Serializable{
 		myActuators.add(addr);
 	}
 	
+	public void setSensor(String addr){
+		mySensor=addr;
+	}
+	
 	public String getAdress() {
 		return this.address;
 	}
 
 	public String getType() {
-
-			return this.type;
-
+		return this.type;
 	}
 
 	public String getSignalStrength() {
 		return this.ss;
 	}
 	
+	public String getMySensors(){
+		return mySensor;
+	}
 	
-	public LinkedList<String> getActuators(){
+	
+	public LinkedList<String> getMyActuators(){
 		return myActuators;
+	}
+	
+	public void removeSensor(){
+		mySensor="";
 	}
 	
 	public void removeActuator(String addr){

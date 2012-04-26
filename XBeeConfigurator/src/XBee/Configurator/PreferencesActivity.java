@@ -10,13 +10,13 @@ import android.preference.PreferenceActivity;
 public class PreferencesActivity extends PreferenceActivity {
 
 	Context c = this;
-	Auxiliar aux;
+	AuxiliarLanguage aux;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		aux = new Auxiliar(c);
+		aux = new AuxiliarLanguage(c);
 
 		aux.setLanguage();
 
@@ -44,8 +44,7 @@ public class PreferencesActivity extends PreferenceActivity {
 		});
 
 	}
-
-
+	
 
 	private void refresh() {
 		this.startActivity(getIntent());

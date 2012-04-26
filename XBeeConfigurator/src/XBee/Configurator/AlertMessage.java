@@ -8,9 +8,17 @@ public class AlertMessage extends AlertDialog{
 
 	Context c;
 	String language;
+	AuxiliarXBee aux;
+	
 	public AlertMessage(Context c) {
 		super(c);
 		this.c=c;
+	}
+	
+	public AlertMessage(Context c, AuxiliarXBee a){
+		super(c);
+		this.c=c;
+		this.aux=a;
 	}
 	
 	public void newMessage(MessageType msg){
@@ -23,6 +31,10 @@ public class AlertMessage extends AlertDialog{
 			textOutOfBounds();
 		}else if(msg.equals(MessageType.DEVICES_NOT_DETECTED)){
 			devicesNotDetected();
+		}else if(msg.equals(MessageType.SET_ACTUATOR)){
+			setActuator();
+		}else if(msg.equals(MessageType.SET_SENSOR)){
+			setSensor();
 		}
 		
 		
@@ -75,5 +87,45 @@ public class AlertMessage extends AlertDialog{
 			}
 		});
 		this.show();
+	}
+	
+	private void setActuator(){
+		AlertDialog.Builder b = new AlertDialog.Builder(c);
+
+		b.setMessage(c.getString(R.string.setActuator))
+				.setPositiveButton(c.getString(R.string.yes),
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+									//cc.associateActuatorToSensor(addrActuator, addrSensor);
+							}
+						})
+				.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				}).show();
+	}
+	
+	private void setSensor(){
+		AlertDialog.Builder b = new AlertDialog.Builder(c);
+
+		b.setMessage(c.getString(R.string.setSensor))
+		.setPositiveButton(c.getString(R.string.yes),
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+							//cc.associateActuatorToSensor(addrActuator, addrSensor);
+					}
+				})
+		.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		}).show();
 	}
 }

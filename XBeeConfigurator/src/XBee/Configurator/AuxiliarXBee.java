@@ -28,9 +28,8 @@ public class AuxiliarXBee implements Serializable{
 		this.xbee=xbee;
 	}
 	
-	public void clearList(){
-		
-	xbee.clear();
+	public void clearList(){	
+		xbee.clear();
 	}
 	
 	public int getListSize(){
@@ -50,12 +49,23 @@ public class AuxiliarXBee implements Serializable{
 	}
 	
 	public LinkedList<String> getActuators(int position){
-			return xbee.get(position).getActuators();
+			return xbee.get(position).getMyActuators();
 	}
 	
 	public LinkedList<FakeXBee> getList(){
 		return xbee;
 	}
+	
+	public int getNumberOfXBeeType(String s){
+		int count=0;
+		
+		for(int i=0; i!=xbee.size(); i++)
+			if(this.getType(i).equals(s))
+				count++;
+		
+		return count;
+	}
+	
 	
 	public void associateActuatorToSensor(String addrActuator, String addrSensor) {
 		
@@ -70,7 +80,7 @@ public class AuxiliarXBee implements Serializable{
 	public void removeActuatorFromSensor(String addrActuator, String addrSensor){
 		
 		for(int i=0; i<xbee.size(); i++){
-			if(xbee.get(i).getAdress().equals(addrSensor) && xbee.get(i).getActuators().size()>0){
+			if(xbee.get(i).getAdress().equals(addrSensor) && xbee.get(i).getMyActuators().size()>0){
 				xbee.get(i).removeActuator(addrActuator);
 				break;		
 			}
