@@ -16,6 +16,8 @@ public class ConnectionClass {
 	}
 
 	public void searchXBeeDevices() {
+		this.clearList();
+		
 		Random r = new Random();
 		int numXbee = (r.nextInt(11));
 
@@ -67,6 +69,10 @@ public class ConnectionClass {
 
 	public LinkedList<FakeXBee> getList() {
 		return xbee;
+	}
+	
+	public void clearList(){
+		xbee.clear();
 	}
 
 }
