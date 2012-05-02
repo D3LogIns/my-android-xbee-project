@@ -13,6 +13,7 @@ import android.widget.TextView;
 public class XbeeDetailsActivity extends Activity {
 
 	private TableLayout xbeeDevices;
+	private TableLayout associatedDevices;
 	private AuxiliarXBee aux;
 	private String sType = "";
 	private Context c = this;
@@ -34,9 +35,28 @@ public class XbeeDetailsActivity extends Activity {
 
 		alert = new AlertMessage(c, aux);
 
+		
+//		TEXTVIEWS INICIALIZATION
 		TextView addr = (TextView) findViewById(R.id.tvAddress);
 		TextView type = (TextView) findViewById(R.id.tvType);
 		TextView list = (TextView) findViewById(R.id.tvListOf);
+		TextView associated=(TextView) findViewById(R.id.tvAssociatedDevices);
+		TextView mySensor=(TextView) findViewById(R.id.tvMySensor);
+		
+		
+		if(aux.getType(position).equals(this.getString(R.string.actuator)) && !aux.getMySensor(position).equals("")){
+			associated.setText("My sensor");
+			mySensor.setText(aux.getMySensor(position));
+			associated.setVisibility(0);
+			mySensor.setVisibility(0);
+			
+		}else if(aux.getType(position).equals(this.getString(R.string.sensor)) && aux.getActuators(position).size()>0){
+			associated.setText("My Actuators");
+			associated.setVisibility(0);
+			associatedDevices= (TableLayout) this.findViewById(R.id.associatedDevicesTable);
+			
+			populateAssociatedDevicesTable();
+		}
 
 		xbeeDevices = (TableLayout) this.findViewById(R.id.devicesTable);
 
@@ -71,6 +91,7 @@ public class XbeeDetailsActivity extends Activity {
 
 				final int pos = i;
 
+
 				a.setText(aux.getAddress(i));
 				a.setId(i);
 				a.setClickable(true);
@@ -80,16 +101,16 @@ public class XbeeDetailsActivity extends Activity {
 				a.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View arg0) {
-						if (aux.getType(pos).equals(
-								c.getString(R.string.actuator)))
-							aux = alert.newMessage(MessageType.SET_ACTUATOR,
-									aux.getAddress(position), a.getText()
-											.toString());
-						else if (aux.getType(pos).equals(
-								c.getString(R.string.sensor)))
-							aux = alert.newMessage(MessageType.SET_SENSOR, aux
-									.getAddress(position), a.getText()
-									.toString());
+						if (aux.getType(pos).equals(c.getString(R.string.actuator)))
+							aux = alert.newMessage(
+									MessageType.SET_ACTUATOR,
+									aux.getAddress(position),
+									a.getText().toString());
+						else if (aux.getType(pos).equals(c.getString(R.string.sensor)))
+							aux = alert.newMessage(
+									MessageType.SET_SENSOR,
+									a.getText().toString(),
+									aux.getAddress(position));
 					}
 				});
 
@@ -101,14 +122,26 @@ public class XbeeDetailsActivity extends Activity {
 		}
 	}
 	
+	private void populateAssociatedDevicesTable(){
+		for(int i=0;i!=aux.getMyActuators(position).size();i++){
+			TableRow r=new TableRow(this);
+			TextView a=new TextView(this);
+			
+			a.setClickable(true);
+			a.setText(aux.getMyActuators(position).get(i));
+			
+			r.addView(a);
+			associatedDevices.addView(r);
+		}
+	}
+	
 	public void onBackPressed() {
-			System.out.println("HELLO!!");
-			Bundle b = new Bundle();
-			b.putSerializable("auxiliar", aux);
+		Bundle b = new Bundle();
+		b.putSerializable("auxiliar", aux);
 		
-			Intent mIntent = new Intent();
-            mIntent.putExtras(b);
-            setResult(RESULT_OK, mIntent);
+		Intent mIntent = new Intent();
+		mIntent.putExtras(b);
+        setResult(RESULT_OK, mIntent);
 		
 		this.finish();
 	}

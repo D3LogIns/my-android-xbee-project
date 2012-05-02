@@ -37,11 +37,11 @@ public class XBeeConfiguratorActivity extends Activity {
 		
 		auxXBee=new AuxiliarXBee();
 		
-		aux=new AuxiliarLanguage(c);
+		//aux=new AuxiliarLanguage(c);
 		
-		aux.setLanguage();
+		//aux.setLanguage();
 		
-		language=aux.getLanguage();
+		//language=aux.getLanguage();
 		
 		alert=new AlertMessage(c);
 		
@@ -148,7 +148,9 @@ public class XBeeConfiguratorActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				
+				
 				auxXBee.clearList();
+				
 				tlXBeeDevices.removeAllViews();
 				
 				cc.searchXBeeDevices();
@@ -173,10 +175,6 @@ public class XBeeConfiguratorActivity extends Activity {
 							public void onClick(View arg0) {
 								
 								callXBeeDetails(addr.getId());
-								
-								
-								//i.putExtra("list", cc.getList());
-								
 
 							}
 
@@ -218,23 +216,16 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent){
 	Bundle extras=intent.getExtras();
 	auxXBee=(AuxiliarXBee) extras.getSerializable("auxiliar");
 	
-	for(int i=0;i<auxXBee.getListSize(); i++){
-		System.out.println("ENDERECO "+auxXBee.getAddress(i));
-		if(auxXBee.getType(i).equals(this.getString(R.string.actuator))){
-			System.out.println("SENSOR: "+auxXBee.getMySensor(i));
-		}
-	}
-	
 }
 	
 	
-public void onResume(){
-	super.onResume();
-	
-	if(!language.equals(aux.getLanguage()))
-		refresh();
-	
-}
+//public void onResume(){
+//	super.onResume();
+//	
+//	if(!language.equals(aux.getLanguage()))
+//		refresh();
+//	
+//}
 	
 private void refresh() {
 //	ViewGroup vg =(ViewGroup) findViewById (R.id.main);
@@ -245,7 +236,7 @@ private void refresh() {
 //	this.finish();
 	
 }
-	
+	/*
 	public boolean onCreateOptionsMenu(Menu menu) {  
 	    //menu.add(1, new Languages().getPreferences(""));  
 	    //return super.onCreateOptionsMenu(menu);
@@ -272,6 +263,6 @@ private void refresh() {
 		//setResult(Activity.RESULT_OK, i);
 		this.startActivityForResult(i, MODE_PRIVATE);
 		//startActivityForResult(i, 0);
-	}
+	}*/
 
 }

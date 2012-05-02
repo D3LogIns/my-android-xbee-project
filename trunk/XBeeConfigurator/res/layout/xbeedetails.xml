@@ -33,19 +33,65 @@
 		
 	</TableRow>
 	
-	<TableRow>
+
+	
+	<!-- TABLE FOR ASSOCIATED DEVICES -->
+	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:stretchColumns="*"
+    android:id="@+id/associatedDevicesTable"
+    android:visible="false">
+    
+    	<TableRow>
+    		<TextView
+    			android:layout_column="0"
+    			android:id="@+id/tvAssociatedDevices"
+    			android:padding="3dip"
+    			android:visibility="gone"
+    		/>
+    		
+    		<TextView
+    			android:layout_column="1"
+    			android:id="@+id/tvMySensor"
+    			android:padding="3dip"
+    			android:visibility="gone"
+    		/>
+    	</TableRow>
+    
+    	<TableRow>
+    		<TextView
+    			android:layout_column="0"
+    			android:text="@string/address"
+    			android:padding="3dip"
+    			android:visibility="gone"
+    		/>
+
+    		<TextView
+    			android:layout_column="0"
+    			android:text="@string/signalStrength"
+    			android:padding="3dip"
+    			android:visibility="gone"
+    		/>
+    	</TableRow>    
+    
+    </TableLayout>
+    
+    
+    <TableRow>
 		<TextView
 			android:layout_column="0"
 			android:id="@+id/tvListOf"
 			android:padding="3dip"
 		/>
 	</TableRow>
-	
+    
+	<!-- TABLE FOR DEVICES TO ASSOCIATE OR TABLE TO LIST CHILD DEVICES -->
+
 	<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
  	android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:stretchColumns="*"
-    android:id="@+id/devicesTable">
+    android:id="@+id/devicesTable"
+    android:visible="true">
     
     <TableRow>
 		<TextView
@@ -60,7 +106,6 @@
 			android:padding="3dip"
 		/>
 	</TableRow>
-    
- 	</TableLayout>   
+ 	</TableLayout> 
     
  </TableLayout>
