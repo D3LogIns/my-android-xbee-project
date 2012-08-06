@@ -55,8 +55,19 @@
     		android:layout_column="1"
     		android:id="@+id/tvCoordAdress"
     		android:padding="3dip"
-    		android:text="123acd32"
     	/>
+    	
+    	<Button
+    		android:layout_column="2"
+    		android:id="@+id/bRefresh"
+    		android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:text="@string/bRefresh"
+        	android:enabled="true"/>
+        	<!-- android:onClick="onButtonClicked" -->
+        	
+    	/>
+    	
     </TableRow>
     
     <TableRow>

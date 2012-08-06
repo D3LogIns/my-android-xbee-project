@@ -18,6 +18,8 @@
 	<string name="router">Router</string>
 
 	<string name="coordinator">Coordenador</string>
+	
+	<string name="deviceNotFound">Dispositivo não encontrado</string>
     
     
     
@@ -28,6 +30,8 @@
     <string name="opPanId">PAN ID actual</string>
     
     <string name="bDetect">Detectar</string>
+    
+    <string name="bRefresh">Actualizar</string>
     
     
     

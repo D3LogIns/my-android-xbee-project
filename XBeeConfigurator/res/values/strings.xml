@@ -18,6 +18,8 @@
     
     <string name="coordinator">Coordinator</string>
     
+    <string name="deviceNotFound">Device not found</string>
+    
     
     
     <!-- Strings for XbeeConfigurationActivity -->
@@ -27,6 +29,8 @@
     <string name="opPanId">Operating PAN ID</string>
     
     <string name="bDetect">Detect</string>
+    
+    <string name="bRefresh">Refresh</string>
     
     
     

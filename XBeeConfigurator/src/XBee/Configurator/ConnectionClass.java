@@ -4,8 +4,10 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import android.content.Context;
+import android.widget.TextView;
 
 public class ConnectionClass {
+	
 
 	private LinkedList<FakeXBee> xbee = new LinkedList<FakeXBee>();
 
@@ -74,5 +76,5 @@ public class ConnectionClass {
 	public void clearList(){
 		xbee.clear();
 	}
-
+	
 }
