@@ -401,7 +401,8 @@ public class XBeeConfiguratorActivity extends Activity {
 					break;
 				case idResponse:
 
-					panID = new AuxiliarMethods().getData(buffer).replaceAll("0", "");
+					panID = new AuxiliarMethods().getData(buffer).replaceAll(
+							"0", "");
 					break;
 
 				case idChangeRequest:
@@ -418,8 +419,24 @@ public class XBeeConfiguratorActivity extends Activity {
 					String sl = s.substring(12, 20);
 					String type = s.substring(28, 29);
 
+					switch (Integer.parseInt(type)) {
+					case 0:
+						type = c.getString(R.string.coordinator);
+						break;
+					case 1:
+						type = c.getString(R.string.router);
+						break;
+					case 2:
+						type = c.getString(R.string.sensor);
+						break;
+					default:
+						type = c.getString(R.string.unknown);
+						break;
+
+					}
+
 					xbee.add(new XBeeDevice(sh, sl, type, "TESTE"));
-					
+
 					break;
 				default:
 
@@ -427,7 +444,6 @@ public class XBeeConfiguratorActivity extends Activity {
 				}
 			}
 		}
-
 
 	};
 
@@ -458,15 +474,15 @@ public class XBeeConfiguratorActivity extends Activity {
 
 	private void retrieveXBeeAddress() {
 		try {
-			shAddress="sh";
-			slAddress="sl";
-			panID="id";
-			new LoadingScreen(6000, searchType.searchForConnectedDevice).execute();
+			shAddress = "sh";
+			slAddress = "sl";
+			panID = "id";
+			new LoadingScreen(6000, searchType.searchForConnectedDevice)
+					.execute();
 		} catch (NullPointerException e) {
 
 		}
 	}
-
 
 	Thread requestNodeDiscovery = new Thread() {
 		public void run() {
