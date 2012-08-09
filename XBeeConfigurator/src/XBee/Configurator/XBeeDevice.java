@@ -30,14 +30,7 @@ public class XBeeDevice implements Serializable{
 	public XBeeDevice(String sh, String sl, String type, String signal_strength){
 		this.sh=sh;
 		this.sl=sl;
-		
-		if(type.equals("0"))
-			this.type="Coordenador";
-		else if(type.equals("1"))
-			this.type="Router";
-		else if(type.equals("3"))
-			this.type="Sensor";
-		
+		this.type=type;
 		this.ss=signal_strength;
 	}
 	
@@ -47,6 +40,15 @@ public class XBeeDevice implements Serializable{
 	
 	public void setSensor(String addr){
 		mySensor=addr;
+	}
+	
+	
+	public String getSH(){
+		return this.sh;
+	}
+	
+	public String getSL(){
+		return this.sl;
 	}
 	
 	public String getAdress() {

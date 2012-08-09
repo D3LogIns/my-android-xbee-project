@@ -18,6 +18,8 @@
     
     <string name="coordinator">Coordinator</string>
     
+    <string name="unknown">Unknown</string>
+    
     
     
     <!-- Strings for XbeeConfigurationActivity -->
