@@ -31,9 +31,14 @@ public class AlertMessage extends AlertDialog{
 			textOutOfBounds();
 		}else if(msg.equals(MessageType.DEVICES_NOT_DETECTED)){
 			devicesNotDetected();
+		}else if(msg.equals(MessageType.DEVICE_NOT_FOUND)){
+			deviceNotFound();
 		}
+		
 	}
 	
+
+
 	public AuxiliarXBee newMessage(MessageType msg, String addrSensor, String addrActuator){
 		
 		if(msg.equals(MessageType.SET_ACTUATOR)){
@@ -93,6 +98,20 @@ public class AlertMessage extends AlertDialog{
 		});
 		this.show();
 	}
+	
+	private void deviceNotFound() {
+		this.setMessage(c.getString(R.string.deviceNotFound));
+		this.setButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		this.show();
+		
+	}
+	
 	
 	private void setActuator(final String addrSensor, final String addrActuator){
 		AlertDialog.Builder b = new AlertDialog.Builder(c);

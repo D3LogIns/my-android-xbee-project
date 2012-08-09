@@ -9,7 +9,7 @@ import android.widget.TextView;
 public class ConnectionClass {
 	
 
-	private LinkedList<FakeXBee> xbee = new LinkedList<FakeXBee>();
+	private LinkedList<XBeeDevice> xbee = new LinkedList<XBeeDevice>();
 
 	Context c;
 
@@ -64,12 +64,12 @@ public class ConnectionClass {
 				ss = "Muito Fraco";
 			}
 
-			xbee.add(new FakeXBee(address + i, sType, ss));
+			xbee.add(new XBeeDevice(address + i, sType, ss));
 
 		}
 	}
 
-	public LinkedList<FakeXBee> getList() {
+	public LinkedList<XBeeDevice> getList() {
 		return xbee;
 	}
 	

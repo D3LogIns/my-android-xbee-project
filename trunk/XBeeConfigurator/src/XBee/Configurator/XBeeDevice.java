@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public class FakeXBee implements Serializable{
+public class XBeeDevice implements Serializable{
 
 
 	private static final long serialVersionUID = 1375942286432721341L;
+	private String sh;
+	private String sl;
 	private String address;
 	private String type;
 	private String ss;
@@ -17,13 +19,26 @@ public class FakeXBee implements Serializable{
 	
 	
 	
-	public FakeXBee(String a, String t, String s){
+	public XBeeDevice(String a, String t, String s){
 		this.address=a;
+		
 		this.type=t;
 		this.ss=s;
-		
 
+	}
+	
+	public XBeeDevice(String sh, String sl, String type, String signal_strength){
+		this.sh=sh;
+		this.sl=sl;
 		
+		if(type.equals("0"))
+			this.type="Coordenador";
+		else if(type.equals("1"))
+			this.type="Router";
+		else if(type.equals("3"))
+			this.type="Sensor";
+		
+		this.ss=signal_strength;
 	}
 	
 	public void setActuator(String addr){
@@ -35,7 +50,7 @@ public class FakeXBee implements Serializable{
 	}
 	
 	public String getAdress() {
-		return this.address;
+		return this.sh+" "+this.sl;
 	}
 
 	public String getType() {

@@ -10,11 +10,11 @@ public class AuxiliarXBee implements Serializable{
 	 */
 	private static final long serialVersionUID = -6963040436481928378L;
 	
-	LinkedList<FakeXBee> xbee= new LinkedList<FakeXBee>();
+	LinkedList<XBeeDevice> xbee= new LinkedList<XBeeDevice>();
 	
 	
 //	Constructors
-	public AuxiliarXBee(LinkedList<FakeXBee> xbee){
+	public AuxiliarXBee(LinkedList<XBeeDevice> xbee){
 		this.xbee=xbee;
 	}
 	
@@ -24,7 +24,7 @@ public class AuxiliarXBee implements Serializable{
 	}
 	
 //	Methods
-	public void setList(LinkedList<FakeXBee> xbee){
+	public void setList(LinkedList<XBeeDevice> xbee){
 		this.xbee=xbee;
 	}
 	
@@ -52,7 +52,7 @@ public class AuxiliarXBee implements Serializable{
 			return xbee.get(position).getMyActuators();
 	}
 	
-	public LinkedList<FakeXBee> getList(){
+	public LinkedList<XBeeDevice> getList(){
 		return xbee;
 	}
 	

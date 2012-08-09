@@ -18,8 +18,6 @@
     
     <string name="coordinator">Coordinator</string>
     
-    <string name="deviceNotFound">Device not found</string>
-    
     
     
     <!-- Strings for XbeeConfigurationActivity -->
@@ -34,7 +32,7 @@
     
     
     
-    <!-- Strings para a XBeeDetailsActivity -->
+    <!-- Strings for XBeeDetailsActivity -->
     
     <string name="listOfChilds">Child Devices</string>
     
@@ -81,5 +79,17 @@
     <string name="no">No</string>
     
     <string name="yes">Yes</string>
-
+    
+    <string name="deviceNotFound">Device not found</string>
+    
+    
+        
+    <!-- Strings for LoadTaskView -->
+	
+	<string name="Searching">Searching&#8230;</string>
+	
+	<string name="SearchingDevices">Searching for devices, please wait&#8230;</string>
+	
+	<string name="SearchingConnectedDevice">Searching for device, please wait&#8230;</string>
+	
 </resources>

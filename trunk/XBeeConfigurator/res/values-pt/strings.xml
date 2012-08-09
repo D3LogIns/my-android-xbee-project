@@ -18,8 +18,6 @@
 	<string name="router">Router</string>
 
 	<string name="coordinator">Coordenador</string>
-	
-	<string name="deviceNotFound">Dispositivo não encontrado</string>
     
     
     
@@ -72,5 +70,17 @@
     <string name="no">Não</string>
     
     <string name="yes">Sim</string>
+    
+    <string name="deviceNotFound">Dispositivo não encontrado</string>
+    
+    
+    
+    <!-- Strings para o LoadTaskView -->
+	
+	<string name="Searching">A procurar&#8230;</string>
+	
+	<string name="SearchingDevices">A procurar dispositivos, espere por favor&#8230;</string>
+	
+	<string name="SearchingConnectedDevice">A procurar dispositivo, espere por favor&#8230;</string>
 
 </resources>
