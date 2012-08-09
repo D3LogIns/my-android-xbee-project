@@ -270,44 +270,6 @@ public class XBeeConfiguratorActivity extends Activity {
 				tlXBeeDevices.removeAllViews();
 
 				requestNodeDiscovery.run();
-				//
-				// cc.searchXBeeDevices();
-				// auxXBee.setList(cc.getList());
-				//
-				// if (auxXBee.getListSize() < 0)
-				// alert.newMessage(MessageType.DEVICES_NOT_DETECTED);
-				// else {
-				// for (int i = 0; i != auxXBee.getListSize(); i++) {
-				// TableRow r = new TableRow(c);
-				// final TextView addr = new TextView(c);
-				// TextView type = new TextView(c);
-				// TextView ss = new TextView(c);
-				//
-				// addr.setText(auxXBee.getAddress(i));
-				// addr.setId(i);
-				// addr.setClickable(true);
-				// addr.setOnClickListener(new OnClickListener() {
-				//
-				// @Override
-				// public void onClick(View arg0) {
-				//
-				// callXBeeDetails(addr.getId());
-				//
-				// }
-				//
-				// });
-				//
-				// type.setText(auxXBee.getType(i));
-				//
-				// ss.setText(auxXBee.getSignalStrength(i));
-				//
-				// r.addView(addr);
-				// r.addView(type);
-				// r.addView(ss);
-				// tlXBeeDevices.addView(r);
-				//
-				// }
-				// }
 
 			}
 
@@ -423,12 +385,12 @@ public class XBeeConfiguratorActivity extends Activity {
 				case slRequest:
 					break;
 				case shResponse:
-					shAddress = getData(buffer);
+					shAddress = new AuxiliarMethods().getData(buffer);
 					break;
 
 				case slResponse:
 
-					slAddress = getData(buffer);
+					slAddress = new AuxiliarMethods().getData(buffer);
 					break;
 
 				case niRequest:
@@ -439,7 +401,7 @@ public class XBeeConfiguratorActivity extends Activity {
 					break;
 				case idResponse:
 
-					panID = getData(buffer).replaceAll("0", "");
+					panID = new AuxiliarMethods().getData(buffer).replaceAll("0", "");
 					break;
 
 				case idChangeRequest:
@@ -450,16 +412,14 @@ public class XBeeConfiguratorActivity extends Activity {
 					break;
 				case nodeDiscoveryResponse:
 
-					String s = getData(buffer);
+					String s = new AuxiliarMethods().getData(buffer);
 
 					String sh = s.substring(4, 12);
 					String sl = s.substring(12, 20);
 					String type = s.substring(28, 29);
 
 					xbee.add(new XBeeDevice(sh, sl, type, "TESTE"));
-					// xbee.add(new XBeeDevice(getData(buffer).replace(" ", ""),
-					// "TESTE", "TESTE"));
-
+					
 					break;
 				default:
 
@@ -468,42 +428,6 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 		}
 
-		private String getData(byte[] buffer) {
-			final StringBuilder textBuilder = new StringBuilder();
-			int textLength = buffer[2];
-			int textEndIndex = 3 + textLength;
-			for (int x = 3; x < textEndIndex; x++) {
-
-				textBuilder.append(Integer.toHexString(buffer[x]));
-
-				if (buffer[x] == 0) {
-					textBuilder.append('0');
-				}
-				// textBuilder.append(" ");
-				// textBuilder.append((char) buffer[x]);
-			}
-			return checkStringBuilder(textBuilder);
-		}
-
-		private String checkStringBuilder(StringBuilder textBuilder) {
-			// TODO Auto-generated method stub
-
-			int cont = 0;
-			for (int i = 0; i < textBuilder.length(); i++) {
-				if (textBuilder.charAt(i) == 'f')
-					cont++;
-				else
-					cont = 0;
-
-				if (cont == 6)
-					for (int j = i; j > i - cont; j--)
-						textBuilder.setCharAt(j, ' ');
-
-			}
-
-			return textBuilder.toString().replaceAll(" ", "")
-					.replaceAll("ffffff", "");
-		}
 
 	};
 
@@ -537,7 +461,7 @@ public class XBeeConfiguratorActivity extends Activity {
 			shAddress="sh";
 			slAddress="sl";
 			panID="id";
-			new LoadViewTask(6000, searchType.searchForConnectedDevice).execute();
+			new LoadingScreen(6000, searchType.searchForConnectedDevice).execute();
 		} catch (NullPointerException e) {
 
 		}
@@ -549,7 +473,7 @@ public class XBeeConfiguratorActivity extends Activity {
 
 			sendText(nodeDiscoveryRequest, TARGET_DEFAULT, "");
 
-			new LoadViewTask(10000, searchType.searchForWirelessDevices)
+			new LoadingScreen(10000, searchType.searchForWirelessDevices)
 					.execute();
 
 		}
@@ -598,12 +522,12 @@ public class XBeeConfiguratorActivity extends Activity {
 		}
 	}
 
-	private class LoadViewTask extends AsyncTask<Void, Integer, Void> {
+	private class LoadingScreen extends AsyncTask<Void, Integer, Void> {
 
 		private int time;
 		private searchType st;
 
-		public LoadViewTask(int timeInMillisecs, searchType st) {
+		public LoadingScreen(int timeInMillisecs, searchType st) {
 			this.time = timeInMillisecs;
 			this.st = st;
 		}
