@@ -12,32 +12,25 @@
             android:layout_column="0"
             android:text="XBee Coordinator"
             android:padding="3dip"
+            android:textAppearance="?android:attr/textAppearanceLarge"
         />
     </TableRow>
     
     <TableRow>
-    	<TextView
-    		android:layout_column="0"
-    		android:text="PAN ID"
-    		android:padding="3dip"
-    	/>
-    		
-    	<EditText
-    		android:layout_column="1"
-    		android:id="@+id/editPan"
-    		android:layout_width="fill_parent"
-    		android:layout_height="wrap_content"
-    		android:gravity="right"
-    		android:inputType="number"
-    	/>
-    	
-    	<Button
-    		android:layout_column="2"
-    		android:id="@+id/bOKPan"
-    		android:layout_width="fill_parent"
-        	android:layout_height="wrap_content"
-        	android:text="OK"
-        	android:enabled="false"/>
+
+        <TextView
+            android:layout_column="0"
+            android:padding="3dip"
+            android:text="@string/opPanId"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <TextView
+            android:layout_column="1"
+            android:id="@+id/tvPanID"
+            android:padding="3dip"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
         	<!-- android:onClick="onButtonClicked" -->
         	
     	/>	
@@ -48,13 +41,15 @@
     	<TextView
     		android:layout_column="0"
     		android:text="@string/address"
-    		android:padding="3dip"    	
+    		android:padding="3dip" 
+    		android:textAppearance="?android:attr/textAppearanceLarge"   	
     	/>
     	
     	<TextView
     		android:layout_column="1"
     		android:id="@+id/tvCoordAdress"
     		android:padding="3dip"
+    		android:textAppearance="?android:attr/textAppearanceLarge"
     	/>
     	
     	<Button
@@ -63,26 +58,44 @@
     		android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
         	android:text="@string/bRefresh"
-        	android:enabled="true"/>
+        	android:state_enabled="true"
+        	android:textAppearance="?android:attr/textAppearanceLarge"/>
+    	
         	<!-- android:onClick="onButtonClicked" -->
-        	
-    	/>
+
     	
     </TableRow>
     
-    <TableRow>
-    	<TextView
-    		android:layout_column="0"
-    		android:text="@string/opPanId"
-    		android:padding="3dip"
-    	/>
-    	
-    	<TextView
-    		android:layout_column="1"
-    		android:id="@+id/tvPanID"
-    		android:padding="3dip"
-    		android:text="23"
-    	/>
+    <TableRow android:layout_height="match_parent" >
+
+        <TextView
+            android:layout_column="0"
+            android:padding="3dip"
+            android:text="PAN ID" 
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <EditText
+            android:layout_column="1"
+            android:id="@+id/editPan"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:gravity="right"
+            android:inputType="number" 
+            android:textAppearance="?android:attr/textAppearanceLarge">
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:layout_column="2"
+            android:id="@+id/bOKPan"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:state_enabled="false"
+            android:text="OK"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
     </TableRow>
     		
     <TableRow>
@@ -92,8 +105,10 @@
     		android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
         	android:text="@string/bDetect"
-        	android:onClick="onButtonClicked"/>
-    	/>	
+        	android:onClick="onButtonClicked"
+        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	/>
+
     </TableRow>
     
     <TableRow>
@@ -101,18 +116,21 @@
     		android:layout_column="0"
     		android:text="@string/address"
     		android:padding="3dip"
+    		android:textAppearance="?android:attr/textAppearanceLarge"
     	/>
     	
     	<TextView
     		android:layout_column="1"
     		android:text="@string/type"
     		android:padding="3dip"
+    		android:textAppearance="?android:attr/textAppearanceLarge"
     	/>
     	
     	<TextView
     		android:layout_column="2"
     		android:text="@string/signalStrength"
     		android:padding="3dip"
+    		android:textAppearance="?android:attr/textAppearanceLarge"
     	/>
     </TableRow>
     
@@ -125,6 +143,5 @@
     	
     
     </TableLayout>
-    	
     
  </TableLayout>

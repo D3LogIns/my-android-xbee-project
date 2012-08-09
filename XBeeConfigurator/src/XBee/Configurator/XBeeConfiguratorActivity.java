@@ -4,9 +4,11 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.os.AsyncTask;
 
 public class XBeeConfiguratorActivity extends Activity {
 
@@ -56,22 +59,31 @@ public class XBeeConfiguratorActivity extends Activity {
 	private static final byte COMMAND_TEXT = 0xF;
 	private static final byte TARGET_DEFAULT = 0xF;
 
-	// OTHER VARIABLES
+	// COMPONTENTS VARIABLES
+	TextView tvXbeeAddress;
+	TextView tvPanID;
+	TableLayout tlXBeeDevices;
 
-	private String shAddress="NOT";
-	private String slAddress="FOUND";
+	// OTHER VARIABLES
+	private ProgressDialog progressDialog;
+	private String shAddress = "sh";
+	private String slAddress = "sl";
+	private String panID = "id";
 
 	final Context c = this;
 	ConnectionClass cc;
 	AuxiliarXBee auxXBee;
 	String language = "";
-	AuxiliarLanguage aux;
+	AuxiliarMethods aux;
 	AlertMessage alert;
+	private LinkedList<XBeeDevice> xbee;
 
-	TextView tvXbeeAddress;
+	private enum searchType {
+		searchForConnectedDevice, searchForWirelessDevices
+	};
 
 	/**
-	 *  Called when the activity is first created. 
+	 * Called when the activity is first created.
 	 * */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -81,21 +93,23 @@ public class XBeeConfiguratorActivity extends Activity {
 
 		auxXBee = new AuxiliarXBee();
 
-		// aux=new AuxiliarLanguage(c);
-
-		// aux.setLanguage();
-
-		// language=aux.getLanguage();
-
 		alert = new AlertMessage(c);
 
-		this.registerUsbConnection();
-		
+		xbee = new LinkedList<XBeeDevice>();
+
+		mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+		mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(
+				ACTION_USB_PERMISSION), 0);
+		IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+		filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
+		registerReceiver(mUsbReceiver, filter);
+
 		setContentView(R.layout.main);
-		
+
 		this.inicialization();
 	}
-	
+
 	/**
 	 * Called when the activity is resumed from its paused state and immediately
 	 * after onCreate().
@@ -103,15 +117,35 @@ public class XBeeConfiguratorActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		openUsbConnection();
-		
+
+		if (mInputStream != null && mOutputStream != null) {
+			return;
+		}
+		UsbAccessory[] accessories = mUsbManager.getAccessoryList();
+		UsbAccessory accessory = (accessories == null ? null : accessories[0]);
+		if (accessory != null) {
+			if (mUsbManager.hasPermission(accessory)) {
+				openAccessory(accessory);
+			} else {
+				synchronized (mUsbReceiver) {
+					if (!mPermissionRequestPending) {
+						mUsbManager.requestPermission(accessory,
+								mPermissionIntent);
+						mPermissionRequestPending = true;
+					}
+				}
+			}
+		} else {
+			Log.d(TAG, "mAccessory is null");
+		}
+
 	}
 
 	/** Called when the activity is paused by the system. */
 	@Override
 	public void onPause() {
 		super.onPause();
-		closeAccessoryConnection();
+		closeAccessory();
 	}
 
 	/**
@@ -121,14 +155,12 @@ public class XBeeConfiguratorActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		unregisterUsbReceiver();
+		unregisterReceiver(mUsbReceiver);
 	}
-	
-	
+
 	/*
 	 * 
 	 * METHODS FOR VISUALIZATION
-	 * 
 	 */
 
 	private void inicialization() {
@@ -136,14 +168,14 @@ public class XBeeConfiguratorActivity extends Activity {
 		/*
 		 * XBEE DETECTED DEVICES TABLE
 		 */
-		final TableLayout tlXBeeDevices = (TableLayout) findViewById(R.id.tlXBeeDevices);
+		tlXBeeDevices = (TableLayout) findViewById(R.id.tlXBeeDevices);
 
 		/*
 		 * BUTTONS INICIALIZATION
 		 */
 		final Button bOK = (Button) findViewById(R.id.bOKPan);
 		Button bDetect = (Button) findViewById(R.id.bDetectDevices);
-		Button brefresh=(Button) findViewById(R.id.bRefresh);
+		Button brefresh = (Button) findViewById(R.id.bRefresh);
 
 		/*
 		 * TEXT BOX'S INICIALIZATION
@@ -151,6 +183,7 @@ public class XBeeConfiguratorActivity extends Activity {
 
 		final EditText etPan = (EditText) findViewById(R.id.editPan);
 		tvXbeeAddress = (TextView) findViewById(R.id.tvCoordAdress);
+		tvPanID = (TextView) this.findViewById(R.id.tvPanID);
 
 		/*
 		 * TEXT BOX'S LISTENERS
@@ -217,14 +250,13 @@ public class XBeeConfiguratorActivity extends Activity {
 
 			}
 		});
-		
-		
-		//REFRESH BUTTON
-		brefresh.setOnClickListener(new OnClickListener(){
+
+		// REFRESH BUTTON
+		brefresh.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				retrieveXBeeAddress();
 			}
-			
+
 		});
 
 		// DETECT BUTTON
@@ -237,43 +269,46 @@ public class XBeeConfiguratorActivity extends Activity {
 
 				tlXBeeDevices.removeAllViews();
 
-				cc.searchXBeeDevices();
-				auxXBee.setList(cc.getList());
+				requestNodeDiscovery.run();
+				//
+				// cc.searchXBeeDevices();
+				// auxXBee.setList(cc.getList());
+				//
+				// if (auxXBee.getListSize() < 0)
+				// alert.newMessage(MessageType.DEVICES_NOT_DETECTED);
+				// else {
+				// for (int i = 0; i != auxXBee.getListSize(); i++) {
+				// TableRow r = new TableRow(c);
+				// final TextView addr = new TextView(c);
+				// TextView type = new TextView(c);
+				// TextView ss = new TextView(c);
+				//
+				// addr.setText(auxXBee.getAddress(i));
+				// addr.setId(i);
+				// addr.setClickable(true);
+				// addr.setOnClickListener(new OnClickListener() {
+				//
+				// @Override
+				// public void onClick(View arg0) {
+				//
+				// callXBeeDetails(addr.getId());
+				//
+				// }
+				//
+				// });
+				//
+				// type.setText(auxXBee.getType(i));
+				//
+				// ss.setText(auxXBee.getSignalStrength(i));
+				//
+				// r.addView(addr);
+				// r.addView(type);
+				// r.addView(ss);
+				// tlXBeeDevices.addView(r);
+				//
+				// }
+				// }
 
-				if (auxXBee.getListSize() < 0)
-					alert.newMessage(MessageType.DEVICES_NOT_DETECTED);
-				else {
-					for (int i = 0; i != auxXBee.getListSize(); i++) {
-						TableRow r = new TableRow(c);
-						final TextView addr = new TextView(c);
-						TextView type = new TextView(c);
-						TextView ss = new TextView(c);
-
-						addr.setText(auxXBee.getAddress(i));
-						addr.setId(i);
-						addr.setClickable(true);
-						addr.setOnClickListener(new OnClickListener() {
-
-							@Override
-							public void onClick(View arg0) {
-
-								callXBeeDetails(addr.getId());
-
-							}
-
-						});
-
-						type.setText(auxXBee.getType(i));
-
-						ss.setText(auxXBee.getSignalStrength(i));
-
-						r.addView(addr);
-						r.addView(type);
-						r.addView(ss);
-						tlXBeeDevices.addView(r);
-
-					}
-				}
 			}
 
 		});
@@ -294,31 +329,32 @@ public class XBeeConfiguratorActivity extends Activity {
 
 	}
 
-	
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		Bundle extras = intent.getExtras();
 		auxXBee = (AuxiliarXBee) extras.getSerializable("auxiliar");
 
 	}
-	
-	
+
 	/*
 	 * 
 	 * Methods for the USB connection
-	 * 
 	 */
 
-
 	private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
+
 			String action = intent.getAction();
+
 			if (ACTION_USB_PERMISSION.equals(action)) {
+
 				synchronized (this) {
 					// UsbAccessory accessory = UsbManager.getAccessory(intent);
 					UsbAccessory accessory = (UsbAccessory) intent
 							.getParcelableExtra(UsbManager.EXTRA_ACCESSORY);
+
 					if (intent.getBooleanExtra(
 							UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
 						openAccessory(accessory);
@@ -328,6 +364,7 @@ public class XBeeConfiguratorActivity extends Activity {
 					}
 					mPermissionRequestPending = false;
 				}
+
 			} else if (UsbManager.ACTION_USB_ACCESSORY_DETACHED.equals(action)) {
 				// UsbAccessory accessory = UsbManager.getAccessory(intent);
 				UsbAccessory accessory = (UsbAccessory) intent
@@ -386,14 +423,14 @@ public class XBeeConfiguratorActivity extends Activity {
 				case slRequest:
 					break;
 				case shResponse:
-					shAddress = getData(buffer).replaceAll(" ", "");
+					shAddress = getData(buffer);
 					break;
 
 				case slResponse:
-					
-					slAddress = getData(buffer).replaceAll(" ", "");
+
+					slAddress = getData(buffer);
 					break;
-					
+
 				case niRequest:
 					break;
 				case niResponse:
@@ -401,7 +438,10 @@ public class XBeeConfiguratorActivity extends Activity {
 				case idRequest:
 					break;
 				case idResponse:
+
+					panID = getData(buffer).replaceAll("0", "");
 					break;
+
 				case idChangeRequest:
 					break;
 				case idChangeResponse:
@@ -409,9 +449,20 @@ public class XBeeConfiguratorActivity extends Activity {
 				case nodeDiscoveryRequest:
 					break;
 				case nodeDiscoveryResponse:
+
+					String s = getData(buffer);
+
+					String sh = s.substring(4, 12);
+					String sl = s.substring(12, 20);
+					String type = s.substring(28, 29);
+
+					xbee.add(new XBeeDevice(sh, sl, type, "TESTE"));
+					// xbee.add(new XBeeDevice(getData(buffer).replace(" ", ""),
+					// "TESTE", "TESTE"));
+
 					break;
 				default:
-					Log.d(TAG, "unknown msg: " + buffer[0]);
+
 					break;
 				}
 			}
@@ -436,20 +487,22 @@ public class XBeeConfiguratorActivity extends Activity {
 
 		private String checkStringBuilder(StringBuilder textBuilder) {
 			// TODO Auto-generated method stub
+
 			int cont = 0;
 			for (int i = 0; i < textBuilder.length(); i++) {
-				if (textBuilder.charAt(i) == 'f') {
+				if (textBuilder.charAt(i) == 'f')
 					cont++;
-					if (cont == 6) {
-						for (int j = i; j > i - cont; j--) {
-							textBuilder.setCharAt(j, ' ');
-						}
-					}
-				}
-				if (textBuilder.charAt(i) == ' ')
+				else
 					cont = 0;
+
+				if (cont == 6)
+					for (int j = i; j > i - cont; j--)
+						textBuilder.setCharAt(j, ' ');
+
 			}
-			return textBuilder.toString();
+
+			return textBuilder.toString().replaceAll(" ", "")
+					.replaceAll("ffffff", "");
 		}
 
 	};
@@ -475,99 +528,160 @@ public class XBeeConfiguratorActivity extends Activity {
 		}
 	}
 
-	
-public void registerUsbConnection(){
-	mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
-	mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(
-			ACTION_USB_PERMISSION), 0);
-	IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-	filter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
-	registerReceiver(mUsbReceiver, filter);
-}
-	
-	public void openUsbConnection(){
-		if (mInputStream != null && mOutputStream != null) {
-			return;
-		}
-		UsbAccessory[] accessories = mUsbManager.getAccessoryList();
-		UsbAccessory accessory = (accessories == null ? null : accessories[0]);
-		if (accessory != null) {
-			if (mUsbManager.hasPermission(accessory)) {
-				openAccessory(accessory);
-			} else {
-				synchronized (mUsbReceiver) {
-					if (!mPermissionRequestPending) {
-						mUsbManager.requestPermission(accessory,
-								mPermissionIntent);
-						mPermissionRequestPending = true;
-					}
-				}
-			}
-		} else {
-			Log.d(TAG, "mAccessory is null");
-		}
-	}
-	
-	public void closeAccessoryConnection(){
-		closeAccessory();
-	}
-	
-	public void unregisterUsbReceiver(){
-		unregisterReceiver(mUsbReceiver);
-	}
-
 	/*
 	 * Methods for the communication between Android and Arduino
 	 */
-	
-	Thread t =new Thread(){
-		
-		public void run(){
-			registerUsbConnection();
-			openUsbConnection();
-			boolean complete=false;
-			int timeout=0;
-			//openAcessory(accessory);
-			while(!complete){
-				sendText(shRequest, TARGET_DEFAULT, "");
-				sendText(slRequest, TARGET_DEFAULT, "");				
-				try {
-					sleep(1000);
-					timeout+=1000;
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if((!shAddress.equals("NOT") && !slAddress.equals("FOUND")) || timeout>6000){
-					complete=true;
-					if(!shAddress.equals("NOT") && !slAddress.equals("FOUND"))
-						tvXbeeAddress.setText(shAddress.toUpperCase()+" "+slAddress.toUpperCase());
-					else
-						tvXbeeAddress.setText(R.string.deviceNotFound);
-					
-					//System.out.println("ENTREI!! TEMPO: "+timeout+" shAddress: "+shAddress+" slAddress: "+slAddress+" complete: "+complete);
-				}
-			}
-
-		}
-		
-	};
 
 	private void retrieveXBeeAddress() {
 		try {
-//	FAZER THREAD
-
-			t.run();
-			
-//			try {
-//				this.wait(7000);
-//			} catch (InterruptedException e) {
-//
-//			}
+			shAddress="sh";
+			slAddress="sl";
+			panID="id";
+			new LoadViewTask(6000, searchType.searchForConnectedDevice).execute();
 		} catch (NullPointerException e) {
 
 		}
 	}
+
+
+	Thread requestNodeDiscovery = new Thread() {
+		public void run() {
+
+			sendText(nodeDiscoveryRequest, TARGET_DEFAULT, "");
+
+			new LoadViewTask(10000, searchType.searchForWirelessDevices)
+					.execute();
+
+		}
+	};
+
+	private void populateXbeeTable() {
+		if (xbee.size() > 0) {
+			auxXBee.setList(xbee);
+			for (int i = 0; i != auxXBee.getListSize(); i++) {
+
+				TableRow r = new TableRow(c);
+				final TextView addr = new TextView(c);
+				TextView type = new TextView(c);
+				TextView ss = new TextView(c);
+
+				addr.setTextAppearance(c, android.R.style.TextAppearance_Large);
+				addr.setText(auxXBee.getAddress(i).toUpperCase());
+				addr.setId(i);
+				addr.setClickable(true);
+				addr.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+
+						callXBeeDetails(addr.getId());
+
+					}
+
+				});
+
+				type.setTextAppearance(c, android.R.style.TextAppearance_Large);
+				type.setText(auxXBee.getType(i));
+
+				ss.setTextAppearance(c, android.R.style.TextAppearance_Large);
+				ss.setText(auxXBee.getSignalStrength(i));
+
+				r.addView(addr);
+				r.addView(type);
+				r.addView(ss);
+				tlXBeeDevices.addView(r);
+
+			}
+
+		} else {
+			alert.newMessage(MessageType.DEVICES_NOT_DETECTED);
+		}
+	}
+
+	private class LoadViewTask extends AsyncTask<Void, Integer, Void> {
+
+		private int time;
+		private searchType st;
+
+		public LoadViewTask(int timeInMillisecs, searchType st) {
+			this.time = timeInMillisecs;
+			this.st = st;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			if (this.st == searchType.searchForWirelessDevices)
+				progressDialog = ProgressDialog.show(
+						XBeeConfiguratorActivity.this,
+						c.getString(R.string.Searching),
+						c.getString(R.string.SearchingDevices), false, false);
+			else if (this.st == searchType.searchForConnectedDevice)
+				progressDialog = ProgressDialog.show(
+						XBeeConfiguratorActivity.this,
+						c.getString(R.string.Searching),
+						c.getString(R.string.SearchingConnectedDevice), false,
+						false);
+
+		}
+
+		// The code to be executed in a background thread.
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				// Get the current thread's token
+				synchronized (this) {
+
+					int counter = 0;
+
+					if (this.st == searchType.searchForWirelessDevices)
+						while (counter < time) {
+
+							this.wait(1000);
+							counter += 1000;
+						}
+					else if (this.st == searchType.searchForConnectedDevice) {
+						boolean complete = false;
+						while (!complete) {
+							sendText(shRequest, TARGET_DEFAULT, "");
+							sendText(slRequest, TARGET_DEFAULT, "");
+							sendText(idRequest, TARGET_DEFAULT, "");
+
+							this.wait(1000);
+							counter += 1000;
+
+							if ((!shAddress.equals("sh")
+									&& !slAddress.equals("sl") && !panID
+										.equals("id")) || counter > time) {
+								complete = true;
+							}
+						}
+					}
+
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		// after executing the code in the thread
+		@Override
+		protected void onPostExecute(Void result) {
+			// close the progress dialog
+			progressDialog.dismiss();
+
+			if (this.st == searchType.searchForWirelessDevices)
+				populateXbeeTable();
+			else if (!shAddress.equals("sh") && !slAddress.equals("sl")
+					&& !panID.equals("id")) {
+				tvXbeeAddress.setText(shAddress.toUpperCase() + " "
+						+ slAddress.toUpperCase());
+				tvPanID.setText(panID);
+
+			} else
+				alert.newMessage(MessageType.DEVICE_NOT_FOUND);
+
+		}
+	}
+
 }
