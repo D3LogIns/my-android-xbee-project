@@ -10,7 +10,7 @@ public class AuxiliarMethods {
 		int textEndIndex = 3 + textLength;
 		for (int x = 3; x < textEndIndex; x++) {
 
-			textBuilder.append(Integer.toHexString(buffer[x]));
+			textBuilder.append(Integer.toHexString(buffer[x] & 0xFF));
 
 			if (buffer[x] == 0) {
 				textBuilder.append('0');
@@ -18,7 +18,8 @@ public class AuxiliarMethods {
 			// textBuilder.append(" ");
 			// textBuilder.append((char) buffer[x]);
 		}
-		return checkStringBuilder(textBuilder);
+		return textBuilder.toString();
+		//return checkStringBuilder(textBuilder);
 	}
 
 	private String checkStringBuilder(StringBuilder textBuilder) {
