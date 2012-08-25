@@ -84,6 +84,8 @@
     
     <string name="deviceNotFound">Device not found</string>
     
+    <string name="panIdNotChanged">The PAN ID was not be changed</string>
+    
     
         
     <!-- Strings for LoadTaskView -->
@@ -93,5 +95,9 @@
 	<string name="SearchingDevices">Searching for devices, please wait&#8230;</string>
 	
 	<string name="SearchingConnectedDevice">Searching for device, please wait&#8230;</string>
+	
+	<string name="Wait">Wait&#8230;</string>
+	
+	<string name="WaitForChange">Changes are being made, please wait&#8230;</string>
 	
 </resources>

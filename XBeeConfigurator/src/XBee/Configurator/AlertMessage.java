@@ -33,10 +33,14 @@ public class AlertMessage extends AlertDialog{
 			devicesNotDetected();
 		}else if(msg.equals(MessageType.DEVICE_NOT_FOUND)){
 			deviceNotFound();
+		}else if(msg.equals(MessageType.PAN_ID_NOT_CHANGED)){
+			panIdNotChanged();
 		}
 		
 	}
 	
+
+
 
 
 	public AuxiliarXBee newMessage(MessageType msg, String addrSensor, String addrActuator){
@@ -109,7 +113,18 @@ public class AlertMessage extends AlertDialog{
 			}
 		});
 		this.show();
-		
+	}
+	
+	private void panIdNotChanged() {
+		this.setMessage(c.getString(R.string.panIdNotChanged));
+		this.setButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		this.show();
 	}
 	
 	

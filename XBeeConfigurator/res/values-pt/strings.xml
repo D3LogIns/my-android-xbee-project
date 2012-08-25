@@ -73,7 +73,9 @@
     
     <string name="yes">Sim</string>
     
-    <string name="deviceNotFound">Dispositivo não encontrado</string>
+    <string name="deviceNotFound">Dispositivo não encontrado.</string>
+    
+    <string name="panIdNotChanged">O ID da PAN não foi alterado.</string>
     
     
     
@@ -85,4 +87,7 @@
 	
 	<string name="SearchingConnectedDevice">A procurar dispositivo, espere por favor&#8230;</string>
 
+	<string name="Wait">Aguarde&#8230;</string>
+	
+	<string name="WaitForChange">As mudanças estão a ser aplicadas, por favor aguarde&#8230;</string>
 </resources>
