@@ -9,6 +9,7 @@ public class AlertMessage extends AlertDialog{
 	Context c;
 	String language;
 	AuxiliarXBee aux;
+	SensorsAndActuators sa;
 	
 	public AlertMessage(Context c) {
 		super(c);
@@ -21,28 +22,37 @@ public class AlertMessage extends AlertDialog{
 		this.aux=a;
 	}
 	
+	public AlertMessage(Context c, SensorsAndActuators sa) {
+		super(c);
+		this.c=c;
+		this.sa=sa;
+		
+	}
+
+	/*
+	 * Method for creating a simple alert message
+	 */
 	public void newMessage(MessageType msg){
 		
 		if(msg.equals(MessageType.COORDINATOR_NOT_DETECTED)){
-			coordenatorNotDetected();
+			this.alertMessageOK(c.getString(R.string.coordNotFound));
 		}else if(msg.equals(MessageType.PAN_ID_OUT_OF_BOUNDS)){
-			panIdOutOfBounds();
+			this.alertMessageOK(c.getString(R.string.panIdOutOfBounds));
 		}else if(msg.equals(MessageType.TEXT_OUT_OF_BOUNDS)){
-			textOutOfBounds();
+			this.alertMessageOK(c.getString(R.string.textOutOfBounds));
 		}else if(msg.equals(MessageType.DEVICES_NOT_DETECTED)){
-			devicesNotDetected();
+			this.alertMessageOK(c.getString(R.string.devicesNotDetected));
 		}else if(msg.equals(MessageType.DEVICE_NOT_FOUND)){
-			deviceNotFound();
+			this.alertMessageOK(c.getString(R.string.deviceNotFound));
 		}else if(msg.equals(MessageType.PAN_ID_NOT_CHANGED)){
-			panIdNotChanged();
+			this.alertMessageOK(c.getString(R.string.panIdNotChanged));
 		}
 		
 	}
 	
-
-
-
-
+	/*
+	 * Method for creating an alert message, requiring the Sensor and Actuator addresses
+	 */
 	public AuxiliarXBee newMessage(MessageType msg, String addrSensor, String addrActuator){
 		
 		if(msg.equals(MessageType.SET_ACTUATOR)){
@@ -53,81 +63,35 @@ public class AlertMessage extends AlertDialog{
 		
 		return aux;
 	}
-
-	private void devicesNotDetected() {
-		this.setMessage(c.getString(R.string.devicesNotDetected));
-		this.setButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-
-			}
-		});
-		this.show();
-		
-	}
-
-	private void coordenatorNotDetected() {
-		this.setMessage(c.getString(R.string.coordNotFound));
-		this.setButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				System.exit(0);
-			}
-		});
-		this.show();
-	}
 	
-	private void panIdOutOfBounds(){
-		this.setMessage(c.getString(R.string.panIdOutOfBounds));
+//	public String newMessage(MessageType msg, String addrSensor, String addrActuator){
+//		if(msg.equals(MessageType.SET_ACTUATOR)){
+//			setActuator(addrSensor, addrActuator);
+//		}else if(msg.equals(MessageType.SET_SENSOR)){
+//			setSensor(addrSensor, addrActuator);
+//		}
+//		
+//		Log.d("myDebug", "yesOrNo: "+this.yesOrNo);
+//		return yesOrNo;
+//	}
+
+	/*
+	 * Creates an alert message with an OK button only
+	 */
+	private void alertMessageOK(String text){
+		this.setMessage(text);
 		this.setButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		this.show();
-	}
-
-	private void textOutOfBounds(){
-		this.setMessage(c.getString(R.string.textOutOfBounds));
-		//this.setMessage(new Languages().getMessageAlert_ValueTooHigh(language));
-		this.setButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 
 			}
 		});
 		this.show();
 	}
 	
-	private void deviceNotFound() {
-		this.setMessage(c.getString(R.string.deviceNotFound));
-		this.setButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		this.show();
-	}
-	
-	private void panIdNotChanged() {
-		this.setMessage(c.getString(R.string.panIdNotChanged));
-		this.setButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		this.show();
-	}
-	
-	
+	/*
+	 * Method to associate an actuator to a sensor
+	 */
 	private void setActuator(final String addrSensor, final String addrActuator){
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
 
@@ -138,6 +102,7 @@ public class AlertMessage extends AlertDialog{
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
+								
 									aux.associateActuatorToSensor(addrActuator, addrSensor);
 							}
 						})
@@ -148,6 +113,9 @@ public class AlertMessage extends AlertDialog{
 				}).show();
 	}
 	
+	/*
+	 * Method to associate a sensor to an actuator
+	 */
 	private void setSensor(final String addrSensor, final String addrActuator){
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
 

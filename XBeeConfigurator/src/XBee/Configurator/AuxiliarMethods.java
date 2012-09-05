@@ -2,8 +2,7 @@ package XBee.Configurator;
 
 
 public class AuxiliarMethods {
-
-
+	
 	public String getData(byte[] buffer) {
 		final StringBuilder textBuilder = new StringBuilder();
 		int textLength = buffer[2];
@@ -15,31 +14,25 @@ public class AuxiliarMethods {
 			if (buffer[x] == 0) {
 				textBuilder.append('0');
 			}
-			// textBuilder.append(" ");
-			// textBuilder.append((char) buffer[x]);
+		
 		}
-		return textBuilder.toString();
-		//return checkStringBuilder(textBuilder);
+		return textBuilder.toString().toUpperCase();
 	}
 
-	private String checkStringBuilder(StringBuilder textBuilder) {
-		// TODO Auto-generated method stub
-
-		int cont = 0;
-		for (int i = 0; i < textBuilder.length(); i++) {
-			if (textBuilder.charAt(i) == 'f')
-				cont++;
-			else
-				cont = 0;
-
-			if (cont == 6)
-				for (int j = i; j > i - cont; j--)
-					textBuilder.setCharAt(j, ' ');
-
+	public String convertByteToString(byte[] b){
+		
+		StringBuilder textBuilder = new StringBuilder();
+		
+		int middle=(b.length/2)-1; 
+		
+		for(int i=0; i<b.length; i++){
+			textBuilder.append(Integer.toHexString(b[i] & 0xFF));
+			if(i==middle)
+				textBuilder.append(" ");
 		}
-
-		return textBuilder.toString().replaceAll(" ", "")
-				.replaceAll("ffffff", "");
+		return textBuilder.toString().toUpperCase();
 	}
+	
+	
 
 }

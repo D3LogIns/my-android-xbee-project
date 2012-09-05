@@ -12,18 +12,20 @@ public class XBeeDevice implements Serializable{
 	private String sl;
 	private byte[] shByte;
 	private byte[] slByte;
+	private byte[] addressByte;
 	private String address;
 	private String type;
 	private String ss;
 	private LinkedList<String> myActuators=new LinkedList<String>();
+	private LinkedList<byte[]> myActuatorsByte=new LinkedList<byte[]>();
 	private String mySensor="";
+	private byte[] mySensorByte;
 
 	
 	
 	
 	public XBeeDevice(String a, String t, String s){
 		this.address=a;
-		
 		this.type=t;
 		this.ss=s;
 
@@ -35,6 +37,7 @@ public class XBeeDevice implements Serializable{
 		this.sl=sl;
 		this.type=type;
 		this.ss=signal_strength;
+		this.address=this.sh+" "+this.sl;
 	}
 	
 	public XBeeDevice(String sh, String sl, String type, String signal_strength, byte[] shByte, byte[] slByte){
@@ -44,14 +47,32 @@ public class XBeeDevice implements Serializable{
 		this.ss=signal_strength;
 		this.shByte=shByte;
 		this.slByte=slByte;
+		this.address=this.sh+" "+this.sl;
+		this.addressByte=new byte[shByte.length+slByte.length];
+		for(int i=0; i<(addressByte.length/2); i++){
+			addressByte[i]=shByte[i];
+			addressByte[4+i]=slByte[i];
+		}
 	}
 	
 	public void setActuator(String addr){
 		myActuators.add(addr);
 	}
 	
+	public void setActuator(byte[] addr){
+		myActuatorsByte.add(addr);
+	}
+	
+	public void setActuators(LinkedList<String> actuators){
+		myActuators=actuators;
+	}
+	
 	public void setSensor(String addr){
 		mySensor=addr;
+	}
+	
+	public void setSensorByte(byte[] addr){
+		mySensorByte=addr;
 	}
 	
 	
@@ -72,8 +93,12 @@ public class XBeeDevice implements Serializable{
 		return this.slByte;
 	}
 	
-	public String getAdress() {
-		return this.sh+" "+this.sl;
+	public String getAddress() {
+		return this.address;
+	}
+	
+	public byte[] getAddressByte(){
+		return this.addressByte;
 	}
 
 	public String getType() {
@@ -88,13 +113,22 @@ public class XBeeDevice implements Serializable{
 		return mySensor;
 	}
 	
+	public byte[] getMySensorByte(){
+		return mySensorByte;
+	}
+	
 	
 	public LinkedList<String> getMyActuators(){
 		return myActuators;
 	}
 	
+	public LinkedList<byte[]> getMyActuatorsByte(){
+		return myActuatorsByte;
+	}
+	
 	public void removeSensor(){
 		mySensor="";
+		mySensorByte=null;
 	}
 	
 	public void removeActuator(String addr){

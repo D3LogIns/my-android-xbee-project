@@ -37,11 +37,11 @@
     
     <!-- Strings para o XBeeDetailsActivity -->
     
-    <string name="listOfChilds">Dispositivos filhos</string>
+    <string name="listOfChilds">Dispositivos filhos:</string>
     
-    <string name="listOfSensors">Lista de Sensores</string>
+    <string name="listOfSensors">Lista de Sensores:</string>
     
-    <string name="listOfActuators">Lista de Actuadores</string>
+    <string name="listOfActuators">Lista de Actuadores:</string>
     
     
     
