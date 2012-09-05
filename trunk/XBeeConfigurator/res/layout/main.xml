@@ -97,6 +97,13 @@
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     </TableRow>
+    
+    <View
+	    android:id="@+id/firstDivider"
+        android:layout_height="2dp"
+        android:layout_width="fill_parent"
+        android:background="#808080"
+    />
     		
     <TableRow>
     	<Button

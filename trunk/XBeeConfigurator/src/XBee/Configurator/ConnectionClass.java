@@ -2,9 +2,7 @@ package XBee.Configurator;
 
 import java.util.LinkedList;
 import java.util.Random;
-
 import android.content.Context;
-import android.widget.TextView;
 
 public class ConnectionClass {
 	
@@ -23,7 +21,10 @@ public class ConnectionClass {
 		Random r = new Random();
 		int numXbee = (r.nextInt(11));
 
-		String address = "142AFC2D00C";
+		String sh="142A3E5F";
+		String sl = "122D4B";
+		byte[] shB={0x14, 0x2A,0x3E,0x5f};
+		byte[] slB={0x12,0x2D, 0x4B, 0x0};
 		int type = 3;
 		String sType = "UNDEFINED";
 		String ss = "DEFAULT";
@@ -63,8 +64,8 @@ public class ConnectionClass {
 			case 5:
 				ss = "Muito Fraco";
 			}
-
-			xbee.add(new XBeeDevice(address + i, sType, ss));
+			slB[3]=Byte.valueOf(String.valueOf(i));
+			xbee.add(new XBeeDevice(sh,sl + i, sType, ss, shB, slB));
 
 		}
 	}

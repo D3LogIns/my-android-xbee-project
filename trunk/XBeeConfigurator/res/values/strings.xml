@@ -36,34 +36,13 @@
     
     <!-- Strings for XBeeDetailsActivity -->
     
-    <string name="listOfChilds">Child Devices</string>
+    <string name="listOfChilds">Child Devices:</string>
     
-    <string name="listOfSensors">List Of Sensors</string>
+    <string name="listOfSensors">List Of Sensors:</string>
     
-    <string name="listOfActuators">List of Actuators</string>
+    <string name="listOfActuators">List of Actuators:</string>
     
-    
-    
-    <!-- Strings for Preferences Activity -->
-    
-    <string name="languageSelect">Select Language</string>
-    
-    <string name="languageSummary">This options allows you to change application language</string>
-
-	<string-array name="listArray">
-		<item name="EN">English</item>
-		<item name="PT">Português</item>
-	</string-array>
-	     
-	<string-array name="listValues">
-		<item name="EN">EN</item>
-		<item name="PT">PT</item>
-	</string-array>
-	    
-	<string name="Preferences">Preferences</string>
-	
-	  
-	    
+		    
 	<!-- Strings for AlertDialog -->
     
     <string name="coordNotFound">Coordinator not found!\nApplication will be terminated.</string>
