@@ -13,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
@@ -78,6 +79,12 @@ public class XBeeConfiguratorActivity extends Activity {
 	private ConnectionClass cc;
 	private AuxiliarXBee auxXBee;
 	private SensorsAndActuators sa;
+	
+	// COLOR VARIABLES
+	private String green="#7EFFA6";
+	private String black="#000000";
+	private String light_grey="#F3F5E7";
+			
 
 	// OTHER VARIABLES
 	private ProgressDialog progressDialog;
@@ -197,6 +204,9 @@ public class XBeeConfiguratorActivity extends Activity {
 	 */
 
 	private void inicialization() {
+		
+		//progressDialog = new ProgressDialog(XBeeConfiguratorActivity.this, R.style.Theme_MyDialog);
+		progressDialog = new ProgressDialog(c);
 
 		/*
 		 * XBEE DETECTED DEVICES TABLE
@@ -208,7 +218,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		 */
 		final Button bOK = (Button) findViewById(R.id.bOKPan);
 		Button bDetect = (Button) findViewById(R.id.bDetectDevices);
-		Button brefresh = (Button) findViewById(R.id.bRefresh);
+		Button bRefresh = (Button) findViewById(R.id.bRefresh);
 		final Button bAssociate = (Button) findViewById(R.id.bOK_Associate);
 		bOK.setEnabled(false);
 
@@ -220,6 +230,10 @@ public class XBeeConfiguratorActivity extends Activity {
 		tvXbeeAddress = (TextView) findViewById(R.id.tvCoordAdress);
 		tvPanID = (TextView) this.findViewById(R.id.tvPanID);
 		final EditText etAssociate = (EditText) findViewById(R.id.editAssociateDevice);
+		
+		
+//		progressDialog=new ProgressDialog=new ProgressDialog(this, R.sty);
+		
 
 		/*
 		 * #############################
@@ -228,7 +242,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		 * 
 		 * #############################
 		 */
-
+	
 		etPan.addTextChangedListener(new TextWatcher() {
 
 			// METHOD THAT CHECKS IF THE TEXT IS CHANGED
@@ -343,7 +357,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		});
 
 		// REFRESH BUTTON
-		brefresh.setOnClickListener(new OnClickListener() {
+		bRefresh.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 
 					retrieveXBeeAddress();
@@ -357,30 +371,27 @@ public class XBeeConfiguratorActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+				xbee.clear();
+				auxXBee.clearList();
 
 				/*
 				 * 
 				 * METODOS PARA A CRIACAO DE NOS VIRTUAIS
 				 */
-				// xbee.clear();
-				// auxXBee.clearList();
-				// cc.searchXBeeDevices();
-				// tlXBeeDevices.removeAllViews();
-				// xbee=cc.getList();
-				// populateXbeeTable();
+				 cc.searchXBeeDevices();
+				 tlXBeeDevices.removeAllViews();
+				 xbee=cc.getList();
+				 populateXbeeTable();
 
 				/*
 				 * METODOS NECESSARIOS PARA A DETECACAO DE NOS NA REDE
 				 */
-				xbee.clear();
-				auxXBee.clearList();
-
-				tlXBeeDevices.removeAllViews();
-
-				new SimpleRequestThread(NODE_DISCOVERY_REQUEST, TARGET_DEFAULT,
-						"1").run();
-				new LoadingScreen(10000, searchType.searchForWirelessDevices)
-						.execute();
+//				tlXBeeDevices.removeAllViews();
+//
+//				new SimpleRequestThread(NODE_DISCOVERY_REQUEST, TARGET_DEFAULT,
+//						"1").run();
+//				new LoadingScreen(10000, searchType.searchForWirelessDevices)
+//						.execute();
 
 			}
 
@@ -768,12 +779,43 @@ public class XBeeConfiguratorActivity extends Activity {
 	private void populateXbeeTable() {
 		if (xbee.size() > 0) {
 			auxXBee.setList(xbee);
+			TableRow tr=new TableRow(c);
+			TextView a=new TextView(c);
+			TextView t=new TextView(c);
+			TextView s=new TextView(c);
+			
+			a.setText(R.string.address);
+			a.setTextAppearance(c, android.R.style.TextAppearance_Large);
+			
+			t.setText(R.string.type);
+			t.setTextAppearance(c, android.R.style.TextAppearance_Large);
+			
+			s.setText(R.string.signalStrength);
+			
+			s.setTextAppearance(c, android.R.style.TextAppearance_Large);
+			
+			
+			tr.setBackgroundColor(Color.parseColor(light_grey));
+			tr.setPadding(0, 10, 0, 10);
+			
+			a.setTextColor(Color.parseColor(black));
+			t.setTextColor(Color.parseColor(black));
+			s.setTextColor(Color.parseColor(black));
+			
+			tr.addView(a);
+			tr.addView(t);
+			tr.addView(s);
+			tlXBeeDevices.addView(tr);
+			
 			for (int i = 0; i != auxXBee.getListSize(); i++) {
 
 				TableRow r = new TableRow(c);
 				final TextView addr = new TextView(c);
 				TextView type = new TextView(c);
 				TextView ss = new TextView(c);
+				
+				
+
 
 				addr.setTextAppearance(c, android.R.style.TextAppearance_Large);
 				addr.setText(auxXBee.getAddress(i).toUpperCase());
@@ -796,7 +838,18 @@ public class XBeeConfiguratorActivity extends Activity {
 
 				ss.setTextAppearance(c, android.R.style.TextAppearance_Large);
 				ss.setText(auxXBee.getSignalStrength(i));
+				
+				r.setPadding(0, 10, 0, 10);
+				if(i%2==0){
+					r.setBackgroundColor(Color.parseColor(green));
+				}else{
+					r.setBackgroundColor(Color.parseColor(light_grey));
+				}
 
+				addr.setTextColor(Color.parseColor(black));
+				type.setTextColor(Color.parseColor(black));
+				ss.setTextColor(Color.parseColor(black));
+				
 				r.addView(addr);
 				r.addView(type);
 				r.addView(ss);
@@ -868,6 +921,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		public LoadingScreen(int timeInMillisecs, searchType st) {
 			this.time = timeInMillisecs;
 			this.st = st;
+			
 		}
 
 		@Override
@@ -880,18 +934,25 @@ public class XBeeConfiguratorActivity extends Activity {
 			// Toast.makeText(c, "NAO ENCONTRADO", Toast.LENGTH_LONG).show();
 			// }
 
-			if (this.st == searchType.searchForWirelessDevices)
+			if (this.st == searchType.searchForWirelessDevices){
 				progressDialog = ProgressDialog.show(
 						XBeeConfiguratorActivity.this,
 						c.getString(R.string.Searching),
 						c.getString(R.string.SearchingDevices), false, false);
-			else if (this.st == searchType.searchForConnectedDevice)
+			
+			}else if (this.st == searchType.searchForConnectedDevice){
+
+//				progressDialog.setTitle("sdf");
+//				progressDialog.setMessage("dsfsdfsdf");
+//				progressDialog.setCancelable(false);  
+//	            progressDialog.setIndeterminate(false);
+//	            progressDialog.show();
 				progressDialog = ProgressDialog.show(
 						XBeeConfiguratorActivity.this,
 						c.getString(R.string.Searching),
 						c.getString(R.string.SearchingConnectedDevice), false,
 						false);
-			else if (this.st == searchType.changePan)
+			}else if (this.st == searchType.changePan)
 				progressDialog = ProgressDialog.show(
 						XBeeConfiguratorActivity.this,
 						c.getString(R.string.Wait),

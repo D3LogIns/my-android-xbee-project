@@ -1,199 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:stretchColumns="*"
-    android:id="@+id/main"
-    >
-     
+    android:background="#F3F5E7"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:stretchColumns="*" >
 
     <TableRow>
+
         <TextView
             android:layout_column="0"
-            android:text="XBee Configurator"
             android:padding="3dip"
+            android:text="@string/deviceType"
             android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+            android:textColor="#000000" />
+
+        <TextView
+            android:layout_column="1"
+            android:padding="3dip"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
     </TableRow>
-    
+
     <TableRow>
 
         <TextView
             android:layout_column="0"
             android:padding="3dip"
             android:text="@string/opPanId"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
 
         <TextView
-            android:layout_column="1"
             android:id="@+id/tvPanID"
+            android:layout_column="1"
             android:padding="3dip"
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
 
-        	<!-- android:onClick="onButtonClicked" -->
-        	
+        <!-- android:onClick="onButtonClicked" -->
 
-    
     </TableRow>
-    
+
     <TableRow>
-    	<TextView
-    		android:layout_column="0"
-    		android:text="@string/address"
-    		android:padding="3dip" 
-    		android:textAppearance="?android:attr/textAppearanceLarge"   	
-    	/>
-    	
-    	<TextView
-    		android:layout_column="1"
-    		android:id="@+id/tvCoordAdress"
-    		android:padding="3dip"
-    		android:textAppearance="?android:attr/textAppearanceLarge"
-    	/>
-    	
-    	<!--  REFRESH BUTTON -->
-    	
-    	<Button
-    		android:layout_column="2"
-    		android:id="@+id/bRefresh"
-    		android:layout_width="fill_parent"
-        	android:layout_height="wrap_content"
-        	android:text="@string/bRefresh"
-        	android:state_enabled="true"
-        	android:textAppearance="?android:attr/textAppearanceLarge"/>
-    	
-        	<!-- android:onClick="onButtonClicked" -->
 
-    	
+        <TextView
+            android:layout_column="0"
+            android:padding="3dip"
+            android:text="@string/address"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/tvCoordAdress"
+            android:layout_column="1"
+            android:padding="3dip"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
+
+        <!-- REFRESH BUTTON -->
+
+        <Button
+            android:id="@+id/bRefresh"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="2"
+            android:background="@drawable/button"
+            android:state_enabled="true"
+            android:text="@string/bRefresh"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
+
+        <!-- android:onClick="onButtonClicked" -->
+
     </TableRow>
-    
-        <!-- LINE DIVIDER -->
+
+    <!-- LINE DIVIDER -->
+
     <View
-	    android:id="@+id/firstDivider"
-        android:layout_height="2dp"
         android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="#F3F5E7"
+        android:padding="13dip" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
         android:background="#808080"
-    />
-    
+        android:padding="10dip" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="#F3F5E7"
+        android:padding="13dip" />
+
     <!-- CONFIGURATIONS SECTION -->
-    
+
     <TableRow android:layout_height="match_parent" >
 
         <TextView
             android:layout_column="0"
             android:padding="3dip"
-            android:text="PAN ID" 
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:text="PAN ID"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
 
         <EditText
-            android:layout_column="1"
             android:id="@+id/editPan"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="1"
+            android:background="@drawable/rounded_edit_text"
             android:ems="10"
-            android:gravity="right"
-            android:inputType="number" 
-            android:textAppearance="?android:attr/textAppearanceLarge">
-
+            android:gravity="center"
+            android:inputType="number"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" >
         </EditText>
 
         <Button
-            android:layout_column="2"
             android:id="@+id/bOKPan"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
+            android:layout_column="2"
+            android:background="@drawable/button"
             android:state_enabled="false"
             android:text="OK"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
-
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
     </TableRow>
-    
-    <TableRow android:layout_height="match_parent">
-        
-        <TextView 
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="#F3F5E7"
+        android:padding="40dip" />
+
+    <TableRow android:layout_height="match_parent" >
+
+        <TextView
             android:layout_column="0"
             android:padding="3dip"
             android:text="@string/associateThisAddressDevice"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            />
-        
-        <EditText 
-            android:layout_column="1"
+            android:textColor="#000000" />
+
+        <EditText
             android:id="@+id/editAssociateDevice"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_column="1"
+            android:background="@drawable/rounded_edit_text"
             android:ems="10"
-            android:gravity="right"
+            android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            />
-        
+            android:textColor="#000000" />
+
         <Button
-            android:layout_column="2"
             android:id="@+id/bOK_Associate"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
+            android:layout_column="2"
+            android:background="@drawable/button"
             android:enabled="false"
             android:text="OK"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
-        
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
     </TableRow>
-    
-    <!-- LINE DIVIDER -->
-    <View
-	    android:id="@+id/secondDivider"
-        android:layout_height="2dp"
-        android:layout_width="fill_parent"
-        android:background="#808080"
-    />
-    		
-    <!-- DETECT BUTTON -->
-    <TableRow>
-    	<Button
-    		android:layout_column="0"
-    		android:id="@+id/bDetectDevices"
-    		android:layout_width="fill_parent"
-        	android:layout_height="wrap_content"
-        	android:text="@string/bDetect"
-        	android:onClick="onButtonClicked"
-        	android:textAppearance="?android:attr/textAppearanceLarge"
-        	/>
 
-    </TableRow>
-    
-    <!-- DETECTED DEVICES TABLE -->
-    
+    <!-- LINE DIVIDER -->
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="#F3F5E7"
+        android:padding="13dip" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#808080"
+        android:padding="10dip" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="#F3F5E7"
+        android:padding="13dip" />
+
+    <!-- DETECT BUTTON -->
+
     <TableRow>
-    	<TextView
-    		android:layout_column="0"
-    		android:text="@string/address"
-    		android:padding="3dip"
-    		android:textAppearance="?android:attr/textAppearanceLarge"
-    	/>
-    	
-    	<TextView
-    		android:layout_column="1"
-    		android:text="@string/type"
-    		android:padding="3dip"
-    		android:textAppearance="?android:attr/textAppearanceLarge"
-    	/>
-    	
-    	<TextView
-    		android:layout_column="2"
-    		android:text="@string/signalStrength"
-    		android:padding="3dip"
-    		android:textAppearance="?android:attr/textAppearanceLarge"
-    	/>
+
+        <Button
+            android:id="@+id/bDetectDevices"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:background="@drawable/button"
+            android:onClick="onButtonClicked"
+            android:text="@string/bDetect"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#000000" />
     </TableRow>
-    
+
+    <!-- DETECTED DEVICES TABLE -->
+
     <TableLayout
-    	android:id="@+id/tlXBeeDevices"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"
-    	android:stretchColumns="*">
-    	
-    	
-    
+        android:id="@+id/tlXBeeDevices"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:stretchColumns="*" >
     </TableLayout>
-    
- </TableLayout>
+
+</TableLayout>
