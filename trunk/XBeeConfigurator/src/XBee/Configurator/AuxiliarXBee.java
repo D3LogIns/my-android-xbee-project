@@ -71,41 +71,41 @@ public class AuxiliarXBee implements Serializable {
 		}
 	}
 	
-	public void associateActuatorToSensor(byte[] addrActuator, byte[] addrSensor) {
-
-		for (int i = 0; i < xbee.size(); i++) {
-			if (xbee.get(i).getAddress().equals(addrSensor)) {
-				addActuator(addrActuator, i);
-			} else if (xbee.get(i).getAddress().equals(addrActuator)) {
-				setSensor(addrSensor, i);
-			}
-		}
-	}
+//	public void associateActuatorToSensor(byte[] addrActuator, byte[] addrSensor) {
+//
+//		for (int i = 0; i < xbee.size(); i++) {
+//			if (xbee.get(i).getAddress().equals(addrSensor)) {
+//				addActuator(addrActuator, i);
+//			} else if (xbee.get(i).getAddress().equals(addrActuator)) {
+//				setSensor(addrSensor, i);
+//			}
+//		}
+//	}
 	
 	/*
 	 * Method to add an actuator
 	 */
-	private void addActuator(String addrActuator, int pos){
-		/*
-		 * Code to prevent duplicated entries
-		 * 1- If the list is empty then adds an actuator without a problem
-		 * 2- If it's not empty, it'll check if the address received 
-		 *    exists already in the list
-		 */
-		if (xbee.get(pos).getMyActuators().size() == 0)
-			xbee.get(pos).setActuator(addrActuator);
-		else {
-			int repetitions = 0;
-			for (int j = 0; j < xbee.get(pos).getMyActuators().size(); j++) {
-				if (xbee.get(pos).getMyActuators().get(j)
-						.equals(addrActuator))
-					repetitions++;
-			}
-			if (repetitions == 0)
-				xbee.get(pos).setActuator(addrActuator);
-		}
-	}
-	
+//	private void addActuator(String addrActuator, int pos){
+//		/*
+//		 * Code to prevent duplicated entries
+//		 * 1- If the list is empty then adds an actuator without a problem
+//		 * 2- If it's not empty, it'll check if the address received 
+//		 *    exists already in the list
+//		 */
+//		if (xbee.get(pos).getMyActuators().size() == 0)
+//			xbee.get(pos).setActuator(addrActuator);
+//		else {
+//			int repetitions = 0;
+//			for (int j = 0; j < xbee.get(pos).getMyActuators().size(); j++) {
+//				if (xbee.get(pos).getMyActuators().get(j)
+//						.equals(addrActuator))
+//					repetitions++;
+//			}
+//			if (repetitions == 0)
+//				xbee.get(pos).setActuator(addrActuator);
+//		}
+//	}
+//	
 	private void addActuator(byte[] addrActuator, int pos){
 		/*
 		 * Code to prevent duplicated entries
@@ -223,14 +223,31 @@ public class AuxiliarXBee implements Serializable {
 	 ##############################*/
 
 	public void removeActuatorFromSensor(String addrActuator, String addrSensor) {
-
+		byte[] addSen=null;
+		byte[] addAct=null;
+		
+		int posS=-1;
+		int posA=-1;
+		
+		
 		for (int i = 0; i < xbee.size(); i++) {
-			if (xbee.get(i).getAddress().equals(addrSensor)
-					&& xbee.get(i).getMyActuators().size() > 0) {
-				xbee.get(i).removeActuator(addrActuator);
-				break;
+			if (xbee.get(i).getAddress().equals(addrSensor) && xbee.get(i).getMyActuators().size() > 0) {
+				addSen=xbee.get(i).getAddressByte();
+				posS=i;
+				
+//				xbee.get(i).removeActuator(addrActuator);
+				
+			}else if(xbee.get(i).getAddress().equals(addrActuator)){
+				addAct=xbee.get(i).getAddressByte();
+				posA=i;
+//				xbee.get(i).removeSensor();
 			}
 		}
+		if(addSen!=null && addAct!=null && posS>-1 && posA>-1 ){
+			xbee.get(posS).removeActuator(addAct, addrActuator);
+			xbee.get(posA).removeSensor();
+		}
+		
 	}
 	
 	public void clearList() {

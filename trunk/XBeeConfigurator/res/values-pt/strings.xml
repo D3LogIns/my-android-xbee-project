@@ -12,10 +12,18 @@
     <string name="type">Tipo</string>
     
 	<string name="sensor">Sensor</string>
+	
+	<string name="motionSensor">Sensor de\nMovimento</string>
+    
+    <string name="luminanceSensor">Sensor de\nLuminância</string>
 
 	<string name="actuator">Actuador</string>
     
 	<string name="router">Router</string>
+	
+	<string name="routerMotionSensor">Router com sensor\n de movimento</string>
+	
+	<string name="routerLuminanceSensor">Router com sensor\nde luminância</string>
 
 	<string name="coordinator">Coordenador</string>
 	
@@ -29,9 +37,11 @@
     
     <string name="opPanId">PAN ID actual</string>
     
-    <string name="bDetect">Detectar</string>
+    <string name="bDetect">Detectar Dispositivos</string>
     
     <string name="bRefresh">Actualizar</string>
+    
+    <string name="associateThisAddressDevice">Associar este dispositivo:</string>
     
     
     
@@ -76,6 +86,16 @@
     <string name="deviceNotFound">Dispositivo não encontrado.</string>
     
     <string name="panIdNotChanged">O ID da PAN não foi alterado.</string>
+    
+    <string name="removeActuator">Tem a certeza que quer desassociar este actuador?</string>
+    
+    <string name="removeSensor">Tem a certeza que quer desassociar deste sensor?</string>
+    
+    <string name="addressNotAcceptable">O endereço não é aceitável.\n(Por favor, insira letras entre A&#8211;F e números entre 0&#8211;9)</string>
+    
+    <string name="addressOutOfBounds">O comprimento do endereço é demasiado alto.\nO endereço deve ter 14 &#8211; 16 caracteres.</string>
+    
+    <string name="addressShortLength">O comprimento do endereço é demasiado baixo.\nO endereço deve ter 14 &#8211; 16 caracteres.</string>
     
     
     

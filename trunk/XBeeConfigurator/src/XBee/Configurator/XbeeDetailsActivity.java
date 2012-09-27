@@ -128,11 +128,21 @@ public class XbeeDetailsActivity extends Activity {
 	private void populateAssociatedDevicesTable(){
 		for(int i=0;i!=xbee.getMyActuators(position).size();i++){
 			TableRow r=new TableRow(this);
-			TextView a=new TextView(this);
+			final TextView a=new TextView(this);
 			
 			a.setClickable(true);
 			a.setTextAppearance(c, android.R.style.TextAppearance_Large);
 			a.setText(xbee.getMyActuators(position).get(i));
+			
+			a.setOnClickListener(new OnClickListener(){
+
+				@Override
+				public void onClick(View arg0) {
+					
+					xbee=alert.newMessage(MessageType.REMOVE_ACTUATOR, xbee.getAddress(position), a.getText().toString());
+				}
+				
+			});
 			
 			r.addView(a);
 			associatedDevices.addView(r);
