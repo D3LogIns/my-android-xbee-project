@@ -10,7 +10,7 @@
     <TableRow>
         <TextView
             android:layout_column="0"
-            android:text="XBee Coordinator"
+            android:text="XBee Configurator"
             android:padding="3dip"
             android:textAppearance="?android:attr/textAppearanceLarge"
         />
@@ -33,7 +33,7 @@
 
         	<!-- android:onClick="onButtonClicked" -->
         	
-    	/>	
+
     
     </TableRow>
     
@@ -52,6 +52,8 @@
     		android:textAppearance="?android:attr/textAppearanceLarge"
     	/>
     	
+    	<!--  REFRESH BUTTON -->
+    	
     	<Button
     		android:layout_column="2"
     		android:id="@+id/bRefresh"
@@ -65,6 +67,16 @@
 
     	
     </TableRow>
+    
+        <!-- LINE DIVIDER -->
+    <View
+	    android:id="@+id/firstDivider"
+        android:layout_height="2dp"
+        android:layout_width="fill_parent"
+        android:background="#808080"
+    />
+    
+    <!-- CONFIGURATIONS SECTION -->
     
     <TableRow android:layout_height="match_parent" >
 
@@ -84,7 +96,6 @@
             android:inputType="number" 
             android:textAppearance="?android:attr/textAppearanceLarge">
 
-            <requestFocus />
         </EditText>
 
         <Button
@@ -98,13 +109,45 @@
 
     </TableRow>
     
+    <TableRow android:layout_height="match_parent">
+        
+        <TextView 
+            android:layout_column="0"
+            android:padding="3dip"
+            android:text="@string/associateThisAddressDevice"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+        
+        <EditText 
+            android:layout_column="1"
+            android:id="@+id/editAssociateDevice"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:gravity="right"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            />
+        
+        <Button
+            android:layout_column="2"
+            android:id="@+id/bOK_Associate"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:enabled="false"
+            android:text="OK"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+        
+    </TableRow>
+    
+    <!-- LINE DIVIDER -->
     <View
-	    android:id="@+id/firstDivider"
+	    android:id="@+id/secondDivider"
         android:layout_height="2dp"
         android:layout_width="fill_parent"
         android:background="#808080"
     />
     		
+    <!-- DETECT BUTTON -->
     <TableRow>
     	<Button
     		android:layout_column="0"
@@ -117,6 +160,8 @@
         	/>
 
     </TableRow>
+    
+    <!-- DETECTED DEVICES TABLE -->
     
     <TableRow>
     	<TextView

@@ -46,6 +46,12 @@ public class AlertMessage extends AlertDialog{
 			this.alertMessageOK(c.getString(R.string.deviceNotFound));
 		}else if(msg.equals(MessageType.PAN_ID_NOT_CHANGED)){
 			this.alertMessageOK(c.getString(R.string.panIdNotChanged));
+		}else if(msg.equals(MessageType.ADDRESS_NOT_ACCEPTABLE)){
+			this.alertMessageOK(c.getString(R.string.addressNotAcceptable));
+		}else if(msg.equals(MessageType.ADDRESS_OUT_OF_BOUNDS)){
+			this.alertMessageOK(c.getString(R.string.addressOutOfBounds));
+		}else if(msg.equals(MessageType.ADDRESS_SHORT_LENGTH)){
+			this.alertMessageOK(c.getString(R.string.addressShortLength));
 		}
 		
 	}
@@ -56,14 +62,20 @@ public class AlertMessage extends AlertDialog{
 	public AuxiliarXBee newMessage(MessageType msg, String addrSensor, String addrActuator){
 		
 		if(msg.equals(MessageType.SET_ACTUATOR)){
-			setActuator(addrSensor, addrActuator);
+//			setActuator(addrSensor, addrActuator);
+			setActuatorAndSensor(addrSensor, addrActuator, c.getString(R.string.setActuator));
 		}else if(msg.equals(MessageType.SET_SENSOR)){
-			setSensor(addrSensor, addrActuator);
+//			setSensor(addrSensor, addrActuator);
+			setActuatorAndSensor(addrSensor, addrActuator, c.getString(R.string.setSensor));
+		}else if(msg.equals(MessageType.REMOVE_ACTUATOR)){
+			removeActuatorAndSensor(addrSensor, addrActuator, c.getString(R.string.removeActuator));
 		}
 		
 		return aux;
 	}
 	
+
+
 //	public String newMessage(MessageType msg, String addrSensor, String addrActuator){
 //		if(msg.equals(MessageType.SET_ACTUATOR)){
 //			setActuator(addrSensor, addrActuator);
@@ -76,7 +88,7 @@ public class AlertMessage extends AlertDialog{
 //	}
 
 	/*
-	 * Creates an alert message with an OK button only
+	 * Creates a simple alert message with an OK button only
 	 */
 	private void alertMessageOK(String text){
 		this.setMessage(text);
@@ -92,17 +104,65 @@ public class AlertMessage extends AlertDialog{
 	/*
 	 * Method to associate an actuator to a sensor
 	 */
-	private void setActuator(final String addrSensor, final String addrActuator){
+//	private void setActuator(final String addrSensor, final String addrActuator){
+//		AlertDialog.Builder b = new AlertDialog.Builder(c);
+//
+//		b.setMessage(c.getString(R.string.setActuator))
+//				.setPositiveButton(c.getString(R.string.yes),
+//						new DialogInterface.OnClickListener() {
+//
+//							@Override
+//							public void onClick(DialogInterface dialog,
+//									int which) {
+//								
+//									aux.associateActuatorToSensor(addrActuator, addrSensor);
+//							}
+//						})
+//				.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int id) {
+//						dialog.cancel();
+//					}
+//				}).show();
+//	}
+	
+	/*
+	 * Method to associate a sensor to an actuator
+	 */
+//	private void setSensor(final String addrSensor, final String addrActuator){
+//		AlertDialog.Builder b = new AlertDialog.Builder(c);
+//
+//		b.setMessage(c.getString(R.string.setSensor))
+//		.setPositiveButton(c.getString(R.string.yes),
+//				new DialogInterface.OnClickListener() {
+//
+//					@Override
+//					public void onClick(DialogInterface dialog,
+//							int which) {
+//							aux.associateActuatorToSensor(addrActuator, addrSensor);
+//					}
+//				})
+//		.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				dialog.cancel();
+//			}
+//		}).show();
+//	}
+	
+	/*
+	 * 
+	 * Sets an Actuator to a Sensor and vice-versa 
+	 * 
+	 */
+	private void setActuatorAndSensor(final String addrSensor, final String addrActuator, String text){
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
-
-		b.setMessage(c.getString(R.string.setActuator))
+		
+				b.setMessage(text)
 				.setPositiveButton(c.getString(R.string.yes),
 						new DialogInterface.OnClickListener() {
-
+		
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								
 									aux.associateActuatorToSensor(addrActuator, addrSensor);
 							}
 						})
@@ -114,19 +174,21 @@ public class AlertMessage extends AlertDialog{
 	}
 	
 	/*
-	 * Method to associate a sensor to an actuator
+	 * 
+	 * Dissassociates an actuator from a sensor
+	 * 
 	 */
-	private void setSensor(final String addrSensor, final String addrActuator){
+	private void removeActuatorAndSensor(final String addrSensor,final String addrActuator, String text) {
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
-
-		b.setMessage(c.getString(R.string.setSensor))
+		
+		b.setMessage(text)
 		.setPositiveButton(c.getString(R.string.yes),
 				new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog,
 							int which) {
-							aux.associateActuatorToSensor(addrActuator, addrSensor);
+							aux.removeActuatorFromSensor(addrActuator, addrSensor);
 					}
 				})
 		.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -134,5 +196,6 @@ public class AlertMessage extends AlertDialog{
 				dialog.cancel();
 			}
 		}).show();
+		
 	}
 }

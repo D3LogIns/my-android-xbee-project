@@ -12,9 +12,17 @@
     
     <string name="sensor">Sensor</string>
     
+    <string name="motionSensor">Motion Sensor</string>
+    
+    <string name="luminanceSensor">Luminance Sensor</string>
+    
     <string name="actuator">Actuator</string>
     
     <string name="router">Router</string>
+    
+    <string name="routerMotionSensor">Router motion\nsensor</string>
+    
+    <string name="routerLuminanceSensor">Router luminance\nsensor</string>
     
     <string name="coordinator">Coordinator</string>
     
@@ -28,9 +36,11 @@
     
     <string name="opPanId">Operating PAN ID</string>
     
-    <string name="bDetect">Detect</string>
+    <string name="bDetect">Detect Devices</string>
     
     <string name="bRefresh">Refresh</string>
+    
+    <string name="associateThisAddressDevice">Associate this device:</string>
     
     
     
@@ -64,6 +74,16 @@
     <string name="deviceNotFound">Device not found</string>
     
     <string name="panIdNotChanged">The PAN ID was not be changed</string>
+    
+    <string name="removeActuator">Are you sure you want to dissasociate this actuator?</string>
+    
+    <string name="removeSensor">Are you sure you want to dissasociate from this sensor?</string>
+    
+    <string name="addressNotAcceptable">The inserted address is not acceptable./nPlease insert letters between A &#8211; F and numbers between 0 &#8211; 9.</string>
+    
+    <string name="addressOutOfBounds">Address length ist too high, address must be 14 &#8211; 16 characters length.</string>
+    
+    <string name="addressShortLength">Address length is too short, address must be 14 &#8211; 16 characters length.</string>
     
     
         
