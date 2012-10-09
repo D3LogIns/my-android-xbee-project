@@ -52,6 +52,10 @@ public class AlertMessage extends AlertDialog{
 			this.alertMessageOK(c.getString(R.string.addressOutOfBounds));
 		}else if(msg.equals(MessageType.ADDRESS_SHORT_LENGTH)){
 			this.alertMessageOK(c.getString(R.string.addressShortLength));
+		}else if(msg.equals(MessageType.ACTUATORS_LIMIT_REACHED)){
+			this.alertMessageOK(c.getString(R.string.actuatorLimitReached));
+		}else if(msg.equals(MessageType.SENSOR_LIMIT_REACHED)){
+			this.alertMessageOK(c.getString(R.string.sensorLimitReached));
 		}
 		
 	}
@@ -59,33 +63,18 @@ public class AlertMessage extends AlertDialog{
 	/*
 	 * Method for creating an alert message, requiring the Sensor and Actuator addresses
 	 */
-	public AuxiliarXBee newMessage(MessageType msg, String addrSensor, String addrActuator){
+	public AuxiliarXBee newMessage(MessageType msg, String addrSensor, String addrActuator, String type){
 		
 		if(msg.equals(MessageType.SET_ACTUATOR)){
 //			setActuator(addrSensor, addrActuator);
-			setActuatorAndSensor(addrSensor, addrActuator, c.getString(R.string.setActuator));
-		}else if(msg.equals(MessageType.SET_SENSOR)){
-//			setSensor(addrSensor, addrActuator);
-			setActuatorAndSensor(addrSensor, addrActuator, c.getString(R.string.setSensor));
+			setActuatorAndSensor(addrSensor, addrActuator, type, c.getString(R.string.setActuator)+"\n"+addrActuator);
+
 		}else if(msg.equals(MessageType.REMOVE_ACTUATOR)){
-			removeActuatorAndSensor(addrSensor, addrActuator, c.getString(R.string.removeActuator));
+			removeActuatorAndSensor(addrSensor, addrActuator, c.getString(R.string.removeActuator)+"\n"+addrActuator);
 		}
 		
 		return aux;
 	}
-	
-
-
-//	public String newMessage(MessageType msg, String addrSensor, String addrActuator){
-//		if(msg.equals(MessageType.SET_ACTUATOR)){
-//			setActuator(addrSensor, addrActuator);
-//		}else if(msg.equals(MessageType.SET_SENSOR)){
-//			setSensor(addrSensor, addrActuator);
-//		}
-//		
-//		Log.d("myDebug", "yesOrNo: "+this.yesOrNo);
-//		return yesOrNo;
-//	}
 
 	/*
 	 * Creates a simple alert message with an OK button only
@@ -101,59 +90,13 @@ public class AlertMessage extends AlertDialog{
 		this.show();
 	}
 	
-	/*
-	 * Method to associate an actuator to a sensor
-	 */
-//	private void setActuator(final String addrSensor, final String addrActuator){
-//		AlertDialog.Builder b = new AlertDialog.Builder(c);
-//
-//		b.setMessage(c.getString(R.string.setActuator))
-//				.setPositiveButton(c.getString(R.string.yes),
-//						new DialogInterface.OnClickListener() {
-//
-//							@Override
-//							public void onClick(DialogInterface dialog,
-//									int which) {
-//								
-//									aux.associateActuatorToSensor(addrActuator, addrSensor);
-//							}
-//						})
-//				.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
-//					public void onClick(DialogInterface dialog, int id) {
-//						dialog.cancel();
-//					}
-//				}).show();
-//	}
-	
-	/*
-	 * Method to associate a sensor to an actuator
-	 */
-//	private void setSensor(final String addrSensor, final String addrActuator){
-//		AlertDialog.Builder b = new AlertDialog.Builder(c);
-//
-//		b.setMessage(c.getString(R.string.setSensor))
-//		.setPositiveButton(c.getString(R.string.yes),
-//				new DialogInterface.OnClickListener() {
-//
-//					@Override
-//					public void onClick(DialogInterface dialog,
-//							int which) {
-//							aux.associateActuatorToSensor(addrActuator, addrSensor);
-//					}
-//				})
-//		.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
-//			public void onClick(DialogInterface dialog, int id) {
-//				dialog.cancel();
-//			}
-//		}).show();
-//	}
 	
 	/*
 	 * 
 	 * Sets an Actuator to a Sensor and vice-versa 
 	 * 
 	 */
-	private void setActuatorAndSensor(final String addrSensor, final String addrActuator, String text){
+	private void setActuatorAndSensor(final String addrSensor, final String addrActuator, final String type, String text){
 		AlertDialog.Builder b = new AlertDialog.Builder(c);
 		
 				b.setMessage(text)
@@ -163,7 +106,7 @@ public class AlertMessage extends AlertDialog{
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-									aux.associateActuatorToSensor(addrActuator, addrSensor);
+									aux.associateActuatorToSensor(addrActuator, addrSensor, type);
 							}
 						})
 				.setNegativeButton(c.getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -186,8 +129,7 @@ public class AlertMessage extends AlertDialog{
 				new DialogInterface.OnClickListener() {
 
 					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
+					public void onClick(DialogInterface dialog, int which) {
 							aux.removeActuatorFromSensor(addrActuator, addrSensor);
 					}
 				})

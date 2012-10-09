@@ -14,11 +14,17 @@ public class SensorsAndActuators implements Serializable{
 	private LinkedList<String> actuatorsString=new LinkedList<String>();
 
 	/*
-	 * Constructor
+	 * Constructors
 	 */
+	
 	public SensorsAndActuators(){
 		
 	}
+	
+	public SensorsAndActuators(byte address){
+		
+	}
+	
 	
 
 	/*
