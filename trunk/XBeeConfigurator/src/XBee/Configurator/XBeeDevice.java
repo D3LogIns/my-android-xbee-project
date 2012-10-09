@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import android.util.Log;
+
 public class XBeeDevice implements Serializable {
 
 	private static final long serialVersionUID = 1375942286432721341L;
@@ -17,8 +19,13 @@ public class XBeeDevice implements Serializable {
 	private String ss;
 	private LinkedList<String> myActuators = new LinkedList<String>();
 	private LinkedList<byte[]> myActuatorsByte = new LinkedList<byte[]>();
-	private String mySensor = "";
-	private byte[] mySensorByte;
+	private LinkedList<String> myActuatorsType = new LinkedList<String>();
+	
+	private LinkedList<String> mySensor = new LinkedList<String>();
+	private LinkedList<byte[]> mySensorByte = new LinkedList<byte[]>();
+	//private String mySensor = "";
+	
+	//private byte[] mySensorByte;
 
 	public XBeeDevice(String a, String t, String s) {
 		this.address = a;
@@ -43,7 +50,21 @@ public class XBeeDevice implements Serializable {
 		this.ss = signal_strength;
 		this.shByte = shByte;
 		this.slByte = slByte;
+		
+		if(this.sh.length()==6){
+			this.sh="00"+this.sh;
+		}else if(this.sh.length()==7){
+			this.sh="0"+this.sh;
+		}
+		if(this.sl.length()==6){
+			this.sl="00"+this.sl;
+		}else if(this.sl.length()==7){
+			this.sl="0"+this.sl;
+		}
+		
 		this.address = this.sh + " " + this.sl;
+
+		
 		this.addressByte = new byte[shByte.length + slByte.length];
 		for (int i = 0; i < (addressByte.length / 2); i++) {
 			addressByte[i] = shByte[i];
@@ -58,18 +79,24 @@ public class XBeeDevice implements Serializable {
 	public void setActuator(byte[] addr) {
 		myActuatorsByte.add(addr);
 	}
+	
+	public void setActuatorType(String type){
+		myActuatorsType.add(type);
+	}
 
 	public void setActuators(LinkedList<String> actuators) {
 		myActuators = actuators;
 	}
 
-	public void setSensor(String addr) {
-		mySensor = addr;
-	}
-
-	public void setSensorByte(byte[] addr) {
-		mySensorByte = addr;
-	}
+//	public void setSensor(String addr) {
+//		//mySensor = addr;
+//		mySensor.add(addr);
+//	}
+//
+//	public void setSensorByte(byte[] addr) {
+//		//mySensorByte = addr;
+//		mySensorByte.add(addr);
+//	}
 
 	public String getSH() {
 		return this.sh;
@@ -103,13 +130,22 @@ public class XBeeDevice implements Serializable {
 		return this.ss;
 	}
 
-	public String getMySensor() {
+//	public String getMySensor() {
+//		return mySensor;
+//	}
+//
+//	public byte[] getMySensorByte() {
+//		return mySensorByte;
+//	}
+	
+	public LinkedList<String> getMySensor() {
 		return mySensor;
 	}
 
-	public byte[] getMySensorByte() {
+	public LinkedList<byte[]> getMySensorByte() {
 		return mySensorByte;
 	}
+	
 
 	public LinkedList<String> getMyActuators() {
 		return myActuators;
@@ -118,10 +154,17 @@ public class XBeeDevice implements Serializable {
 	public LinkedList<byte[]> getMyActuatorsByte() {
 		return myActuatorsByte;
 	}
+	
+	public LinkedList<String> getMyActuatorsType(){
+		return myActuatorsType;
+	}
 
 	public void removeSensor() {
-		mySensor = "";
-		mySensorByte = null;
+//		mySensor = "";
+//		mySensorByte = null;
+		mySensor.clear();
+		mySensorByte.clear();
+		
 	}
 
 	public void removeActuator(String addr) {
@@ -138,9 +181,16 @@ public class XBeeDevice implements Serializable {
 		// if(it.next().equals(addrString))
 		// myActuators.remove(addrString);
 		// }
+		
+		
+		
+
 		try {
+			int pos = this.myActuators.indexOf(addrString);
 			this.myActuators.remove(addrString);
-			this.myActuatorsByte.remove(addrByte);
+			//this.myActuatorsByte.remove(addrByte);
+			this.myActuatorsByte.remove(pos);
+			this.myActuatorsType.remove(pos);
 		} catch (Exception e) {
 
 		}
