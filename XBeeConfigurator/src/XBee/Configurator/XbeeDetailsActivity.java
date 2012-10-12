@@ -73,7 +73,7 @@ public class XbeeDetailsActivity extends Activity {
 		// mySensor = (TextView) findViewById(R.id.tvMySensor);
 
 		// TABLES INICIALIZATION
-		associatedDevices = (TableLayout) findViewById(R.id.associatedDevicesTable);
+		associatedDevices = (TableLayout) findViewById(R.id.associatedDevicesTableDetails);
 		xbeeDevices = (TableLayout) this.findViewById(R.id.devicesTable);
 
 		// ROWS INICIALIZATION
@@ -84,6 +84,10 @@ public class XbeeDetailsActivity extends Activity {
 		final Button bOkPanId = (Button) findViewById(R.id.bOKPanDetails);
 		final Button bAssociate = (Button) findViewById(R.id.bOK_AssociateDetails);
 		final Button bDesassociate = (Button) findViewById(R.id.bOK_DesassociateDetails);
+		
+		addr.setText(xbee.getAddress());
+
+		type.setText(xbee.getType());
 
 		// TextViews Listeners
 
@@ -307,9 +311,7 @@ public class XbeeDetailsActivity extends Activity {
 				populateAssociatedDevicesTable();
 			}
 
-			addr.setText(xbee.getAddress());
-
-			type.setText(xbee.getType());
+			
 
 			list.setText(this.getString(R.string.listOfActuators));
 

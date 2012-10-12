@@ -15,12 +15,12 @@
 	/>
 
     <application
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name">
+        android:icon="@drawable/xbee_launcher"
+        android:label="XBee Configurator">
         <uses-library android:name="com.android.future.usb.accessory" />
         <activity
-            android:name=".XBeeConfiguratorActivity"
-            android:label="@string/app_name" 
+            android:name="XBeeConfiguratorActivity"
+            android:label="" 
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +39,7 @@
         <activity 
             class="XbeeDetailsActivity"
             android:name="XbeeDetailsActivity"
-            android:label="XbeeDetailsActivity"
+            android:label=""
             android:screenOrientation="portrait"> 
         </activity>
         

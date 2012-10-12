@@ -56,6 +56,8 @@ public class AlertMessage extends AlertDialog{
 			this.alertMessageOK(c.getString(R.string.actuatorLimitReached));
 		}else if(msg.equals(MessageType.SENSOR_LIMIT_REACHED)){
 			this.alertMessageOK(c.getString(R.string.sensorLimitReached));
+		}else if(msg.equals(MessageType.REPEATED_ADDRESS)){
+			this.alertMessageOK(c.getString(R.string.repeatedAddress));
 		}
 		
 	}

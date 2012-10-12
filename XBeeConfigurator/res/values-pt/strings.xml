@@ -13,17 +13,21 @@
     
 	<string name="sensor">Sensor</string>
 	
-	<string name="motionSensor">Sensor de\nMovimento</string>
+	<string name="motionSensor">Sensor de Movimento</string>
     
-    <string name="luminanceSensor">Sensor de\nLuminância</string>
+    <string name="luminanceSensor">Sensor de Luminância</string>
 
 	<string name="actuator">Actuador</string>
+	
+	<string name="actuatorMotion">Actuador de movimento</string>
+    
+    <string name="actuatorLuminance">Actuador de luminância</string>
     
 	<string name="router">Router</string>
 	
-	<string name="routerMotionSensor">Router com sensor\n de movimento</string>
+	<string name="routerMotionSensor">Router com sensor de movimento</string>
 	
-	<string name="routerLuminanceSensor">Router com sensor\nde luminância</string>
+	<string name="routerLuminanceSensor">Router com sensor de luminância</string>
 
 	<string name="coordinator">Coordenador</string>
 	
@@ -31,6 +35,7 @@
 	
 	<string name="deviceType">Tipo de Dispositivo</string>
     
+	<string name="OK">OK</string>
     
     
     <!-- Strings para a XBeeConfigurationActivity -->
@@ -39,12 +44,25 @@
     
     <string name="opPanId">PAN ID actual</string>
     
+    <string name="changePanID">Mudar o ID da PAN:</string>
+    
     <string name="bDetect">Detectar Dispositivos</string>
     
     <string name="bRefresh">Actualizar</string>
     
     <string name="associateThisAddressDevice">Associar este dispositivo:</string>
     
+    <string name="DesassociateThisAddressDevice">Desassociar este dispositivo:</string>
+    
+    <string name="associateDeviceHint">Insira o endereço do dispositivo a associar</string>
+    
+    <string name="desassociateDeviceHint">Insira o endereço do dispositivo a desassociar</string>
+    
+    <string name="associate">Associar</string>
+    
+    <string name="desassociate">Desassociar</string>
+    
+    <string name="details">Detalhes</string>
     
     
     <!-- Strings para o XBeeDetailsActivity -->
@@ -54,6 +72,10 @@
     <string name="listOfSensors">Lista de Sensores:</string>
     
     <string name="listOfActuators">Lista de Actuadores:</string>
+    
+    <string name="mySensor">O meu sensor:</string>
+    
+    <string name="myActuators">Os meus actuadores:</string>
     
     
     
@@ -99,6 +121,11 @@
     
     <string name="addressShortLength">O comprimento do endereço é demasiado baixo.\nO endereço deve ter 14 &#8211; 16 caracteres.</string>
     
+    <string name="actuatorLimitReached">Este sensor atingiu o máximo de actuadores associados.\nPor favor, remova um actuador associado.</string>
+    
+    <string name="sensorLimitReached">Este actuador já tem um sensor associado.\nPor favor, remova o sensor associado.</string>
+    
+    <string name="repeatedAddress">O endereço já está associado</string>
     
     
     <!-- Strings para o LoadTaskView -->
@@ -112,4 +139,6 @@
 	<string name="Wait">Aguarde&#8230;</string>
 	
 	<string name="WaitForChange">As mudanças estão a ser aplicadas, por favor aguarde&#8230;</string>
+	
+	<string name="WaitForRetrieveInformation">Informações do sensor estão a ser colectadas.</string>
 </resources>

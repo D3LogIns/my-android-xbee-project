@@ -35,6 +35,18 @@ public class AuxiliarMethods {
 		}
 		return textBuilder.toString().toUpperCase();
 	}
+	
+	public byte[] getDataByte(byte[] buffer){
+		int textLength = buffer[2];
+		int textEndIndex = 3 + textLength;
+		byte b[]=new byte[textLength];
+		
+		for (int x = 3; x < textEndIndex; x++) {
+			b[x-3]=buffer[x];
+		}
+		
+		return b;
+	}
 
 	// METHOD TO RETRIEVE THE DEVICE TYPE FROM THE SENT DATA
 	public String getDeviceType(byte[] buffer, Context c, String request) {
