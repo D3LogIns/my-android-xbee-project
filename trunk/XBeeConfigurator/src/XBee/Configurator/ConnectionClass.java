@@ -12,7 +12,7 @@ public class ConnectionClass {
 
 	Context c;
 	
-	int NUMBER_OF_DEVICES= 15;
+	int NUMBER_OF_DEVICES= 20;
 
 	public ConnectionClass(Context c) {
 		this.c = c;

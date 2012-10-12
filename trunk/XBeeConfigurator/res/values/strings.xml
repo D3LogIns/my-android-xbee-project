@@ -17,11 +17,15 @@
     
     <string name="actuator">Actuator</string>
     
+    <string name="actuatorMotion">Motion actuator</string>
+    
+    <string name="actuatorLuminance">Luminance actuator</string>
+    
     <string name="router">Router</string>
     
-    <string name="routerMotionSensor">Router motion\nsensor</string>
+    <string name="routerMotionSensor">Router motion sensor</string>
     
-    <string name="routerLuminanceSensor">Router luminance\nsensor</string>
+    <string name="routerLuminanceSensor">Router luminance sensor</string>
     
     <string name="coordinator">Coordinator</string>
     
@@ -29,6 +33,7 @@
     
     <string name="deviceType">Device Type</string>
     
+    <string name="OK">OK</string>
     
     
     <!-- Strings for XbeeConfigurationActivity -->
@@ -37,11 +42,25 @@
     
     <string name="opPanId">Operating PAN ID</string>
     
+    <string name="changePanID">Change PAN ID:</string>
+    
     <string name="bDetect">Detect Devices</string>
     
     <string name="bRefresh">Refresh</string>
     
     <string name="associateThisAddressDevice">Associate this device:</string>
+    
+    <string name="DesassociateThisAddressDevice">Desassociate this device:</string>
+    
+    <string name="associateDeviceHint">Insert the device address to associate</string>
+    
+    <string name="desassociateDeviceHint">Insert the device address to desassociate</string>
+    
+    <string name="associate">Associate</string>
+    
+    <string name="desassociate">Desassociate</string>
+    
+    <string name="details">Details</string>
     
     
     
@@ -52,6 +71,10 @@
     <string name="listOfSensors">List Of Sensors:</string>
     
     <string name="listOfActuators">List of Actuators:</string>
+    
+    <string name="mySensor">My sensor:</string>
+    
+    <string name="myActuators">My actuators:</string>
     
 		    
 	<!-- Strings for AlertDialog -->
@@ -76,9 +99,9 @@
     
     <string name="panIdNotChanged">The PAN ID was not be changed</string>
     
-    <string name="removeActuator">Are you sure you want to dissasociate this actuator?</string>
+    <string name="removeActuator">Are you sure you want to desassasociate this actuator?</string>
     
-    <string name="removeSensor">Are you sure you want to dissasociate from this sensor?</string>
+    <string name="removeSensor">Are you sure you want to desassociate from this sensor?</string>
     
     <string name="addressNotAcceptable">The inserted address is not acceptable./nPlease insert letters between A &#8211; F and numbers between 0 &#8211; 9.</string>
     
@@ -86,6 +109,11 @@
     
     <string name="addressShortLength">Address length is too short, address must be 14 &#8211; 16 characters length.</string>
     
+    <string name="actuatorLimitReached">This sensor has already reached the maximum number of associated actuators.\nPlease remove one associated actuator.</string>
+    
+    <string name="sensorLimitReached">This actuator has already one sensor associated.\nPlease remove the associated sensor.</string>
+    
+    <string name="repeatedAddress">The address is already associated.</string>
     
         
     <!-- Strings for LoadTaskView -->
@@ -99,5 +127,7 @@
 	<string name="Wait">Wait&#8230;</string>
 	
 	<string name="WaitForChange">Changes are being made, please wait&#8230;</string>
+	
+	<string name="WaitForRetrieveInformation">Informations about this sensor are being collected.</string>
 	
 </resources>
