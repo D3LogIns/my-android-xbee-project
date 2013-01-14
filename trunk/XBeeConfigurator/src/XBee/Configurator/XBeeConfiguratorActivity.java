@@ -28,10 +28,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.os.AsyncTask;
 
 public class XBeeConfiguratorActivity extends Activity {
@@ -69,11 +70,12 @@ public class XBeeConfiguratorActivity extends Activity {
 	private static final byte GET_ASSOCIATED_DEVICES_REQUEST = (byte) 0xE1;
 	private static final byte GET_ASSOCIATED_DEVICES_RESPONSE = (byte) 0xE2;
 
+	private static final byte CHANGE_CONFIG=(byte) 0xCC;
 	private static final byte ASSOCIATE_DEVICE = (byte) 0xAD;
 	private static final byte DESASSOCIATE_DEVICE = (byte) 0xDA;
-	private static final byte ADD_ACTUATOR_PAN = (byte) 0xAB;
-	private static final byte ERASE_ACTUATOR_CHANGE_PAN = (byte) 0xEB;
-	private static final byte CHANGE_PAN = (byte) 0xCA;
+	private static final byte CHANGE_LIGHT_CONTROL=(byte)0xCB;
+	private static final byte LIGHT_CONTROL_REQUEST=(byte)0xCD;
+	private static final byte LIGHT_CONTROL_RESPONSE=(byte)0xCE;
 
 	private static final byte COMMAND_TEXT = 0xF;
 
@@ -88,6 +90,7 @@ public class XBeeConfiguratorActivity extends Activity {
 	TableLayout associatedDevices;
 	TableRow rowAssociateDevice;
 	TableRow rowDesassociateDevice;
+	TableRow rowSetLightControl;
 
 	// CLASSES VARIABLES
 	private AlertMessage alert;
@@ -111,6 +114,7 @@ public class XBeeConfiguratorActivity extends Activity {
 	private String dType = "type";
 	private boolean getAssocDevsControl = false;
 	private int xbeePosControl = 0;
+	private int lightLevelControl=0;
 
 	final Context c = this;
 	private LinkedList<XBeeDevice> xbee;
@@ -146,20 +150,20 @@ public class XBeeConfiguratorActivity extends Activity {
 		alert = new AlertMessage(c);
 
 		privateAlert = new AlertClass(c);
-		
-		myActuators=new LinkedList<MyActuator>();
+
+		myActuators = new LinkedList<MyActuator>();
 
 		sa = new SensorsAndActuators();
 
 		xbee = new LinkedList<XBeeDevice>();
 
 		this.inicialization();
-		
+
 		tListener = new Thread(null, listener, TAG);
 		tListener.start();
 		
-		rowAssociateDevice.setVisibility(0);
-		rowDesassociateDevice.setVisibility(0);
+
+		rowSetLightControl.setVisibility(View.VISIBLE);
 
 	}
 
@@ -190,9 +194,6 @@ public class XBeeConfiguratorActivity extends Activity {
 
 		if (accessory != null) {
 
-			// Toast.makeText(c, "accessory: "+accessory.toString(),
-			// Toast.LENGTH_LONG).show();
-
 			if (mUsbManager.hasPermission(accessory)) {
 				openAccessory(accessory);
 			} else {
@@ -206,8 +207,6 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 
 		} else {
-			// Toast.makeText(c, "mAccessory is null",
-			// Toast.LENGTH_LONG).show();
 			Log.d(TAG, "mAccessory is null");
 		}
 
@@ -250,6 +249,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		 */
 		rowAssociateDevice = (TableRow) findViewById(R.id.rowAssociateDevice);
 		rowDesassociateDevice = (TableRow) findViewById(R.id.rowDesassociateDevice);
+		rowSetLightControl=(TableRow) findViewById(R.id.rowSetLightControl);
 
 		/*
 		 * DEVICES TABLE
@@ -265,7 +265,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		Button bRefresh = (Button) findViewById(R.id.bRefresh);
 		final Button bAssociate = (Button) findViewById(R.id.bOK_Associate);
 		final Button bDesassociate = (Button) findViewById(R.id.bOK_Desassociate);
-
+		final Button bSetLightControl = (Button) findViewById(R.id.bOK_setLightControl);
 		bOkPanId.setEnabled(false);
 
 		/*
@@ -278,9 +278,36 @@ public class XBeeConfiguratorActivity extends Activity {
 		tvDeviceType = (TextView) findViewById(R.id.tvDeviceType);
 		final EditText etAssociate = (EditText) findViewById(R.id.editAssociateDevice);
 		final EditText etDesassociate = (EditText) findViewById(R.id.editDesassociateDevice);
+		
+		/*
+		 * SEEK BAR INICIALIZATION
+		 */
 
-		// progressDialog=new ProgressDialog=new ProgressDialog(this, R.sty);
+		final SeekBar setLightControl=(SeekBar) findViewById(R.id.seek_setLightControl);
+		
+		setLightControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
 
+			@Override
+			public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+				// TODO Auto-generated method stub
+				bSetLightControl.setEnabled(true);
+				
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
 		/*
 		 * #############################
 		 * 
@@ -403,12 +430,13 @@ public class XBeeConfiguratorActivity extends Activity {
 			public void onClick(View v) {
 
 				if (inBoundsPanID(etPan.getText().toString())) {
-					changeXbeePanID(Integer
-							.parseInt(etPan.getText().toString()));
+					//4Green
+					changeXbeePanID(Integer.parseInt(etPan.getText().toString()));
 
-				} else
+				} else{
 					alert.newMessage(MessageType.PAN_ID_OUT_OF_BOUNDS);
-
+					
+				}
 				etPan.setText("");
 
 			}
@@ -468,21 +496,17 @@ public class XBeeConfiguratorActivity extends Activity {
 				/*
 				 * METODOS PARA A DETECACAO DE NOS NA REDE
 				 */
-				// new SimpleRequestThread(NODE_DISCOVERY_REQUEST,
-				// TARGET_DEFAULT,
-				// "1").run();
-				// new LoadingScreen(10000,
-				// loadingType.searchForWirelessDevices)
-				// .execute();
-
-				// rowAssociateDevice.setVisibility(0);
-				// rowDesassociateDevice.setVisibility(0);
+//				 new SimpleRequestThread(NODE_DISCOVERY_REQUEST,
+//				 TARGET_DEFAULT,
+//				 "1").run();
+//				 new LoadingScreen(10000,
+//				 loadingType.searchForWirelessDevices)
+//				 .execute();
 
 			}
 
 		});
 
-		
 		// ASSOCIATE BUTTON
 		bAssociate.setOnClickListener(new OnClickListener() {
 
@@ -493,13 +517,14 @@ public class XBeeConfiguratorActivity extends Activity {
 
 				if (s.length() >= 14) {
 					try {
-//						byte[] b = new AuxiliarMethods()
-//								.convertStringAddressToByte(s);
+						// byte[] b = new AuxiliarMethods()
+						// .convertStringAddressToByte(s);
 
-
-//							new SendInformationThread(ASSOCIATE_DEVICE,
-//									TARGET_DEFAULT, b).run();
-							addActuator(s, c.getString(R.string.actuator));
+						// new SendInformationThread(ASSOCIATE_DEVICE,
+						// TARGET_DEFAULT, b).run();
+						
+						//4Green
+						addActuator(s, c.getString(R.string.actuator));
 
 					} catch (Exception e) {
 						alert.newMessage(MessageType.ADDRESS_NOT_ACCEPTABLE);
@@ -517,15 +542,18 @@ public class XBeeConfiguratorActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+
 				String s = etDesassociate.getText().toString();
 				etDesassociate.setText("");
 
 				if (s.length() >= 14) {
 					try {
-//						byte[] b = new AuxiliarMethods()
-//								.convertStringAddressToByte(s);
-//
-//							new SendInformationThread(DESASSOCIATE_DEVICE,TARGET_DEFAULT, b).run();
+						//4Green
+						byte[] b = new AuxiliarMethods()
+								.convertStringAddressToByte(s);
+
+						new SendInformationThread(DESASSOCIATE_DEVICE,
+								TARGET_DEFAULT, b).run();
 						removeActuator(s);
 
 					} catch (Exception e) {
@@ -535,6 +563,21 @@ public class XBeeConfiguratorActivity extends Activity {
 					alert.newMessage(MessageType.ADDRESS_SHORT_LENGTH);
 			}
 
+		});
+		
+		bSetLightControl.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				int level=setLightControl.getProgress();
+				if(level!=lightLevelControl){
+					lightLevelControl=level;
+					byte b[]=new byte[1];
+					b[0]=(byte) level;
+					new SendInformationThread(CHANGE_LIGHT_CONTROL, TARGET_DEFAULT, b).run();
+				}
+			}
+			
 		});
 
 	}
@@ -561,7 +604,9 @@ public class XBeeConfiguratorActivity extends Activity {
 				&& !auxXBee.getType(position)
 						.equals(getString(R.string.router))
 				&& !auxXBee.getType(position).equals(
-						getString(R.string.coordinator))) {
+						getString(R.string.coordinator))
+				&& !auxXBee.getType(position).equals(getString(R.string.actuatorLuminance))
+				&& !auxXBee.getType(position).equals(getString(R.string.actuatorMotion))) {
 
 			if (auxXBee.getMyActuators(position).size() > 0) {
 				sa.setActuatorsByte(auxXBee.getMyActuatorsByte(position));
@@ -591,196 +636,43 @@ public class XBeeConfiguratorActivity extends Activity {
 
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
-
+		
+		//4Green
 		Bundle extras = intent.getExtras();
 
 		auxXBee = (AuxiliarXBee) extras.getSerializable("auxiliarXbee");
 
 		int position = extras.getInt("position");
 
-		byte[] panIdDetails = extras.getByteArray("panId");
-
-		int actSize = auxXBee.getMyActuators(position).size();
-
 		getAssocDevsControl = false;
-		/*
-		 * if the the number of associated devices are higher than zero OR the
-		 * number of associated devices are zero but the before was different
-		 * higher than zero
-		 */
-		if (actSize > 0 || (actSize == 0 && sa.getActuatorsByte().size() > 0)) {
 
-			xbee = auxXBee.getList();
+		String remoteType = auxXBee.getType(position);
+		if (remoteType.equals(getString(R.string.sensor))
+				|| remoteType.equals(getString(R.string.luminanceSensor))
+				|| remoteType.equals(getString(R.string.motionSensor))
+				|| remoteType.equals(getString(R.string.routerLuminanceSensor))
+				|| remoteType.equals(getString(R.string.routerMotionSensor))) {
 
-			if (panIdDetails.length < 5) {
-				this.sendSetActuatorToSensor(
-						auxXBee.getMyActuatorsByte(position),
-						auxXBee.getAddressByte(position), deviceType.SENSOR,
-						panIdDetails);
-			} else {
-				this.sendSetActuatorToSensor(
-						auxXBee.getMyActuatorsByte(position),
-						auxXBee.getAddressByte(position), deviceType.SENSOR,
-						null);
+			byte[] remotePanId = extras.getByteArray("panId");
+
+			if (remotePanId.length > 5) {
+				remotePanId = null;
 			}
 
-		} else if (panIdDetails != null)
-			if (panIdDetails.length < 5) {
-				byte addrDevice[] = auxXBee.getAddressByte(position);
-				byte message[] = new AuxiliarMethods().newMessage(0,
-						panIdDetails);
-				message[0] = 0;
-				int z = 1;
-				// Stores the remote xbee address
-				for (int i = 0; i < addrDevice.length; i++) {
-					message[z] = addrDevice[i];
-					z++;
-				}
-				for (int i = 0; i < panIdDetails.length; i++) {
-					message[z] = panIdDetails[i];
-					z++;
-				}
-				Log.d(debug, "JOAQUIM");
-				for (int i = 0; i < message.length; i++) {
-					Log.d(debug,
-							"message[" + i + "]"
-									+ Integer.toHexString(message[i] & 0xff));
-				}
-				new SendInformationThread(CHANGE_PAN, TARGET_REMOTE_XBEE,
-						message).run();
-			}
-	}
-
-	private void sendSetActuatorToSensor(LinkedList<byte[]> newAddrAssociated,
-			byte[] addrDevice, deviceType type, byte[] panId) {
-		if (type == deviceType.SENSOR) {
-
-			/*
-			 * Checks if the new associated devices are the same as the old
-			 * ones, checks if the the old ones were deleted and if there are
-			 * new ones
-			 */
-
-			if (!new AuxiliarMethods().validateNewAddresses(newAddrAssociated,
-					sa.getActuatorsByte())) {
-
-				int size = newAddrAssociated.size();
-
-				// creates the message
-				byte message[] = new AuxiliarMethods().newMessage(size, panId);
-
-				// Stores the number of devices
-				message[0] = new AuxiliarMethods().intToByteArray(size)[3];
-
-				// Variable to run through the array 'message'
-				int z = 1;
-
-				// Stores the remote xbee address
-				for (int i = 0; i < addrDevice.length; i++) {
-					message[z] = addrDevice[i];
-					z++;
-				}
-
-				if (size > 0) {
-					// Stores the devices addresses to associate
-					for (int i = 0; i < newAddrAssociated.size(); i++) {
-						for (int j = 0; j < newAddrAssociated.get(i).length; j++) {
-							message[z] = newAddrAssociated.get(i)[j];
-							z++;
-						}
-					}
-
-					// If the PAN ID was changed
-					if (panId != null) {
-						// Stores the PAN ID
-						for (int i = 0; i < panId.length; i++) {
-							message[z] = panId[i];
-							z++;
-						}
-						// Sends the message to the remote xbee with the new PAN
-						// ID
-						new SendInformationThread(ADD_ACTUATOR_PAN,
-								TARGET_REMOTE_XBEE, message).run();
-					} else {
-						// Sends the message to the remote xbee without PAN ID
-						new SendInformationThread(ASSOCIATE_DEVICE,
-								TARGET_REMOTE_XBEE, message).run();
-					}
-
-				}
-				// IF ALL ACTUATORS WERE REMOVED
-				else {
-					// If the PAN ID was changed
-					if (panId != null) {
-						// Stores the PAN ID
-						for (int i = 0; i < panId.length; i++) {
-							message[z] = panId[i];
-							z++;
-						}
-						Log.d(debug, "ANTONIO");
-						for (int i = 0; i < message.length; i++) {
-							Log.d(debug,
-									"message["
-											+ i
-											+ "]"
-											+ Integer
-													.toHexString(message[i] & 0xff));
-						}
-						// Sends the message to the remote xbee with the new PAN
-						// ID
-						new SendInformationThread(ERASE_ACTUATOR_CHANGE_PAN,
-								TARGET_REMOTE_XBEE, message).run();
-					} else {
-						// Sends the message to the remote xbee without PAN ID
-						new SendInformationThread(DESASSOCIATE_DEVICE,
-								TARGET_REMOTE_XBEE, message).run();
-					}
-				}
-
-			} else if (panId != null)
-				if (panId.length < 5) {
-					byte message[] = new AuxiliarMethods().newMessage(0, panId);
-					message[0] = 0;
-					int z = 1;
-
-					// Stores the remote xbee address
-					for (int i = 0; i < addrDevice.length; i++) {
-						message[z] = addrDevice[i];
-						z++;
-					}
-					for (int i = 0; i < panId.length; i++) {
-						message[z] = panId[i];
-						z++;
-					}
-					Log.d(debug, "JOSE");
-					for (int i = 0; i < message.length; i++) {
-						Log.d(debug,
-								"message["
-										+ i
-										+ "]"
-										+ Integer
-												.toHexString(message[i] & 0xff));
-					}
-					new SendInformationThread(CHANGE_PAN, TARGET_REMOTE_XBEE,
-							message).run();
-				}
-
+//			setConfigsToRemoteXBee(auxXBee.getMyActuatorsByte(position),
+//					auxXBee.getAddressByte(position), remotePanId);
+			
+			byte msg[]=new AuxiliarMethods().newRemoteConfigMessage(
+					auxXBee.getMyActuatorsByte(position),
+					sa.getActuatorsByte().size(),
+					auxXBee.getAddressByte(position),
+					remotePanId);
+			
+			new SendInformationThread(CHANGE_CONFIG, TARGET_REMOTE_XBEE, msg).run();
 		}
 
 	}
 
-	// private byte[] retrieveByteAddress(String addr) {
-	// int pos = -1;
-	//
-	// for (int i = 0; i < xbee.size(); i++)
-	// if (xbee.get(i).getAddress().equals(addr))
-	// pos = i;
-	//
-	// if (pos != -1)
-	// return xbee.get(pos).getAddressByte();
-	// else
-	// return null;
-	// }
 
 	/*
 	 * ################################
@@ -879,10 +771,7 @@ public class XBeeConfiguratorActivity extends Activity {
 
 				switch (buffer[0]) {
 				// case COMMAND_TEXT:
-				case SH_REQUEST:
-					break;
-				case SL_REQUEST:
-					break;
+
 				case SH_RESPONSE:
 
 					shAddress = new AuxiliarMethods().getData(buffer);
@@ -893,16 +782,13 @@ public class XBeeConfiguratorActivity extends Activity {
 					slAddress = new AuxiliarMethods().getData(buffer);
 					break;
 
-				case NI_REQUEST:
-					break;
 				case NI_RESPONSE:
 
 					dType = new AuxiliarMethods()
 							.getDeviceType(buffer, c, "NI");
 
 					break;
-				case ID_REQUEST:
-					break;
+
 				case ID_RESPONSE:
 
 					// panID = new
@@ -915,12 +801,6 @@ public class XBeeConfiguratorActivity extends Activity {
 							.getDataInt(buffer));
 					break;
 
-				case ID_CHANGE_REQUEST:
-					break;
-				case ID_CHANGE_RESPONSE:
-					break;
-				case NODE_DISCOVERY_REQUEST:
-					break;
 				case NODE_DISCOVERY_RESPONSE:
 
 					try {
@@ -949,31 +829,59 @@ public class XBeeConfiguratorActivity extends Activity {
 
 					break;
 
-				case GET_ASSOCIATED_DEVICES_REQUEST:
-					break;
-
 				case GET_ASSOCIATED_DEVICES_RESPONSE:
-					if (!getAssocDevsControl) {
+
+					if (buffer[1] == TARGET_REMOTE_XBEE) {
+						if (!getAssocDevsControl) {
+							byte b[] = new AuxiliarMethods()
+									.getDataByte(buffer);
+							int nDevices = b[0];
+
+							if (nDevices > 0) {
+								byte addr[] = new byte[nDevices * 8];
+								for (int i = 0; i < nDevices; i++) {
+									for (int j = 1; j < 9; j++) {
+										addr[j - 1] = b[j];
+									}
+									auxXBee.associateActuatorToSensor(
+											new AuxiliarMethods()
+													.convertByteToString(addr),
+											xbee.get(xbeePosControl)
+													.getAddress(), null);
+									// xbee.get(xbeePosControl).setActuator(addr);
+								}
+
+							}
+						}
+					} else {
+
 						byte b[] = new AuxiliarMethods().getDataByte(buffer);
 						int nDevices = b[0];
-
 						if (nDevices > 0) {
-							byte addr[] = new byte[nDevices * 8];
+							byte addr[];
+							int x = 1;
 							for (int i = 0; i < nDevices; i++) {
-								for (int j = 1; j < 9; j++) {
-									addr[j - 1] = b[j];
+								addr = new byte[8];
+								for (int j = 0; j < 8; j++) {
+									addr[j] = b[x];
+									x++;
 								}
-								auxXBee.associateActuatorToSensor(
+								addActuator(
 										new AuxiliarMethods()
 												.convertByteToString(addr),
-										xbee.get(xbeePosControl).getAddress(),
-										null);
-								// xbee.get(xbeePosControl).setActuator(addr);
+										c.getString(R.string.actuator));
 							}
-
 						}
 					}
 					getAssocDevsControl = true;
+					break;
+					
+				case LIGHT_CONTROL_RESPONSE:
+					if(buffer[1]==TARGET_REMOTE_XBEE){
+						byte b[]=new AuxiliarMethods().getDataByte(buffer);
+						int lightLevel=buffer[0];
+					}
+					
 					break;
 
 				case COMMAND_TEXT:
@@ -1075,12 +983,10 @@ public class XBeeConfiguratorActivity extends Activity {
 			t.setTextAppearance(c, android.R.style.TextAppearance_Large);
 
 			tr.setBackgroundColor(Color.parseColor(silver));
-			tr.setPadding(0, 10, 0, 10);
+			tr.setPadding(0, 3, 0, 3);
 
 			a.setTextColor(Color.parseColor(black));
-			// a.setBackgroundColor(Color.parseColor(light_grey));
 			t.setTextColor(Color.parseColor(black));
-			// t.setBackgroundColor(Color.parseColor(light_grey));
 
 			tr.addView(a);
 			tr.addView(t);
@@ -1148,7 +1054,8 @@ public class XBeeConfiguratorActivity extends Activity {
 
 						else {
 							new LoadingScreen(8000,
-									loadingType.getAssociatedDevices, addr.getId()).execute();
+									loadingType.getAssociatedDevices, addr
+											.getId()).execute();
 
 						}
 					}
@@ -1162,8 +1069,8 @@ public class XBeeConfiguratorActivity extends Activity {
 						try {
 							String s = addr.getText().toString();
 
-							privateAlert
-									.newMessage(MessageType.SET_ACTUATOR, s, type.getText().toString());
+							privateAlert.newMessage(MessageType.SET_ACTUATOR,
+									s, type.getText().toString());
 
 						} catch (Exception e) {
 
@@ -1192,9 +1099,6 @@ public class XBeeConfiguratorActivity extends Activity {
 		}
 	}
 
-	
-	
-	
 	private int checkRepeated(String addr) {
 		for (int i = 0; i < myActuators.size(); i++) {
 			if (addr.equals(myActuators.get(i).getAddressString())) {
@@ -1205,106 +1109,106 @@ public class XBeeConfiguratorActivity extends Activity {
 		return -1;
 	}
 
-	
 	private void addActuator(String addr, String type) {
 		if (!myActuators.isEmpty()) {
-			if (checkRepeated(addr)==-1) {
+			if (checkRepeated(addr) == -1) {
 				if (myActuators.size() < DEVICE_LIMIT) {
-					
+
 					try {
-						byte b[] = new AuxiliarMethods().convertStringAddressToByte(addr);
-						new SendInformationThread(ASSOCIATE_DEVICE, TARGET_DEFAULT, b).run();
+						byte b[] = new AuxiliarMethods()
+								.convertStringAddressToByte(addr);
+						new SendInformationThread(ASSOCIATE_DEVICE,
+								TARGET_DEFAULT, b).run();
 						myActuators.add(new MyActuator(addr, b, type));
 					} catch (Exception e) {
 					}
-				}else{
+				} else {
 					alert.newMessage(MessageType.ACTUATORS_LIMIT_REACHED);
 				}
 			} else {
 				alert.newMessage(MessageType.REPEATED_ADDRESS);
 			}
-		}else{
+		} else {
 			try {
-				byte b[] = new AuxiliarMethods().convertStringAddressToByte(addr);
-				new SendInformationThread(ASSOCIATE_DEVICE, TARGET_DEFAULT, b).run();
+				byte b[] = new AuxiliarMethods()
+						.convertStringAddressToByte(addr);
+				new SendInformationThread(ASSOCIATE_DEVICE, TARGET_DEFAULT, b)
+						.run();
 				myActuators.add(new MyActuator(addr, b, type));
 			} catch (Exception e) {
 			}
 		}
 	}
-	
-	
-	private void removeActuator(String addr){
+
+	private void removeActuator(String addr) {
 		if (!myActuators.isEmpty()) {
-			int pos=checkRepeated(addr);
-			if (pos>-1) {
+			int pos = checkRepeated(addr);
+			if (pos > -1) {
 				try {
-				byte b[]=new AuxiliarMethods().convertStringAddressToByte(addr);
-				myActuators.remove(pos);
-				new SendInformationThread(DESASSOCIATE_DEVICE,TARGET_DEFAULT, b).run();
+					byte b[] = new AuxiliarMethods()
+							.convertStringAddressToByte(addr);
+					myActuators.remove(pos);
+					new SendInformationThread(DESASSOCIATE_DEVICE,
+							TARGET_DEFAULT, b).run();
 				} catch (Exception e) {
 				}
 			}
 		}
 	}
-	
-	
-	private void populateAssociatedDevicesTable(){
-		
+
+	private void populateAssociatedDevicesTable() {
+
 		associatedDevices.removeAllViews();
-		
-		if(!myActuators.isEmpty()){
-			TextView text=new TextView(this);
+
+		if (!myActuators.isEmpty()) {
+			TextView text = new TextView(this);
 			text.setText(this.getString(R.string.myActuators));
 			text.setTextAppearance(c, android.R.style.TextAppearance_Large);
 			associatedDevices.addView(text);
-			
-			for(int i=0; i<myActuators.size(); i++){
-				final TextView a=new TextView(this);
-				TextView t=new TextView(this);
-				Button bDes=new Button(this);
-				TableRow r=new TableRow(this);
-				
+
+			for (int i = 0; i < myActuators.size(); i++) {
+				final TextView a = new TextView(this);
+				TextView t = new TextView(this);
+				Button bDes = new Button(this);
+				TableRow r = new TableRow(this);
+
 				a.setText(myActuators.get(i).getAddressString());
 				a.setTextAppearance(this, android.R.style.TextAppearance_Large);
 				a.setTextColor(Color.parseColor(black));
 				a.setBackgroundColor(Color.parseColor(light_grey));
 				a.setId(i);
-				
+
 				t.setText(myActuators.get(i).getType());
 				t.setTextAppearance(this, android.R.style.TextAppearance_Large);
 				t.setTextColor(Color.parseColor(black));
 				t.setBackgroundColor(Color.parseColor(light_grey));
-				
+
 				bDes.setText(R.string.desassociate);
 				bDes.setBackgroundResource(R.drawable.button);
-				
 
-				
-				bDes.setOnClickListener(new OnClickListener(){
+				bDes.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
-						
-						
+						String s = a.getText().toString();
+						removeActuator(s);
 					}
-					
+
 				});
-				
-				
+
 				text.setTextColor(Color.parseColor(black));
-				
+
 				r.setPadding(0, 3, 0, 3);
-			
+
 				r.addView(a);
 				r.addView(t);
 				r.addView(bDes);
 				associatedDevices.addView(r);
-				
+
 			}
-			
+
 			associatedDevices.setVisibility(View.VISIBLE);
-		}else{
+		} else {
 			associatedDevices.setVisibility(View.GONE);
 		}
 	}
@@ -1326,14 +1230,13 @@ public class XBeeConfiguratorActivity extends Activity {
 			this.command = cmd;
 			this.target = target;
 			this.text = text;
-
 		}
 
 		public void run() {
 			sendText(this.command, this.target, this.text);
 		}
 
-	};
+	}
 
 	private class SendInformationThread extends Thread {
 		byte command;
@@ -1381,13 +1284,6 @@ public class XBeeConfiguratorActivity extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-			// try{
-			// Toast.makeText(c,
-			// "NUMERO DE DISPOSITIVOS: "+Integer.toString(mUsbManager.getAccessoryList().length),
-			// Toast.LENGTH_LONG).show();
-			// }catch(Exception e){
-			// Toast.makeText(c, "NAO ENCONTRADO", Toast.LENGTH_LONG).show();
-			// }
 
 			if (this.loadType == loadingType.searchForWirelessDevices) {
 				progressDialog = ProgressDialog.show(
@@ -1397,11 +1293,6 @@ public class XBeeConfiguratorActivity extends Activity {
 
 			} else if (this.loadType == loadingType.searchForConnectedDevice) {
 
-				// progressDialog.setTitle("sdf");
-				// progressDialog.setMessage("dsfsdfsdf");
-				// progressDialog.setCancelable(false);
-				// progressDialog.setIndeterminate(false);
-				// progressDialog.show();
 				progressDialog = ProgressDialog.show(
 						XBeeConfiguratorActivity.this,
 						c.getString(R.string.Searching),
@@ -1445,6 +1336,10 @@ public class XBeeConfiguratorActivity extends Activity {
 					else if (this.loadType == loadingType.searchForConnectedDevice) {
 						boolean complete = false;
 						everythingOK = false;
+						getAssocDevsControl = false;
+
+						sendText(GET_ASSOCIATED_DEVICES_REQUEST,
+								TARGET_DEFAULT, "");
 
 						while (!complete) {
 							if (shAddress.equals("sh"))
@@ -1455,6 +1350,9 @@ public class XBeeConfiguratorActivity extends Activity {
 								sendText(ID_REQUEST, TARGET_DEFAULT, "");
 							if (dType.equals("type"))
 								sendText(NI_REQUEST, TARGET_DEFAULT, "");
+							// if (getAssocDevsControl == false)
+							// sendText(GET_ASSOCIATED_DEVICES_REQUEST,
+							// TARGET_DEFAULT, "");
 
 							this.wait(1000);
 							counter += 1000;
@@ -1464,7 +1362,8 @@ public class XBeeConfiguratorActivity extends Activity {
 							} else if ((!shAddress.equals("sh")
 									&& !slAddress.equals("sl")
 									&& !panID.equals("id") && !dType
-										.equals("type"))) {
+										.equals("type"))
+									&& getAssocDevsControl == true) {
 								complete = true;
 								everythingOK = true;
 
@@ -1491,12 +1390,17 @@ public class XBeeConfiguratorActivity extends Activity {
 					else if (this.loadType == loadingType.getAssociatedDevices) {
 						boolean complete = false;
 						xbeePosControl = this.id;
-						byte address[] = xbee.get(xbeePosControl)
-								.getAddressByte();
+						byte address[] = xbee.get(xbeePosControl).getAddressByte();
 						getAssocDevsControl = false;
 						new SendInformationThread(
 								GET_ASSOCIATED_DEVICES_REQUEST,
 								TARGET_REMOTE_XBEE, address).run();
+						
+						if(xbee.get(xbeePosControl).getType().equals(getString(R.string.luminanceSensor))
+								|| xbee.get(xbeePosControl).getType().equals(getString(R.string.routerLuminanceSensor))){
+							new SendInformationThread(LIGHT_CONTROL_REQUEST, TARGET_REMOTE_XBEE, address).run();
+						}
+						
 						while (complete == false) {
 
 							if (counter > time) {
@@ -1528,8 +1432,6 @@ public class XBeeConfiguratorActivity extends Activity {
 
 			} else if (this.loadType == loadingType.searchForConnectedDevice) {
 
-				// if (!shAddress.equals("sh") && !slAddress.equals("sl")
-				// && !panID.equals("id") && !dType.equals("type")) {
 				if (everythingOK) {
 
 					tvXbeeAddress.setText(shAddress.toUpperCase() + " "
@@ -1550,12 +1452,19 @@ public class XBeeConfiguratorActivity extends Activity {
 
 						rowAssociateDevice.setVisibility(0);
 						rowDesassociateDevice.setVisibility(0);
+						
+						if(dType.equals(c.getString(R.string.routerLuminanceSensor))
+								|| dType.equals(c.getString(R.string.luminanceSensor))){
+						
+							rowSetLightControl.setVisibility(View.VISIBLE);
+						}
 					}
 
 				} else {
 					tvXbeeAddress.setText("");
 					tvPanID.setText("");
 					tvDeviceType.setText("");
+					myActuators.clear();
 
 					alert.newMessage(MessageType.DEVICE_NOT_FOUND);
 
@@ -1587,20 +1496,16 @@ public class XBeeConfiguratorActivity extends Activity {
 	 * 
 	 * ########################
 	 */
-	
+
 	private class MyActuator {
 		private String addrS;
 		private byte addrB[] = new byte[8];
 		private String type;
 
-		public MyActuator() {
-
-		}
-
 		public MyActuator(String addrString, byte addrByte[], String type) {
 			this.addrS = addrString;
 			this.addrB = addrByte;
-			this.type=type;
+			this.type = type;
 		}
 
 		public String getAddressString() {
@@ -1610,11 +1515,11 @@ public class XBeeConfiguratorActivity extends Activity {
 		public byte[] getAddressByte() {
 			return this.addrB;
 		}
-		
-		public String getType(){
+
+		public String getType() {
 			return this.type;
 		}
-		
+
 	}
 
 	/*
@@ -1624,7 +1529,7 @@ public class XBeeConfiguratorActivity extends Activity {
 	 * 
 	 * ########################
 	 */
-	
+
 	private class AlertClass extends AlertDialog {
 
 		public AlertClass(Context context) {
@@ -1640,7 +1545,8 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 		}
 
-		private void setActuator(final String addrActuator, String text, final String type) {
+		private void setActuator(final String addrActuator, String text,
+				final String type) {
 			AlertDialog.Builder b = new AlertDialog.Builder(c);
 
 			b.setMessage(text + " " + addrActuator)
@@ -1664,51 +1570,50 @@ public class XBeeConfiguratorActivity extends Activity {
 		}
 
 	}
-	
-	
-//	Runnable listener = new Runnable() {
-//
-//		@Override
-//		public void run() {
-//			int size = 0;
-//			while (true) {
-//				// if the device is some sort of sensor
-//				if (dType.equals(getString(R.string.sensor))
-//						|| dType.equals(getString(R.string.luminanceSensor))
-//						|| dType.equals(getString(R.string.motionSensor))
-//						|| dType.equals(getString(R.string.routerLuminanceSensor))
-//						|| dType.equals(getString(R.string.routerMotionSensor))
-//						) {
-//
-//					if (myActuators.size() != size) {
-//
-//						runOnUiThread(new Runnable() {
-//							@Override
-//							public void run() {
-//								populateAssociatedDevicesTable();
-//
-//							}
-//						});
-//						size = myActuators.size();
-//
-//					} else if (myActuators.size() == 0) {
-//
-//					}
-//
-//					// if the device is an actuator
-//				}
-//			}
-//		}
-//
-//	};
-	
+
+	// Runnable listener = new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// int size = 0;
+	// while (true) {
+	// // if the device is some sort of sensor
+	// if (dType.equals(getString(R.string.sensor))
+	// || dType.equals(getString(R.string.luminanceSensor))
+	// || dType.equals(getString(R.string.motionSensor))
+	// || dType.equals(getString(R.string.routerLuminanceSensor))
+	// || dType.equals(getString(R.string.routerMotionSensor))
+	// ) {
+	//
+	// if (myActuators.size() != size) {
+	//
+	// runOnUiThread(new Runnable() {
+	// @Override
+	// public void run() {
+	// populateAssociatedDevicesTable();
+	//
+	// }
+	// });
+	// size = myActuators.size();
+	//
+	// } else if (myActuators.size() == 0) {
+	//
+	// }
+	//
+	// // if the device is an actuator
+	// }
+	// }
+	// }
+	//
+	// };
+
 	Runnable listener = new Runnable() {
 
 		@Override
 		public void run() {
 			int size = 0;
 			while (true) {
-
+				synchronized (myActuators) {
 					if (myActuators.size() != size) {
 
 						runOnUiThread(new Runnable() {
@@ -1723,10 +1628,9 @@ public class XBeeConfiguratorActivity extends Activity {
 					} else if (myActuators.size() == 0) {
 
 					}
-
+				}
 			}
 		}
 
 	};
 }
-
