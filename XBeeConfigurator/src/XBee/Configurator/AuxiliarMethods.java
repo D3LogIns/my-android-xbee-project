@@ -1,14 +1,13 @@
 package XBee.Configurator;
 
 import java.util.LinkedList;
-
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 public class AuxiliarMethods {
 
 	private String debug = "debug";
+	private int MAX_DEVICES=2;
 
 	/*
 	 * 
@@ -21,30 +20,30 @@ public class AuxiliarMethods {
 		int textLength = buffer[2];
 		int textEndIndex = 3 + textLength;
 		for (int x = 3; x < textEndIndex; x++) {
-			
-			if(buffer[x]>=0 && buffer[x]<=9){
+
+			if (buffer[x] >= 0 && buffer[x] <= 9) {
 				textBuilder.append('0');
 			}
 
 			textBuilder.append(Integer.toHexString(buffer[x] & 0xFF));
 
-//			if (buffer[x] == 0) {
-//				textBuilder.append('0');
-//			}
+			// if (buffer[x] == 0) {
+			// textBuilder.append('0');
+			// }
 
 		}
 		return textBuilder.toString().toUpperCase();
 	}
-	
-	public byte[] getDataByte(byte[] buffer){
+
+	public byte[] getDataByte(byte[] buffer) {
 		int textLength = buffer[2];
 		int textEndIndex = 3 + textLength;
-		byte b[]=new byte[textLength];
-		
+		byte b[] = new byte[textLength];
+
 		for (int x = 3; x < textEndIndex; x++) {
-			b[x-3]=buffer[x];
+			b[x - 3] = buffer[x];
 		}
-		
+
 		return b;
 	}
 
@@ -94,10 +93,10 @@ public class AuxiliarMethods {
 			type = c.getString(R.string.actuator);
 			break;
 		case 40010:
-			type=c.getString(R.string.actuatorMotion);
+			type = c.getString(R.string.actuatorMotion);
 			break;
 		case 40020:
-			type=c.getString(R.string.actuatorLuminance);
+			type = c.getString(R.string.actuatorLuminance);
 			break;
 		default:
 			type = c.getString(R.string.unknown);
@@ -162,13 +161,13 @@ public class AuxiliarMethods {
 		int middle = (b.length / 2) - 1;
 
 		for (int i = 0; i < b.length; i++) {
-			if(b[i]>=0 && b[i]<=9){
+			if (b[i] >= 0 && b[i] <= 15) {
 				textBuilder.append("0");
 			}
 			textBuilder.append(Integer.toHexString(b[i] & 0xFF));
 			if (i == middle)
 				textBuilder.append(" ");
-			
+
 		}
 		return textBuilder.toString().toUpperCase();
 	}
@@ -205,15 +204,13 @@ public class AuxiliarMethods {
 
 	public byte[] convertStringToByte(String s) throws Exception {
 
-		s = s.replace(" ", "").trim();
+		s = s.replace(" ", "").trim().toLowerCase();
 		int l = (int) ((double) s.length() / 2 + .5);
 		byte[] b = new byte[l];
 
 		if (s.length() % 2 != 0) {
 			s = "0" + s;
 		}
-		
-		
 
 		for (int i = 0; i < s.length(); i = i + 2) {
 			b[i / 2] = this.conversionStringToByte(s.substring(i, i + 2));
@@ -267,54 +264,59 @@ public class AuxiliarMethods {
 		return n;
 	}
 
-	/* Methods to check if the new associated devices are the same as the old ones,
-	 * check if the the old ones were deleted and if there's a new one 
-	 */
-	public boolean validateNewAddresses(LinkedList<byte[]> newAddrAssociated, LinkedList<byte[]> oldAddrAssociated) {
-		int countSame=0;
-		
-		//check if the old stored addresses are empty and the new one is not empty
-		if(oldAddrAssociated.isEmpty() && !newAddrAssociated.isEmpty()){
-			return false;
-		
-		//check if the new one is empty, if it is empty it means that
-		//the devices were deleted
-		}else if(newAddrAssociated.isEmpty()){
-			return false;
-		}else if(newAddrAssociated.size()>oldAddrAssociated.size() || newAddrAssociated.size()<oldAddrAssociated.size()){
-			return false;
-		}
-		
-		for (int j = 0; j < oldAddrAssociated.size(); j++) {
-			if (oldAddrAssociated.contains(oldAddrAssociated.get(j))) {
-				countSame++;
-			}
-		}
-		
-		//if this becomes true it means that all stores addresses
-		//are the same
-		if(countSame==oldAddrAssociated.size())
-			return true;
-		else if(countSame<oldAddrAssociated.size()){
-			return false;
-		}
-		
-
-		return false;
-	}
-
-	
 	/*
 	 * OTHER METHODS
 	 */
 
-	//Method only to be used in XBeeConfiguratorActivity
-	//in the method sendSetActuatorToSensor, to construct
-	//the variable 'message'
-	public byte[] newMessage(int size, byte[] panId){
-		if(panId!=null)
-			return new byte[1+(1+size)*8+panId.length];
+	// Method only to be used in XBeeConfiguratorActivity
+	// in the method sendSetActuatorToSensor, to construct
+	// the variable 'message'
+	public byte[] newMessage(int size, byte[] panId) {
+		if (panId != null)
+			return new byte[1 + (1 + size) * 8 + panId.length];
 		else
-			return new byte[1+(1+size)*8];
+			return new byte[1 + (1 + size) * 8];
+	}
+
+	
+	
+	public byte[] newRemoteConfigMessage(LinkedList<byte[]> newAddrAssociated,
+			int oldSize, byte[] addrDevice,
+			byte[] remotePanId) {
+
+		byte msg[] = new byte[33];
+
+		int newSize = newAddrAssociated.size();
+		
+		// Populates the remote address
+		for (int i = 0; i < 8; i++) {
+			msg[i] = addrDevice[i];
+		}
+
+		// Populates the message with the number of addresses
+		msg[8] = (byte) newSize;
+
+		// Indication if the panID was changed
+		// and populates the message
+		if (remotePanId != null) {
+			msg[9] = 1;
+			// 27->30
+			for (int i = 0; i < 4; i++) {
+				msg[27 + i] = remotePanId[i];
+			}
+		}
+
+
+
+		// A DEVICE WAS ADDED OR REMOVED
+		if (newSize > oldSize || (newSize > 0 && newSize < oldSize)) {
+			for (int i = 0; i < newSize; i++) {
+				for (int j = 0; j < 8; j++) {
+					msg[11 + i * 8 + j] = newAddrAssociated.get(i)[j];
+				}
+			}
+		}
+
+		return msg;
 	}
 }
