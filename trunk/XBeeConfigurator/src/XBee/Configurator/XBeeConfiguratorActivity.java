@@ -61,8 +61,6 @@ public class XBeeConfiguratorActivity extends Activity {
 
 	private static final byte ID_REQUEST = (byte) 0xB1;
 	private static final byte ID_RESPONSE = (byte) 0xB2;
-	private static final byte ID_CHANGE_REQUEST = (byte) 0xB3;
-	private static final byte ID_CHANGE_RESPONSE = (byte) 0xB4;
 
 	private static final byte NODE_DISCOVERY_REQUEST = (byte) 0xD1;
 	private static final byte NODE_DISCOVERY_RESPONSE = (byte) 0xD2;
@@ -71,11 +69,12 @@ public class XBeeConfiguratorActivity extends Activity {
 	private static final byte GET_ASSOCIATED_DEVICES_RESPONSE = (byte) 0xE2;
 
 	private static final byte CHANGE_CONFIG=(byte) 0xCC;
-	private static final byte ASSOCIATE_DEVICE = (byte) 0xAD;
-	private static final byte DESASSOCIATE_DEVICE = (byte) 0xDA;
-	private static final byte CHANGE_LIGHT_CONTROL=(byte)0xCB;
-	private static final byte LIGHT_CONTROL_REQUEST=(byte)0xCD;
-	private static final byte LIGHT_CONTROL_RESPONSE=(byte)0xCE;
+	private static final byte CONTROL_REQUEST=(byte) 0xC1;
+//	private static final byte ASSOCIATE_DEVICE = (byte) 0xAD;
+//	private static final byte DESASSOCIATE_DEVICE = (byte) 0xDA;
+//	private static final byte CHANGE_LIGHT_CONTROL=(byte)0xCB;
+//	private static final byte LIGHT_CONTROL_REQUEST=(byte)0xCD;
+//	private static final byte LIGHT_CONTROL_RESPONSE=(byte)0xCE;
 
 	private static final byte COMMAND_TEXT = 0xF;
 
@@ -454,7 +453,11 @@ public class XBeeConfiguratorActivity extends Activity {
 
 				byte idByte[] = new AuxiliarMethods().intToByteArray(id);
 
-				new SendInformationThread(ID_CHANGE_REQUEST, TARGET_DEFAULT,
+				/*
+				 * PRECISA DE ATENCAO
+				 */
+				
+				new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT,
 						idByte).run();
 
 				// new SimpleRequestThread(idChangeRequest, TARGET_DEFAULT,
@@ -548,12 +551,14 @@ public class XBeeConfiguratorActivity extends Activity {
 
 				if (s.length() >= 14) {
 					try {
-						//4Green
-						byte[] b = new AuxiliarMethods()
+						/*
+						 * PRECISA DE ATENCAO!!!!
+						 */
+						byte[] address = new AuxiliarMethods()
 								.convertStringAddressToByte(s);
 
-						new SendInformationThread(DESASSOCIATE_DEVICE,
-								TARGET_DEFAULT, b).run();
+						new SendInformationThread(CHANGE_CONFIG,
+								TARGET_DEFAULT, address).run();
 						removeActuator(s);
 
 					} catch (Exception e) {
@@ -574,7 +579,12 @@ public class XBeeConfiguratorActivity extends Activity {
 					lightLevelControl=level;
 					byte b[]=new byte[1];
 					b[0]=(byte) level;
-					new SendInformationThread(CHANGE_LIGHT_CONTROL, TARGET_DEFAULT, b).run();
+					
+					/*
+					 * PRECISA DE ATENCAO!!!!
+					 */
+					
+					new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT, b).run();
 				}
 			}
 			
@@ -655,18 +665,35 @@ public class XBeeConfiguratorActivity extends Activity {
 
 			byte[] remotePanId = extras.getByteArray("panId");
 
-			if (remotePanId.length > 5) {
+			if (remotePanId.length > 4) {
 				remotePanId = null;
+			}
+			
+			if(remotePanId!=null)
+			for(int i=0; i<remotePanId.length; i++){
+				Log.d(debug, Integer.toHexString(remotePanId[i] & 0xff)); 
 			}
 
 //			setConfigsToRemoteXBee(auxXBee.getMyActuatorsByte(position),
 //					auxXBee.getAddressByte(position), remotePanId);
 			
-			byte msg[]=new AuxiliarMethods().newRemoteConfigMessage(
-					auxXBee.getMyActuatorsByte(position),
-					sa.getActuatorsByte().size(),
-					auxXBee.getAddressByte(position),
-					remotePanId);
+//			byte msg[]=new AuxiliarMethods().newRemoteConfigMessage(
+//					auxXBee.getMyActuatorsByte(position),
+//					sa.getActuatorsByte().size(),
+//					auxXBee.getAddressByte(position),
+//					remotePanId);
+			
+			AuxiliarMethods auxM=new AuxiliarMethods();
+			
+			byte msg[]=auxM.newConfigPacket();
+			msg=auxM.packet_put_panId(msg, remotePanId);
+			msg=auxM.packet_put_remoteAddress(msg, auxXBee.getAddressByte(position));
+			msg=auxM.packet_put_DessAssociation(msg, auxXBee.getMyActuatorsByte(position), sa.getActuatorsByte().size());
+			
+			Log.d(debug, "----");
+			for(int i=0; i<msg.length; i++){
+				Log.d(debug, Integer.toHexString(msg[i] & 0xff));
+			}
 			
 			new SendInformationThread(CHANGE_CONFIG, TARGET_REMOTE_XBEE, msg).run();
 		}
@@ -876,7 +903,7 @@ public class XBeeConfiguratorActivity extends Activity {
 					getAssocDevsControl = true;
 					break;
 					
-				case LIGHT_CONTROL_RESPONSE:
+				case CHANGE_CONFIG:
 					if(buffer[1]==TARGET_REMOTE_XBEE){
 						byte b[]=new AuxiliarMethods().getDataByte(buffer);
 						int lightLevel=buffer[0];
@@ -1117,8 +1144,14 @@ public class XBeeConfiguratorActivity extends Activity {
 					try {
 						byte b[] = new AuxiliarMethods()
 								.convertStringAddressToByte(addr);
-						new SendInformationThread(ASSOCIATE_DEVICE,
+						
+						/*
+						 * PRECISA DE ATENCAO!!!!
+						 */
+						
+						new SendInformationThread(CHANGE_CONFIG,
 								TARGET_DEFAULT, b).run();
+						
 						myActuators.add(new MyActuator(addr, b, type));
 					} catch (Exception e) {
 					}
@@ -1132,7 +1165,11 @@ public class XBeeConfiguratorActivity extends Activity {
 			try {
 				byte b[] = new AuxiliarMethods()
 						.convertStringAddressToByte(addr);
-				new SendInformationThread(ASSOCIATE_DEVICE, TARGET_DEFAULT, b)
+				
+				/*
+				 * PRECISA DE ATENCAO!!!!
+				 */
+				new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT, b)
 						.run();
 				myActuators.add(new MyActuator(addr, b, type));
 			} catch (Exception e) {
@@ -1148,8 +1185,14 @@ public class XBeeConfiguratorActivity extends Activity {
 					byte b[] = new AuxiliarMethods()
 							.convertStringAddressToByte(addr);
 					myActuators.remove(pos);
-					new SendInformationThread(DESASSOCIATE_DEVICE,
+					
+					/*
+					 * PRECISA DE ATENCAO!!!!
+					 */
+					
+					new SendInformationThread(CHANGE_CONFIG,
 							TARGET_DEFAULT, b).run();
+					
 				} catch (Exception e) {
 				}
 			}
@@ -1398,7 +1441,10 @@ public class XBeeConfiguratorActivity extends Activity {
 						
 						if(xbee.get(xbeePosControl).getType().equals(getString(R.string.luminanceSensor))
 								|| xbee.get(xbeePosControl).getType().equals(getString(R.string.routerLuminanceSensor))){
-							new SendInformationThread(LIGHT_CONTROL_REQUEST, TARGET_REMOTE_XBEE, address).run();
+							/*
+							 * PRECISA DE ATENCAO!!!!
+							 */
+							new SendInformationThread(CONTROL_REQUEST, TARGET_REMOTE_XBEE, address).run();
 						}
 						
 						while (complete == false) {

@@ -214,8 +214,9 @@ public class XbeeDetailsActivity extends Activity {
 
 			private void changeXbeePanID(int id) {
 
-				byte idByte[] = new AuxiliarMethods().intToByteArray(id);
-				panId = idByte;
+				panId= new AuxiliarMethods().intToByteArray(id);
+//				byte idByte[] = new AuxiliarMethods().intToByteArray(id);
+//				panId = idByte;
 
 			}
 		});
@@ -448,11 +449,15 @@ public class XbeeDetailsActivity extends Activity {
 		Intent mIntent = new Intent();
 		mIntent.putExtras(b);
 
-		if (panId == null) {
-			panId = new byte[6];
+		if (panId != null) {
+			byte panId_temp[]={panId[2], panId[3]};
+			
+			mIntent.putExtra("panId", panId_temp);
+		}else{
+			panId=new byte[6];
+			mIntent.putExtra("panId", panId);
 		}
 
-		mIntent.putExtra("panId", panId);
 		mIntent.putExtra("position", position);
 		setResult(RESULT_OK, mIntent);
 
