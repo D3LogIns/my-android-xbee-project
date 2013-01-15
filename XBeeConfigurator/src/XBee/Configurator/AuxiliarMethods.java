@@ -280,43 +280,104 @@ public class AuxiliarMethods {
 
 	
 	
-	public byte[] newRemoteConfigMessage(LinkedList<byte[]> newAddrAssociated,
-			int oldSize, byte[] addrDevice,
-			byte[] remotePanId) {
-
-		byte msg[] = new byte[33];
-
-		int newSize = newAddrAssociated.size();
-		
-		// Populates the remote address
-		for (int i = 0; i < 8; i++) {
-			msg[i] = addrDevice[i];
-		}
-
-		// Populates the message with the number of addresses
-		msg[8] = (byte) newSize;
-
+//	public byte[] newRemoteConfigMessage(LinkedList<byte[]> newAddrAssociated,
+//			int oldSize, byte[] addrDevice,
+//			byte[] remotePanId) {
+//
+//		byte msg[] = new byte[31];
+//
+//		int newSize = newAddrAssociated.size();
+//		
+//		// Populates the remote address
+//		for (int i = 0; i < 8; i++) {
+//			msg[i] = addrDevice[i];
+//		}
+//
+//		// Populates the message with the number of addresses
+//		msg[8] = (byte) newSize;
+//
+//		// Indication if the panID was changed
+//		// and populates the message
+//		if (remotePanId != null) {
+//			msg[9] = 1;
+//			// 27->28
+//			for (int i = 0; i < 2; i++) {
+//				msg[27 + i] = remotePanId[i+2];
+//			}
+//		}
+//
+//
+//
+//		// A DEVICE WAS ADDED OR REMOVED
+//		if (newSize > oldSize || (newSize > 0 && newSize < oldSize)) {
+//			for (int i = 0; i < newSize; i++) {
+//				for (int j = 0; j < 8; j++) {
+//					msg[11 + i * 8 + j] = newAddrAssociated.get(i)[j];
+//				}
+//			}
+//		}
+//
+//		return msg;
+//	}
+	
+	public byte[] newConfigPacket(){
+		return new byte[32];
+	}
+	
+	public byte[] packet_put_panId(byte[] msg, byte[] id){
 		// Indication if the panID was changed
 		// and populates the message
-		if (remotePanId != null) {
+		if (id != null && id.length==2) {
+			//Indication
 			msg[9] = 1;
-			// 27->30
-			for (int i = 0; i < 4; i++) {
-				msg[27 + i] = remotePanId[i];
+			// 28->29
+			for (int i = 0; i < 2; i++) {
+				msg[28 + i] = id[i];
 			}
 		}
+		
+		return msg;
+	}
+	
+	public byte[] packet_put_data(byte[] msg, byte[] data){
+		
+		if(data!=null && data.length==2){
+			//30->31
+			for(int i=0; i<0; i++){
+				msg[30+i]=data[i];
+			}
+		}
+		
+		return msg;
+	}
+	
+	public byte[] packet_put_remoteAddress(byte msg[], byte[] address){
+		
+		for (int i = 0; i < 8; i++) {
+			msg[i] = address[i];
+		}
+		
+		return msg;
+	}
+	
+	public byte[] packet_put_DessAssociation(byte[] msg, LinkedList<byte[]> newAddresses, int oldSize){
+		int newSize = newAddresses.size();
+		
 
-
-
+		
 		// A DEVICE WAS ADDED OR REMOVED
-		if (newSize > oldSize || (newSize > 0 && newSize < oldSize)) {
+		if (newSize > oldSize || (newSize >= 0 && newSize < oldSize)) {
+			//Indication
+			msg[8]=1;
+			//number of devices
+			msg[11]=(byte) newSize;
 			for (int i = 0; i < newSize; i++) {
 				for (int j = 0; j < 8; j++) {
-					msg[11 + i * 8 + j] = newAddrAssociated.get(i)[j];
+					msg[12 + i * 8 + j] = newAddresses.get(i)[j];
 				}
 			}
 		}
-
+		
 		return msg;
 	}
 }
