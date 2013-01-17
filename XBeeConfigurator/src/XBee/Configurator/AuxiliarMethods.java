@@ -147,7 +147,11 @@ public class AuxiliarMethods {
 		for (int i = 0; i < 4; i++) {
 			b[4 - 1 - i] = (byte) ((n >> 8 * i) & 0xFF);
 		}
-		return b;
+		byte final_b[]=new byte[2];
+		final_b[0]=b[2];
+		final_b[1]=b[3];
+				
+		return final_b;
 	}
 
 	/*
@@ -342,8 +346,9 @@ public class AuxiliarMethods {
 	public byte[] packet_put_data(byte[] msg, byte[] data){
 		
 		if(data!=null && data.length==2){
+			msg[10]=1;
 			//30->31
-			for(int i=0; i<0; i++){
+			for(int i=0; i<data.length; i++){
 				msg[30+i]=data[i];
 			}
 		}
@@ -363,8 +368,6 @@ public class AuxiliarMethods {
 	public byte[] packet_put_DessAssociation(byte[] msg, LinkedList<byte[]> newAddresses, int oldSize){
 		int newSize = newAddresses.size();
 		
-
-		
 		// A DEVICE WAS ADDED OR REMOVED
 		if (newSize > oldSize || (newSize >= 0 && newSize < oldSize)) {
 			//Indication
@@ -380,4 +383,19 @@ public class AuxiliarMethods {
 		
 		return msg;
 	}
+
+	public byte[] packet_put_DessAssociation(byte[] msg, byte[] address, boolean changed) {
+		
+		if(changed)
+			msg[8]=1;
+		
+		if(address!= null){
+			for(int i=0; i<address.length; i++){
+				msg[12+i]=address[i];
+			}
+		}
+		
+		return msg;
+	}
+	
 }

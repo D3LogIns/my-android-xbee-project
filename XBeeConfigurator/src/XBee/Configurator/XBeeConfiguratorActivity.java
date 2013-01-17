@@ -97,6 +97,7 @@ public class XBeeConfiguratorActivity extends Activity {
 	private ConnectionClass cc;
 	private AuxiliarXBee auxXBee;
 	private SensorsAndActuators sa;
+	AuxiliarMethods auxM;
 
 	// COLOR VARIABLES
 	private String green = "#BB7EFFA6";
@@ -145,6 +146,8 @@ public class XBeeConfiguratorActivity extends Activity {
 		cc = new ConnectionClass(c);
 
 		auxXBee = new AuxiliarXBee();
+		
+		auxM=new AuxiliarMethods();
 
 		alert = new AlertMessage(c);
 
@@ -429,7 +432,9 @@ public class XBeeConfiguratorActivity extends Activity {
 			public void onClick(View v) {
 
 				if (inBoundsPanID(etPan.getText().toString())) {
-					//4Green
+					/*
+					 * ATENCAO
+					 */
 					changeXbeePanID(Integer.parseInt(etPan.getText().toString()));
 
 				} else{
@@ -456,14 +461,16 @@ public class XBeeConfiguratorActivity extends Activity {
 				/*
 				 * PRECISA DE ATENCAO
 				 */
+				byte msg[]=auxM.newConfigPacket();
+				msg=auxM.packet_put_panId(msg, idByte);
 				
-				new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT,
-						idByte).run();
+				
+				new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT, msg).run();
 
 				// new SimpleRequestThread(idChangeRequest, TARGET_DEFAULT,
 				// Integer
 				// .toString(id)).run();
-				new LoadingScreen(4000, loadingType.changePan).execute();
+				//new LoadingScreen(4000, loadingType.changePan).execute();
 
 			}
 		});
@@ -520,14 +527,17 @@ public class XBeeConfiguratorActivity extends Activity {
 
 				if (s.length() >= 14) {
 					try {
-						// byte[] b = new AuxiliarMethods()
-						// .convertStringAddressToByte(s);
 
-						// new SendInformationThread(ASSOCIATE_DEVICE,
-						// TARGET_DEFAULT, b).run();
-						
-						//4Green
+						byte[] b = new AuxiliarMethods().convertStringAddressToByte(s);
 						addActuator(s, c.getString(R.string.actuator));
+
+						byte msg[]=auxM.newConfigPacket();
+						msg=build_association_packet(msg);
+
+						new SendInformationThread(CHANGE_CONFIG,TARGET_DEFAULT, msg).run();
+						
+			
+						
 
 					} catch (Exception e) {
 						alert.newMessage(MessageType.ADDRESS_NOT_ACCEPTABLE);
@@ -538,7 +548,7 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 
 		});
-
+		this.auxXBee.getList();
 		// DESASSOCIATE BUTTON
 
 		bDesassociate.setOnClickListener(new OnClickListener() {
@@ -557,9 +567,15 @@ public class XBeeConfiguratorActivity extends Activity {
 						byte[] address = new AuxiliarMethods()
 								.convertStringAddressToByte(s);
 
+						byte msg[]=auxM.newConfigPacket();
+						
+						removeActuator(s);
+				
+						msg=auxM.packet_put_DessAssociation(msg, myActuators.getFirst().getAddressByte(), true);
+						
 						new SendInformationThread(CHANGE_CONFIG,
 								TARGET_DEFAULT, address).run();
-						removeActuator(s);
+						
 
 					} catch (Exception e) {
 						alert.newMessage(MessageType.ADDRESS_NOT_ACCEPTABLE);
@@ -577,19 +593,41 @@ public class XBeeConfiguratorActivity extends Activity {
 				int level=setLightControl.getProgress();
 				if(level!=lightLevelControl){
 					lightLevelControl=level;
-					byte b[]=new byte[1];
-					b[0]=(byte) level;
-					
+					byte b[]=auxM.intToByteArray(level);
 					/*
 					 * PRECISA DE ATENCAO!!!!
 					 */
 					
-					new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT, b).run();
+					byte msg[]=auxM.newConfigPacket();
+					msg=auxM.packet_put_data(msg, b);
+					
+					new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT, msg).run();
 				}
 			}
 			
 		});
 
+	}
+	
+	private byte[] build_association_packet(byte[] msg){
+		if(myActuators.size()>0){
+			byte addresses[]=new byte[8*myActuators.size()];
+			int x=0;
+			
+			for(int i=0; i<myActuators.size(); i++){
+				for(int j=0; j<myActuators.get(i).getAddressByte().length; j++){
+					addresses[x]=myActuators.get(i).getAddressByte()[j];
+					x++;
+				}
+			}
+			
+			msg[8]=1;
+			msg[11]=(byte) myActuators.size();
+			msg=auxM.packet_put_DessAssociation(msg, addresses, true);
+
+		}
+		
+		return msg;
 	}
 
 	/*
@@ -669,10 +707,6 @@ public class XBeeConfiguratorActivity extends Activity {
 				remotePanId = null;
 			}
 			
-			if(remotePanId!=null)
-			for(int i=0; i<remotePanId.length; i++){
-				Log.d(debug, Integer.toHexString(remotePanId[i] & 0xff)); 
-			}
 
 //			setConfigsToRemoteXBee(auxXBee.getMyActuatorsByte(position),
 //					auxXBee.getAddressByte(position), remotePanId);
@@ -683,17 +717,13 @@ public class XBeeConfiguratorActivity extends Activity {
 //					auxXBee.getAddressByte(position),
 //					remotePanId);
 			
-			AuxiliarMethods auxM=new AuxiliarMethods();
+			
 			
 			byte msg[]=auxM.newConfigPacket();
 			msg=auxM.packet_put_panId(msg, remotePanId);
 			msg=auxM.packet_put_remoteAddress(msg, auxXBee.getAddressByte(position));
 			msg=auxM.packet_put_DessAssociation(msg, auxXBee.getMyActuatorsByte(position), sa.getActuatorsByte().size());
 			
-			Log.d(debug, "----");
-			for(int i=0; i<msg.length; i++){
-				Log.d(debug, Integer.toHexString(msg[i] & 0xff));
-			}
 			
 			new SendInformationThread(CHANGE_CONFIG, TARGET_REMOTE_XBEE, msg).run();
 		}
@@ -1137,6 +1167,7 @@ public class XBeeConfiguratorActivity extends Activity {
 	}
 
 	private void addActuator(String addr, String type) {
+
 		if (!myActuators.isEmpty()) {
 			if (checkRepeated(addr) == -1) {
 				if (myActuators.size() < DEVICE_LIMIT) {
@@ -1149,10 +1180,15 @@ public class XBeeConfiguratorActivity extends Activity {
 						 * PRECISA DE ATENCAO!!!!
 						 */
 						
-						new SendInformationThread(CHANGE_CONFIG,
-								TARGET_DEFAULT, b).run();
 						
 						myActuators.add(new MyActuator(addr, b, type));
+						
+						byte msg[]=auxM.newConfigPacket();
+						msg=build_association_packet(msg);
+						
+						
+						new SendInformationThread(CHANGE_CONFIG,TARGET_DEFAULT, msg).run();
+						
 					} catch (Exception e) {
 					}
 				} else {
@@ -1163,15 +1199,19 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 		} else {
 			try {
-				byte b[] = new AuxiliarMethods()
-						.convertStringAddressToByte(addr);
+				
+				byte b[] = new AuxiliarMethods().convertStringAddressToByte(addr);
 				
 				/*
 				 * PRECISA DE ATENCAO!!!!
 				 */
-				new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT, b)
-						.run();
 				myActuators.add(new MyActuator(addr, b, type));
+				
+				byte msg[]=auxM.newConfigPacket();
+				
+				msg=build_association_packet(msg);
+				
+				new SendInformationThread(CHANGE_CONFIG,TARGET_DEFAULT, msg).run();
 			} catch (Exception e) {
 			}
 		}
