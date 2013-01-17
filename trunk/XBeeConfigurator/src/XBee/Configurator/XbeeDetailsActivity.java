@@ -450,9 +450,7 @@ public class XbeeDetailsActivity extends Activity {
 		mIntent.putExtras(b);
 
 		if (panId != null) {
-			byte panId_temp[]={panId[2], panId[3]};
-			
-			mIntent.putExtra("panId", panId_temp);
+			mIntent.putExtra("panId", panId);
 		}else{
 			panId=new byte[6];
 			mIntent.putExtra("panId", panId);
