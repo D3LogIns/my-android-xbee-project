@@ -20,7 +20,8 @@
         <uses-library android:name="com.android.future.usb.accessory" />
         <activity
             android:name="XBeeConfiguratorActivity"
-            android:label="" 
+
+            android:label="XBee Configurator" 
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +40,7 @@
         <activity 
             class="XbeeDetailsActivity"
             android:name="XbeeDetailsActivity"
-            android:label=""
+            android:label="XbeeDetailsActivity"
             android:screenOrientation="portrait"> 
         </activity>
         
