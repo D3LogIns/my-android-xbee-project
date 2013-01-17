@@ -62,6 +62,10 @@
     
     <string name="details">Details</string>
     
+    <string name="changeLuminosityLevel">Set luminosity:</string>
+    
+    <string name="changeTime">Set time (minutes):</string>
+    
     
     
     <!-- Strings for XBeeDetailsActivity -->

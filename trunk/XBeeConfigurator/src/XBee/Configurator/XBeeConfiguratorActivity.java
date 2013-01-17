@@ -26,10 +26,13 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -245,7 +248,13 @@ public class XBeeConfiguratorActivity extends Activity {
 		// progressDialog = new ProgressDialog(XBeeConfiguratorActivity.this,
 		// R.style.Theme_MyDialog);
 		progressDialog = new ProgressDialog(c);
-
+		
+//		String[] time=this.getResources().getStringArray(R.array.time);
+	      
+		Spinner edit_changeTime=(Spinner) findViewById(R.id.edit_changeTime);
+		
+//        edit_changeTime.setAdapter(new ArrayAdapter<String>(this, R.layout.list_view_layout, time));
+		
 		/*
 		 * Configuration Rows
 		 */
@@ -269,6 +278,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		final Button bDesassociate = (Button) findViewById(R.id.bOK_Desassociate);
 		final Button bSetLightControl = (Button) findViewById(R.id.bOK_setLightControl);
 		bOkPanId.setEnabled(false);
+		Button bOkTime=(Button) findViewById(R.id.bOK_setTimeControl);
 
 		/*
 		 * TEXT BOX'S INICIALIZATION
@@ -416,6 +426,7 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 
 		});
+		
 
 		/*
 		 * #########################
@@ -606,6 +617,7 @@ public class XBeeConfiguratorActivity extends Activity {
 			}
 			
 		});
+		
 
 	}
 	
