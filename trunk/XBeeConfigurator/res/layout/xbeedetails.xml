@@ -136,19 +136,19 @@
 	    <!-- DESASSOCIATED DEVICES ROW -->
     
    <TableRow android:layout_height="match_parent"
-        android:id="@+id/rowDesassociateDeviceDetails"
+        android:id="@+id/rowDisassociateDeviceDetails"
         android:visibility="gone">
         
         <TextView
             android:layout_column="0"
             android:padding="3dip"
-            android:text="@string/DesassociateThisAddressDevice"
+            android:text="@string/DisassociateThisAddressDevice"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000000"
             android:background="@drawable/rounded_textview" />
 
         <EditText
-            android:id="@+id/editDesassociateDeviceDetails"
+            android:id="@+id/editDisassociateDeviceDetails"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_column="1"
@@ -160,7 +160,7 @@
             android:inputType="text"/>
 
         <Button
-            android:id="@+id/bOK_DesassociateDetails"
+            android:id="@+id/bOK_DisassociateDetails"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_column="2"
@@ -170,6 +170,77 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000000" />
     </TableRow>
+    
+   <View
+   		android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:background="#F3F5E7"
+        android:padding="40dip"/>
+    
+   <!--  SEEK BAR LUMINOSITY-->
+    <TableRow android:id="@+id/rowSetLightControlDetails"
+            android:layout_height="match_parent"
+            android:visibility="gone" >
+            
+            <TextView
+                android:layout_column="0"
+                android:background="@drawable/rounded_textview"
+                android:padding="3dip"
+                android:text="@string/changeLuminosityLevel"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000" />
+            
+            <SeekBar android:id="@+id/seek_setLightControl"
+                android:layout_column="1"
+        		android:layout_width="fill_parent"
+        		android:layout_height="wrap_content"
+        		android:max="10"
+        		android:progress="5"
+        		android:secondaryProgress="10" />
+            
+            <Button
+                android:id="@+id/bOK_setLightControlDetails"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:background="@drawable/button"
+                android:text="@string/OK"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000" />
+        </TableRow>
+        
+    <!--  Spinner -->
+		
+		<TableRow
+		    android:id="@+id/rowSetTimeControlDetails"
+		    android:layout_height="match_parent"
+            android:visibility="gone" >
+		    
+		    <TextView
+                android:layout_column="0"
+                android:background="@drawable/rounded_textview"
+                android:padding="3dip"
+                android:text="@string/changeTime"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000" />
+		    
+            <Spinner
+                android:id="@+id/edit_changeTimeDetails"
+                android:layout_column="1"
+                android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+		 	
+		 	<Button
+                android:id="@+id/bOK_setTimeControlDetails"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:background="@drawable/button"
+                android:text="@string/OK"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000" />
+
+		</TableRow>
 	
 	
 	<!-- DIVISION LINE -->

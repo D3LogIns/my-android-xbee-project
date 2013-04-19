@@ -50,15 +50,15 @@
     
     <string name="associateThisAddressDevice">Associate this device:</string>
     
-    <string name="DesassociateThisAddressDevice">Desassociate this device:</string>
+    <string name="DisassociateThisAddressDevice">Disassociate this device:</string>
     
     <string name="associateDeviceHint">Insert the device address to associate</string>
     
-    <string name="desassociateDeviceHint">Insert the device address to desassociate</string>
+    <string name="disassociateDeviceHint">Insert the device address to disassociate</string>
     
     <string name="associate">Associate</string>
     
-    <string name="desassociate">Desassociate</string>
+    <string name="disassociate">Disassociate</string>
     
     <string name="details">Details</string>
     
@@ -105,7 +105,7 @@
     
     <string name="removeActuator">Are you sure you want to desassasociate this actuator?</string>
     
-    <string name="removeSensor">Are you sure you want to desassociate from this sensor?</string>
+    <string name="removeSensor">Are you sure you want to disassociate from this sensor?</string>
     
     <string name="addressNotAcceptable">The inserted address is not acceptable./nPlease insert letters between A &#8211; F and numbers between 0 &#8211; 9.</string>
     
@@ -134,4 +134,11 @@
 	
 	<string name="WaitForRetrieveInformation">Informations about this sensor are being collected.</string>
 	
+	<!-- String for Connection Class -->
+	
+	<string name="VeryGood">Very Good</string>
+	<string name="Good">Good</string>
+	<string name="Medium">Medium</string>
+	<string name="Weak">Weak</string>
+	<string name="VeryWeak">Very Weak</string>
 </resources>
