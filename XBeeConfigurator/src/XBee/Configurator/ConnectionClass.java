@@ -73,24 +73,22 @@ public class ConnectionClass {
 
 			}
 
-			switch (r.nextInt(5)) {
+			switch (r.nextInt(4)) {
 			case 0:
-				ss = "Excelente";
+				ss = c.getString(R.string.VeryGood);
 				break;
 			case 1:
-				ss = "Muito Bom";
+				ss = c.getString(R.string.Good);
 				break;
 			case 2:
-				ss = "Bom";
+				ss = c.getString(R.string.Medium);
 				break;
 			case 3:
-				ss = "MŽdio";
+				ss = c.getString(R.string.Weak);
 				break;
 			case 4:
-				ss = "Fraco";
+				ss = c.getString(R.string.VeryWeak);
 				break;
-			case 5:
-				ss = "Muito Fraco";
 			}
 
 			String s="";

@@ -10,8 +10,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,6 +38,8 @@ public class XbeeDetailsActivity extends Activity {
 	private byte[] panId;
 
 	private int LIMIT_ACTUATORS = 2;
+	
+	private String sensorType="";
 
 	// COLOR VARIABLES
 	private String green = "#7EFFA6";
@@ -68,7 +72,8 @@ public class XbeeDetailsActivity extends Activity {
 		TextView list = (TextView) findViewById(R.id.tvListOf);
 		final EditText etPan = (EditText) findViewById(R.id.editPanDetails);
 		final EditText etAssociate = (EditText) findViewById(R.id.editAssociateDeviceDetails);
-		final EditText etDesassociate = (EditText) findViewById(R.id.editDesassociateDeviceDetails);
+		final EditText etDesassociate = (EditText) findViewById(R.id.editDisassociateDeviceDetails);
+		final Spinner edit_changeTime=(Spinner) findViewById(R.id.edit_changeTimeDetails);
 		// associated = (TextView) findViewById(R.id.tvAssociatedDevices);
 		// mySensor = (TextView) findViewById(R.id.tvMySensor);
 
@@ -78,16 +83,32 @@ public class XbeeDetailsActivity extends Activity {
 
 		// ROWS INICIALIZATION
 		TableRow rAssociate = (TableRow) findViewById(R.id.rowAssociateDeviceDetails);
-		TableRow rDesassociate = (TableRow) findViewById(R.id.rowDesassociateDeviceDetails);
+		TableRow rDesassociate = (TableRow) findViewById(R.id.rowDisassociateDeviceDetails);
+		TableRow rTimeControl = (TableRow) findViewById(R.id.rowSetTimeControlDetails);
+		TableRow rLightControl = (TableRow) findViewById(R.id.rowSetLightControlDetails);
 
 		// BUTTONS INICIALIZATION
 		final Button bOkPanId = (Button) findViewById(R.id.bOKPanDetails);
 		final Button bAssociate = (Button) findViewById(R.id.bOK_AssociateDetails);
-		final Button bDesassociate = (Button) findViewById(R.id.bOK_DesassociateDetails);
+		final Button bDesassociate = (Button) findViewById(R.id.bOK_DisassociateDetails);
+		final Button bTimeOK = (Button) findViewById(R.id.bOK_setTimeControlDetails);
+		final Button bLightOK = (Button) findViewById(R.id.bOK_setLightControlDetails);
 		
 		addr.setText(xbee.getAddress());
 
 		type.setText(xbee.getType());
+		
+		
+		if(xbee.getType().equals(getString(R.string.routerLuminanceSensor)) || xbee.getType().equals(getString(R.string.luminanceSensor))){
+			sensorType="luminance";
+			rLightControl.setVisibility(View.VISIBLE);
+		}else if(xbee.getType().equals(getString(R.string.routerMotionSensor)) || xbee.getType().equals(getString(R.string.motionSensor))){
+			sensorType="motion";
+			String[] time=this.getResources().getStringArray(R.array.time);
+			
+	        edit_changeTime.setAdapter(new ArrayAdapter<String>(this, R.drawable.spinner_style, time));
+			rTimeControl.setVisibility(View.VISIBLE);
+		}
 
 		// TextViews Listeners
 
@@ -323,71 +344,83 @@ public class XbeeDetailsActivity extends Activity {
 		thread.start();
 	}
 
+
+	
 	private void populateTableXBeeDevices() {
 
 		int cont = 0;
 		for (int i = 0; i != auxXbee.getListSize(); i++) {
-			if (auxXbee.getType(i).equals(getString(R.string.actuator))
-					|| auxXbee.getType(i).equals(getString(R.string.actuatorLuminance))
-					|| auxXbee.getType(i).equals(getString(R.string.actuatorMotion))
-					) {
-				TableRow r = new TableRow(this);
-				final TextView a = new TextView(this);
-				final TextView t=	new TextView(this);
-				TextView ss = new TextView(this);
-
-				a.setTextAppearance(c, android.R.style.TextAppearance_Large);
-				a.setText(auxXbee.getAddress(i));
-				a.setId(i);
-				a.setClickable(true);
-				
-				t.setTextAppearance(c, android.R.style.TextAppearance_Large);
-				t.setText(auxXbee.getType(i));
-
-				ss.setTextAppearance(c, android.R.style.TextAppearance_Large);
-				ss.setText(auxXbee.getSignalStrength(i));
-
-				if (cont % 2 == 0)
-					r.setBackgroundColor(Color.parseColor(green));
-				else
-					r.setBackgroundColor(Color.parseColor(light_grey));
-
-				a.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View arg0) {
-
-							int size = xbee.getMyActuators().size();
-
-							if (size < LIMIT_ACTUATORS) {
-								auxXbee = alert.newMessage(
-										MessageType.SET_ACTUATOR,
-										xbee.getAddress(),
-										a.getText().toString(),
-										t.getText().toString());
-
-								// populateAssociatedDevicesTable();
-							} else
-								alert.newMessage(MessageType.ACTUATORS_LIMIT_REACHED);
-
-						
-					}
-				});
-
-				r.setPadding(0, 10, 0, 10);
-
-				a.setTextColor(Color.parseColor(black));
-				t.setTextColor(Color.parseColor(black));
-				ss.setTextColor(Color.parseColor(black));
-				
-				r.addView(a);
-				r.addView(t);
-				r.addView(ss);
-				xbeeDevices.addView(r);
-
-				cont++;
-
+			
+			if(sensorType.equals("luminance")){
+				if(auxXbee.getType(i).equals(getString(R.string.actuator))
+					|| auxXbee.getType(i).equals(getString(R.string.actuatorLuminance))){
+					getActuator(i, cont);
+					cont++;
+				}
+			}else if(sensorType.equals("motion")){
+				if (auxXbee.getType(i).equals(getString(R.string.actuator))
+						|| auxXbee.getType(i).equals(getString(R.string.actuatorMotion))
+						) {
+					getActuator(i, cont);
+					cont++;
+				}
 			}
 		}
+	}
+	
+	private void getActuator(int i, int cont){
+		TableRow r = new TableRow(this);
+		final TextView a = new TextView(this);
+		final TextView t=	new TextView(this);
+		TextView ss = new TextView(this);
+
+		a.setTextAppearance(c, android.R.style.TextAppearance_Large);
+		a.setText(auxXbee.getAddress(i));
+		a.setId(i);
+		a.setClickable(true);
+		
+		t.setTextAppearance(c, android.R.style.TextAppearance_Large);
+		t.setText(auxXbee.getType(i));
+
+		ss.setTextAppearance(c, android.R.style.TextAppearance_Large);
+		ss.setText(auxXbee.getSignalStrength(i));
+
+		if (cont % 2 == 0)
+			r.setBackgroundColor(Color.parseColor(green));
+		else
+			r.setBackgroundColor(Color.parseColor(light_grey));
+
+		a.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+
+					int size = xbee.getMyActuators().size();
+
+					if (size < LIMIT_ACTUATORS) {
+						auxXbee = alert.newMessage(
+								MessageType.SET_ACTUATOR,
+								xbee.getAddress(),
+								a.getText().toString(),
+								t.getText().toString());
+
+						// populateAssociatedDevicesTable();
+					} else
+						alert.newMessage(MessageType.ACTUATORS_LIMIT_REACHED);
+
+				
+			}
+		});
+
+		r.setPadding(0, 10, 0, 10);
+
+		a.setTextColor(Color.parseColor(black));
+		t.setTextColor(Color.parseColor(black));
+		ss.setTextColor(Color.parseColor(black));
+		
+		r.addView(a);
+		r.addView(t);
+		r.addView(ss);
+		xbeeDevices.addView(r);
 	}
 
 	private void populateAssociatedDevicesTable() {

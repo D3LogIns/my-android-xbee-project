@@ -194,7 +194,7 @@
             android:padding="40dip" />
 
         <TableRow
-            android:id="@+id/rowDesassociateDevice"
+            android:id="@+id/rowDisassociateDevice"
             android:layout_height="match_parent"
             android:visibility="gone" >
 
@@ -202,12 +202,12 @@
                 android:layout_column="0"
                 android:background="@drawable/rounded_textview"
                 android:padding="3dip"
-                android:text="@string/DesassociateThisAddressDevice"
+                android:text="@string/DisassociateThisAddressDevice"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#000000" />
 
             <EditText
-                android:id="@+id/editDesassociateDevice"
+                android:id="@+id/editDisassociateDevice"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_column="1"
@@ -219,7 +219,7 @@
                 android:textColor="#000000" />
 
             <Button
-                android:id="@+id/bOK_Desassociate"
+                android:id="@+id/bOK_Disassociate"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_column="2"
@@ -244,16 +244,17 @@
             android:background="#808080"
             android:padding="10dip" />
         
-        <!--  SEEK BAR -->
-       	<View
-            android:layout_width="fill_parent"
-            android:layout_height="5dp"
-            android:background="#F3F5E7"
-            android:padding="40dip" />
+        <!--  SEEK BAR LUMINOSITY-->
         
         <TableRow android:id="@+id/rowSetLightControl"
             android:layout_height="match_parent"
-            android:visibility="visible" >
+            android:visibility="gone" >
+            
+           	<View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#F3F5E7"
+            android:padding="40dip"/>
             
             <TextView
                 android:layout_column="0"
@@ -285,7 +286,9 @@
 
         <!--  Spinner -->
 		
-		<TableRow >
+		<TableRow
+		    android:layout_height="match_parent"
+            android:visibility="gone" >
 		    
 		    <TextView
                 android:layout_column="0"
@@ -299,10 +302,7 @@
                 android:id="@+id/edit_changeTime"
                 android:layout_column="1"
                 android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:entries="@array/time"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000000" />
+				android:layout_height="wrap_content" />
 		 	
 		 	<Button
                 android:id="@+id/bOK_setTimeControl"

@@ -168,7 +168,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		tListener.start();
 		
 
-		rowSetLightControl.setVisibility(View.VISIBLE);
+		rowSetLightControl.setVisibility(View.GONE);
 
 	}
 
@@ -249,17 +249,17 @@ public class XBeeConfiguratorActivity extends Activity {
 		// R.style.Theme_MyDialog);
 		progressDialog = new ProgressDialog(c);
 		
-//		String[] time=this.getResources().getStringArray(R.array.time);
-	      
-		Spinner edit_changeTime=(Spinner) findViewById(R.id.edit_changeTime);
+		String[] time=this.getResources().getStringArray(R.array.time);
 		
-//        edit_changeTime.setAdapter(new ArrayAdapter<String>(this, R.layout.list_view_layout, time));
+		final Spinner edit_changeTime=(Spinner) findViewById(R.id.edit_changeTime);
+		
+        edit_changeTime.setAdapter(new ArrayAdapter<String>(this, R.drawable.spinner_style, time));
 		
 		/*
 		 * Configuration Rows
 		 */
 		rowAssociateDevice = (TableRow) findViewById(R.id.rowAssociateDevice);
-		rowDesassociateDevice = (TableRow) findViewById(R.id.rowDesassociateDevice);
+		rowDesassociateDevice = (TableRow) findViewById(R.id.rowDisassociateDevice);
 		rowSetLightControl=(TableRow) findViewById(R.id.rowSetLightControl);
 
 		/*
@@ -275,7 +275,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		Button bDetect = (Button) findViewById(R.id.bDetectDevices);
 		Button bRefresh = (Button) findViewById(R.id.bRefresh);
 		final Button bAssociate = (Button) findViewById(R.id.bOK_Associate);
-		final Button bDesassociate = (Button) findViewById(R.id.bOK_Desassociate);
+		final Button bDesassociate = (Button) findViewById(R.id.bOK_Disassociate);
 		final Button bSetLightControl = (Button) findViewById(R.id.bOK_setLightControl);
 		bOkPanId.setEnabled(false);
 		Button bOkTime=(Button) findViewById(R.id.bOK_setTimeControl);
@@ -289,7 +289,7 @@ public class XBeeConfiguratorActivity extends Activity {
 		tvPanID = (TextView) findViewById(R.id.tvPanID);
 		tvDeviceType = (TextView) findViewById(R.id.tvDeviceType);
 		final EditText etAssociate = (EditText) findViewById(R.id.editAssociateDevice);
-		final EditText etDesassociate = (EditText) findViewById(R.id.editDesassociateDevice);
+		final EditText etDesassociate = (EditText) findViewById(R.id.editDisassociateDevice);
 		
 		/*
 		 * SEEK BAR INICIALIZATION
@@ -618,6 +618,20 @@ public class XBeeConfiguratorActivity extends Activity {
 			
 		});
 		
+		bOkTime.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				byte b[]=auxM.intToByteArray(Integer.valueOf((String) edit_changeTime.getSelectedItem()));
+				
+				byte msg[]=auxM.newConfigPacket();
+				msg=auxM.packet_put_data(msg, b);
+				
+				new SendInformationThread(CHANGE_CONFIG, TARGET_DEFAULT, msg).run();
+			}
+			
+		});
+		
 
 	}
 	
@@ -852,9 +866,11 @@ public class XBeeConfiguratorActivity extends Activity {
 					break;
 
 				case NI_RESPONSE:
-
+					/*
 					dType = new AuxiliarMethods()
 							.getDeviceType(buffer, c, "NI");
+					*/
+					dType = "Coordinator";
 
 					break;
 
@@ -1069,7 +1085,7 @@ public class XBeeConfiguratorActivity extends Activity {
 				final TextView type = new TextView(c);
 
 				Button bDetails = new Button(c);
-				Button bAss = new Button(c);
+				
 
 				if (i % 2 == 0) {
 					r.setBackgroundColor(Color.parseColor(green));
@@ -1089,18 +1105,26 @@ public class XBeeConfiguratorActivity extends Activity {
 				bDetails.setBackgroundResource(R.drawable.button);
 				bDetails.setClickable(true);
 
+				Button bAss = new Button(c);
 				bAss.setText(c.getString(R.string.associate));
 				bAss.setBackgroundResource(R.drawable.button);
 				bAss.setClickable(true);
-
+				bAss.setVisibility(View.GONE);
+				
+				//Devices in the network
 				if (type.getText().equals(c.getString(R.string.actuator))
 						|| type.getText().equals(
 								c.getString(R.string.actuatorLuminance))
 						|| type.getText().equals(
 								c.getString(R.string.actuatorMotion))) {
-					bAss.setVisibility(View.VISIBLE);
-				} else {
-					bAss.setVisibility(View.GONE);
+					//If the connected device is not a sensor
+					if (!dType.equals(getString(R.string.actuator))
+							&& !dType.equals(getString(R.string.actuatorLuminance))
+							&& !dType.equals(getString(R.string.actuatorMotion))
+							&& !dType.equals(getString(R.string.coordinator))
+							&& !dType.equals("type")) {
+						bAss.setVisibility(View.VISIBLE);
+					}
 				}
 
 				// addr.setClickable(true);

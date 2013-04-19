@@ -57,9 +57,10 @@ public class AuxiliarMethods {
 			for (int i = 13; i < 18; i++) {
 				text.append((char) buffer[i]);
 			}
-		else
+		else if(request.equals("NI")){
 			for (int i = 3; i < textEndIndex; i++)
 				text.append((char) buffer[i]);
+		}
 
 		return this.getDeviceTypeToString(c, text.toString());
 	}
