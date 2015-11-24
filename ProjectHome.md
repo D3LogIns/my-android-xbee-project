@@ -1,0 +1,1 @@
+This is my college project that consists in controlling an XBee with an Android application
